@@ -13,7 +13,7 @@ Version: 1.5
 
 ## Plugin requirements
 
-1. Your **PHP** >= 7.2.5
+1. **PHP** >= 7.2.5
 2. Composer
 3. **WordPress** >= 5.51
 4. **WooCommerce** >= 4.5.2
