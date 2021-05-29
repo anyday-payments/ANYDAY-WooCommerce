@@ -1,9 +1,7 @@
 "use strict"; // Get the element
 
-function clonePricetag(options) {
-
-	var ELEM_CLASS = 'anyday-price-tag-style-wrapper';
-	var elem = document.querySelector('.' + ELEM_CLASS);
+function clonePricetag(options, className) {
+	var elem = document.querySelector('.' + className);
 
 	if (elem) {
 
@@ -41,23 +39,34 @@ function variationProductNoPriceSelectedHandler() {
 }
 
 function variationNoPriceSelectedElementHandler() {
+	var variation_id = jQuery('input.variation_id').val();
+	var variationData = jQuery('.variations_form.cart').data('product_variations');
+	let limited = false;
+	if (!isNaN(parseInt(anyday.limit))) {
+		for (let i = 0; i < variationData.length; i++) {
+			if (variationData[i].variation_id == variation_id) {
+				if (anyday.limit > variationData[i].display_price) {
+					limited = true;
+				}
+			}
+		}
+	}
 	var variationPriceHolderEl = document.querySelector('.woocommerce-variation');
-	var noPriceSelectedEl = document.querySelector('.anyday-price-tag-style-wrapper--no-price-selected');
-	var priceSelectedEl = document.querySelector('.anyday-price-tag-style-wrapper--price-selected');
-
-	if(variationPriceHolderEl.innerHTML.length === 0 ||
-		variationPriceHolderEl.style.display === 'none' ||
-		variationPriceHolderEl.style.display.length === 0
+	var priceSelectedEl = document.querySelector('.anyday-price-tag-style-wrapper--price');
+	var elementComputedDisplayStyle = variationPriceHolderEl.currentStyle ? variationPriceHolderEl.currentStyle.display : getComputedStyle(variationPriceHolderEl, null).display;
+	if (!priceSelectedEl) return;
+	if(limited || variationPriceHolderEl.innerHTML.length === 0 ||
+    variationPriceHolderEl.style.display === 'none' ||
+    elementComputedDisplayStyle === 'none' ||
+		elementComputedDisplayStyle.length === 0
 	) {
-		noPriceSelectedEl.style.display = 'block';
 		priceSelectedEl.style.display = 'none';
 	} else {
-		noPriceSelectedEl.style.display = 'none';
 		priceSelectedEl.style.display = 'block';
 	}
 }
 
 document.addEventListener("DOMContentLoaded", function() {
-  clonePricetag();
+  clonePricetag({}, 'anyday-price-tag-style-wrapper--price');
   variationProductNoPriceSelectedHandler();
 });

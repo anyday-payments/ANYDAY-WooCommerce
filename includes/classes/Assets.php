@@ -26,9 +26,12 @@ class Assets
     public function adm_enque_public_scripts()
     {
         $position_selector = '';
-
-        if ( is_product() && !empty( get_option('adm_price_tag_product_selector') ) ) {
+        $product = wc_get_product( get_the_ID() );
+        
+        if ( is_product() && $product->is_type( 'variable' ) === false && !empty( get_option('adm_price_tag_product_selector') ) ) {
             $position_selector = get_option('adm_price_tag_product_selector');
+        }elseif ( is_product() && $product->is_type( 'variable' ) === true && !empty( get_option('adm_price_tag_variant_product_selector') ) ) {
+            $position_selector = get_option('adm_price_tag_variant_product_selector');
         }elseif ( is_cart() && !empty( get_option('adm_price_tag_cart_selector') ) ) {
             $position_selector = get_option('adm_price_tag_cart_selector');
         }elseif ( is_checkout() && !empty( get_option('adm_price_tag_checkout_selector') ) ) {
@@ -37,7 +40,8 @@ class Assets
 
         wp_enqueue_script( 'anyday-public-javascript', ADM_URL . 'assets/public/js/anyday-public.js', array(), false, true );
         wp_localize_script( 'anyday-public-javascript', 'anyday', array(
-            "positionSelector" => $position_selector
+            "positionSelector" => $position_selector,
+            "limit" => get_option('adm_price_tag_limit')
         ));
 
         wp_enqueue_style( 'anyday-public-stylesheet', ADM_URL . 'assets/public/css/anyday-public.css' );

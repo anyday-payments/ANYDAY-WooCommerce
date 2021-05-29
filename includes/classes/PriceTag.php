@@ -15,7 +15,7 @@ class PriceTag
 
 	/**
 	 * Add data attribute to a script
-	 *@method adm_add_data_attribute
+	 * @method adm_add_data_attribute
 	 */
 	public function adm_add_data_attribute( $tag, $handle )
 	{
@@ -23,7 +23,7 @@ class PriceTag
 			return $tag;
 		}
 
-	   return str_replace( ' src', ' type="module" src', $tag );
+	   return str_replace( ' src', ' async type="module" src', $tag );
 	}
 
 	/**
@@ -34,7 +34,56 @@ class PriceTag
 	{
 		if( !$this->checkPluginConditions() ) return;
 
-		wp_enqueue_script( 'anyday-split-script', "https://my.anyday.io/webshopPriceTag/anyday-price-tag-".$this->getPluginLocale()."-es2015.js");
+		wp_enqueue_script( 'anyday-split-script', "https://my.anyday.io/webshopPriceTag/anyday-price-tag-".$this->getPluginLocale()."-es2015.js", array(), date('Ymd'), true);
+	}
+
+	private function validLimit() {
+
+		$limit = intval( trim(get_option('adm_price_tag_limit')) );
+		if(!$limit)
+			return true;
+
+		if(is_product()) {
+			$product = wc_get_product( get_the_ID() );
+			$price = $product->get_regular_price();
+			if($product->is_type( 'variable' )) {
+				$variations = $product->get_available_variations();
+				$first_variation_prices = [];
+				foreach ( $variations as $key => $variation ) {
+					$first_variation_prices[] = $variation['display_price'];
+				}
+				$price = max($first_variation_prices);
+			}
+			if( $price >= $limit ) {
+				return true;
+			}
+			return false;
+		} elseif(is_cart() || is_checkout()) {
+			if( (float)WC()->cart->total >= $limit ) {
+				return true;
+			}
+			return false;
+		}
+	}
+
+	private function hideProducts() {
+		if(get_option('adm_pricetag_products') == "")
+			return false;
+		$tags = explode(',', trim(str_replace(' ', '', get_option('adm_pricetag_products')), ''));
+		if($tags[0] == "")
+			return true;
+		if(is_product() && count($tags)) {
+			$current_tags = get_the_terms( get_the_ID(), 'product_tag' );
+			if ( $current_tags && ! is_wp_error( $current_tags ) ) { 
+					foreach ($current_tags as $tag) {
+						if(in_array($tag->name, $tags))
+							return true;
+					}
+			}
+			return false;
+		} else {
+			return true;
+		}
 	}
 
 	/**
@@ -44,84 +93,30 @@ class PriceTag
 	 */
 	public function adm_append_anyday_price_tag()
 	{
-		if( !$this->checkPluginConditions() ) return;
-
-		$product = wc_get_product( get_the_ID() );
+		if( (is_product() && $this->hideProducts())
+			|| !$this->checkPluginConditions()
+			|| !$this->validLimit() ) 
+			return;
 		$currency = get_option('woocommerce_currency');
 		$lang_locale = get_option('adm_price_format_locale');
-		$price_selector = '';
-		$visibility = "display:block";
-
-		if ( get_option('adm_authentication_type') == 'auth_manual' ) {
-
-			$token = get_option('adm_manual_pricetag_token');
-
-		} elseif( get_option('adm_authentication_type') == 'auth_account' ) {
-
-			$token = get_option('adm_pricetag_token');
-
-		}
-
-		if( $this->checkPricetagPositonSelector() ) {
-
-			$visibility = "display:none";
-
-		}
-
-		if( $this->getPriceSelector( $product ) ) {
-
-			$price = 'total-price-selector="' . $this->getPriceSelector( $product ) . '"';
-
-			if ( is_product() && $product->is_type( 'variable' ) ) {
-
-				$variations = $product->get_available_variations();
-
-				$first_variation_prices = [];
-
-				foreach ( $variations as $key => $variation ) {
-
-					$first_variation_prices[] = $variation['display_price'];
-
-				}
-
-				if ( count(array_unique($first_variation_prices)) === 1 ) {
-
-					$price = 'total-price-selector=".woocommerce-Price-amount.amount bdi"';
-
-				}
-
-			}
-
-
-		} else {
-
-			if( is_product() ) {
-
-				if ( $product->get_sale_price() ) {
-
-					$price = 'total-price="'. $product->get_sale_price() .'"';
-
-				}else {
-
-					$price = 'total-price="'. $product->get_regular_price() .'"';
-				}
-
-			} else {
-
-				$price = 'total-price="'. (float)WC()->cart->total .'"';
-			}
-		}
-
+		$visibility = ($this->checkPricetagPositonSelector()) ? "display:none" : "display:block";
+		$token = $this->getToken();
+		$price = $this->getPriceTag();
 		try {
-
-			if ( is_product() && $product->is_type( 'variable' ) ) {
-
-				echo sprintf( '<div class="anyday-price-tag-style-wrapper anyday-price-tag-style-wrapper--no-price-selected"><anyday-price-tag style="%s" total-price-selector=".woocommerce-Price-amount.amount bdi" price-tag-token="%s" currency="%s" price-format-locale="%s" environment="production"></anyday-price-tag></div>', $visibility, $token, $currency, $lang_locale );
-
+			if ( $currency == ADM_CURRENCY ) {
+				echo sprintf( '<div 
+					class="anyday-price-tag-style-wrapper 
+					anyday-price-tag-style-wrapper--price">
+						<anyday-price-tag 
+							style="%s" 
+							%s 
+							price-tag-token="%s"
+							currency="%s"
+							price-format-locale="%s"
+							environment="production">
+						</anyday-price-tag>
+					</div>', $visibility, $price, $token, $currency, $lang_locale );
 			}
-
-			echo sprintf( '<div class="anyday-price-tag-style-wrapper anyday-price-tag-style-wrapper--price-selected"><anyday-price-tag style="%s" %s price-tag-token="%s" currency="%s" price-format-locale="%s" environment="production"></anyday-price-tag></div>', $visibility, $price, $token, $currency, $lang_locale );
-
 		} catch (Exception $e) {
 			//ignore error
 		}
@@ -134,9 +129,13 @@ class PriceTag
 	 */
 	public function adm_price_tag_styles()
 	{
+		$product = wc_get_product( get_the_ID() );
+
 		if( !is_admin() ) {
-			if( is_product() ) {
+			if( is_product()  && !$product->is_type( 'variable' ) ) {
 				echo sprintf( "<style>.anyday-price-tag-style-wrapper{%s}</style>", get_option('adm_pricetag_product_styles') );
+			}elseif ( is_product()  && $product->is_type( 'variable' ) ) {
+				echo sprintf( "<style>.anyday-price-tag-style-wrapper{%s}</style>", get_option('adm_pricetag_variant_product_styles') );
 			}elseif ( is_cart() ) {
 				echo sprintf( "<style>.anyday-price-tag-style-wrapper{%s}</style>", get_option('adm_pricetag_cart_styles') );
 			}elseif ( is_checkout() ) {
@@ -159,8 +158,8 @@ class PriceTag
 
 	/**
 	 * Check the pricetag selector position
-	 *@method checkPricetagSelectorPositon
-	 *@return bool
+	 * @method checkPricetagSelectorPositon
+	 * @return bool
 	 */
 	private function checkPricetagPositonSelector()
 	{
@@ -171,14 +170,22 @@ class PriceTag
 
 	/**
 	 * Get the pricetag price selectors
-	 *@method getPriceSelector
+	 * @method getPriceSelector
 	 */
 	private function getPriceSelector( $product )
 	{
-		if ( is_product() && $product->is_type( 'variable' ) === false && !empty( get_option('adm_price_tag_price_product_selector') ) ) {
+		$isOnSale = is_product() && $product->is_on_sale();
+		$isSimple = is_product() && !$product->is_type( 'variable' );
+		$isVariable = is_product() && $product->is_type( 'variable' );
+
+		if ( $isSimple && !$isOnSale && !empty( get_option('adm_price_tag_price_product_selector') ) ) {
 			return get_option('adm_price_tag_price_product_selector');
-		}elseif ( is_product() && $product->is_type( 'variable' ) === true && !empty( get_option('adm_price_tag_price_variable_product_selector') ) ) {
+		} elseif ( $isVariable && !$isOnSale && !empty( get_option('adm_price_tag_price_product_selector') ) ) {
 			return get_option('adm_price_tag_price_variable_product_selector');
+		} elseif ($isVariable && !empty( get_option('adm_price_tag_sale_price_variable_product_selector') )) {
+			return get_option('adm_price_tag_sale_price_variable_product_selector');
+		} elseif ($isSimple && !empty( get_option('adm_price_tag_sale_price_product_selector') )){
+			return get_option('adm_price_tag_sale_price_product_selector');
 		}elseif ( is_cart() && !empty( get_option('adm_price_tag_price_cart_selector') ) ) {
 			return get_option('adm_price_tag_price_cart_selector');
 		}elseif ( is_checkout() && !empty( get_option('adm_price_tag_price_checkout_selector') ) ) {
@@ -192,7 +199,7 @@ class PriceTag
 	 * Load the plugin languages based on user choice, if nothing
 	 * matches what is  provided in the $supported_languages array
 	 * it loads the default choice from the plugin settings
-	 *@method getPluginLocale
+	 * @method getPluginLocale
 	 */
 	private function getPluginLocale()
 	{
@@ -204,5 +211,62 @@ class PriceTag
 		} else {
 			return get_option('adm_language_locale');
 		}
+	}
+
+	/**
+	 * Get token which is stored in the configuration according
+	 * to Authentication type setting.
+	 * @method getToken
+	 * @return string
+	 */
+	private function getToken() 
+	{
+		if ( get_option('adm_authentication_type') == 'auth_manual' ) {
+			return get_option('adm_manual_pricetag_token');
+		} elseif( get_option('adm_authentication_type') == 'auth_account' ) {
+			return get_option('adm_pricetag_token');
+		}
+	}
+
+	/**
+	 * Get a price tag html depending on the product type and page on which this book is invoked.
+	 * @method getPriceTag
+	 * @return html
+	 */
+	public function getPriceTag()
+	{
+		$product = wc_get_product( get_the_ID() );
+		$price = null;
+
+		if( $this->getPriceSelector( $product ) ) {
+			if ( is_product() && $product->is_type( 'variable' ) ) {
+				$on_sale = false;
+				$variations = $product->get_available_variations();
+				foreach ( $variations as $key => $variation ) {
+					if(wc_get_product($variation['variation_id'])->is_on_sale()) {
+						$on_sale= true;
+					}
+				}
+				if($on_sale) {
+					$price = (!empty(trim(get_option('adm_price_tag_sale_price_variable_product_selector')))) ? 'total-price-selector="'.get_option('adm_price_tag_sale_price_variable_product_selector').'"' : 'total-price-selector=".woocommerce-Price-amount.amount"';
+				} else {
+					$price = (!empty(trim(get_option('adm_price_tag_price_variable_product_selector')))) ? 'total-price-selector="'.get_option('adm_price_tag_price_variable_product_selector').'"'  : 'total-price-selector=".woocommerce-Price-amount.amount"';
+				}
+			}
+		} else {
+			if( is_product() ) {
+				$price = ($product->get_sale_price())
+					? $product->get_sale_price()
+					: $product->get_regular_price();
+			} else {
+				$price = (float)WC()->cart->total;
+			}
+			$price = 'total-price="'.$price.'"';
+		}
+		if($price === null) {
+			$price = 'total-price-selector="' . $this->getPriceSelector( $product ) . '"';
+		}
+
+		return $price;
 	}
 }

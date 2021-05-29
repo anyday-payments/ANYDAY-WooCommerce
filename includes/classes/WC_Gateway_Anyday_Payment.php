@@ -123,7 +123,13 @@ class WC_Gateway_Anyday_Payment extends WC_Payment_Gateway {
 
 			wc_reduce_stock_levels( $order_id );
 
-			$order->add_order_note( __("Order status Pending until the order is Approved by ANYDAY.", "adm") );
+			if( get_option('adm_order_status_before_authorized_payment') != "default" ) {
+
+				$order->update_status( get_option('adm_order_status_before_authorized_payment') );
+
+			}
+
+			$order->add_order_note( __("The payment must be approved in ANYDAY portal before Captured or Refunded", "adm") );
 
 			return array(
 				'result' 	=> 'success',

@@ -131,7 +131,16 @@ class AnydayPayment
 
 			update_post_meta( $order->get_id(), date("Y-m-d_h:i:sa") . '_anyday_captured_payment', wc_clean( $_POST['amount'] ) );
 
-			$order->update_status( 'completed', __( 'ANYDAY payment captured!', 'adm' ) );
+			if( get_option('adm_order_status_after_captured_payment') != "default" ) {
+
+				$order->update_status( get_option('adm_order_status_after_captured_payment'), __( 'ANYDAY payment captured!', 'adm' ) );
+
+			} else {
+
+				$order->update_status( 'completed', __( 'ANYDAY payment captured!', 'adm' ) );
+
+			}
+			
 
 			$order->add_order_note( __( date("Y-m-d, h:i:sa") . ' - Captured amount: ' . number_format($_POST['amount'], 2, ',', ' ') . get_option('woocommerce_currency'), 'adm') );
 
@@ -198,6 +207,8 @@ class AnydayPayment
 			$response = json_decode( $response->getBody()->getContents() );
 
 			if( $response->errorCode === 0 ) {
+
+				wc_increase_stock_levels( $order->get_id() );
 
 				$order->update_status( 'cancelled', __( 'ANYDAY payment cancelled!', 'adm' ) );
 
