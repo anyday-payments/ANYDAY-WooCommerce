@@ -2,7 +2,7 @@
 
 Description: A fair and transparent online payment solution for you and your customers
 
-Version: 1.5
+Version: 1.0
 
 ## Plugin installation
 
@@ -13,7 +13,7 @@ Version: 1.5
 
 ## Plugin requirements
 
-1. **PHP** >= 7.2.5
+1. Your **PHP** >= 7.1.33
 2. **Composer**
 3. **WordPress** >= 5.51
 4. **WooCommerce** >= 4.5.2
@@ -39,3 +39,25 @@ Version 1.3 - Fixed a bug related to registering the ANYDAY payment gateway. Now
 Version 1.4 - Created two types of authentication: manually and with ANYDAY merchant account. Fixed a bug related to the variable products pricetag.
 
 Version 1.5 - Disable the authentication type and fields after successful authentication.
+
+Version 1.6
+
+- Disable the authentication fields after successful authentication manually or with ANYDAY merchant account
+- Create a new field for the variant product position selector
+- Change the languages files with correct names
+- Increase the order stock upon cancel API request or payment rejection by the user
+
+Version 1.6.1 - Fixed warning messages in the order admin page. Included a new styling input field for the variant products.
+
+Version 1.6.2 - Bug fixing.
+
+Version 1.7 - Creates in the plugin settings fields for each order status. If configured from there the default order statuses will be overwritten. Fixed issues with the variant pricetag.
+
+Version 1.8 - Creates custom order bulk action for capturing ANYDAY payments
+
+Version 1.9
+
+- ANYDAY payment can be captured upon order status change from the order details page
+- Disable the ANYDAY payment gateway in case of currency different from DKK
+
+Version 2.0 - Hide the ANYDAY payment gateway from the checkout if the order total is above 2500 DKK

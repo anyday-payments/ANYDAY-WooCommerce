@@ -12,10 +12,12 @@ class Core
 		$this->plugin_name = 'vconnect-anyday-module';
 
 		add_filter( 'woocommerce_get_settings_pages', array( $this, 'adm_add_settings' ), 15 );
-		add_filter( 'woocommerce_payment_gateways', array( $this, 'anyday_payment_gateway_add_to_gateways') );
+		if( get_option('woocommerce_currency') == ADM_CURRENCY ) {
+			add_filter( 'woocommerce_payment_gateways', array( $this, 'anyday_payment_gateway_add_to_gateways') );
+			add_filter( 'woocommerce_gateway_icon', array( $this, 'adm_payment_gateway_icons' ), 10, 2 );
+		}
 		add_filter( 'plugin_action_links_' . $this->plugin_name, array( $this, 'anyday_payment_gateway_plugin_links' ) );
 		add_action( 'admin_init', array( $this, 'adm_load_plugin' ) );
-		add_filter( 'woocommerce_gateway_icon', array( $this, 'adm_payment_gateway_icons' ), 10, 2 );
 		add_filter( "plugin_action_links_" . ADM_PLUGIN_BASE_NAME, array( $this, 'adm_plugin_settings_link' ) );
 
 		new Assets();
@@ -48,7 +50,8 @@ class Core
 	 */
     public function adm_admin_notices()
     {
-    	if( get_option('adm_authentication_type') == 'auth_account' && get_option('adm_merchant_authenticated') == 'false' ) {
+
+    	if( get_option('adm_authentication_type') == 'auth_account' && get_option('adm_merchant_authenticated') == 'false' && get_option('adm_manual_authenticated') == 'false' ) {
 
 			add_action( 'admin_notices', function() {
 		        echo '<div id="message" class="notice notice-error">
@@ -67,6 +70,29 @@ class Core
 		    });
 
 		}
+
+		if ( strpos(esc_url_raw($_SERVER['REQUEST_URI']), 'tab=anydaypricetag') !== false ) {
+
+			if( get_option('adm_manual_authenticated') == 'true'  ) {
+
+				add_action( 'admin_notices', function() {
+			        echo '<div id="message" class="notice notice-warning">
+			        <p><strong>'. __( "You have authenticated manually!", "adm" ) .'</strong></p>
+			        </div>';
+			    });
+
+			} elseif ( get_option('adm_merchant_authenticated') == 'true' ) {
+
+				add_action( 'admin_notices', function() {
+			        echo '<div id="message" class="notice notice-warning">
+			        <p><strong>'. __( "You have authenticated with your ANYDAY merchant account!", "adm" ) .'</strong></p>
+			        </div>';
+				});
+
+			}
+
+		}
+
 
 		if( get_option('adm_environment') == 'test' ) {
 
@@ -94,7 +120,9 @@ class Core
      */
     public function anyday_payment_gateway_add_to_gateways( $gateways )
 	{
-		$gateways[] = 'WC_Gateway_Anyday_Payment';
+		if((float)WC()->cart->total <= 5000) {
+			$gateways[] = 'WC_Gateway_Anyday_Payment';
+		}
 
 		return $gateways;
 	}

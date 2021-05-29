@@ -11,7 +11,21 @@ class AnydayWooOrder
 		add_action( 'admin_head', array( $this, 'adm_hide_woo_refund') );
 		add_action( 'init', array( $this, 'adm_user_anyday_order_rejection' ) );
 		add_action( 'woocommerce_thankyou', array( $this, 'adm_user_anyday_order_approval' ) );
-		add_action( 'admin_init', array( $this, 'adm_register_refund_order_status' ) );
+		add_action( 'init', array( $this, 'adm_register_refund_order_status' ) );
+		add_filter( 'bulk_actions-edit-shop_order', array( $this, 'adm_order_custom_bulk_actions' ) );
+		add_filter( 'handle_bulk_actions-edit-shop_order', array( $this, 'adm_order_custom_bulk_action_handler'), 10, 3 );
+		add_action( 'admin_notices', array( $this, 'adm_order_custom_bulk_action_notices' ) );
+
+		if( get_option('adm_order_status_after_captured_payment') != "default" ) {
+			
+			add_action( 'woocommerce_order_status_' . str_replace('wc-', '', get_option('adm_order_status_after_captured_payment')), array($this, 'adm_capture_upon_woocommerce_order_status_change') );
+
+		} else {
+
+			add_action( 'woocommerce_order_status_completed', array($this, 'adm_capture_upon_woocommerce_order_status_change') );
+
+		}
+
 	}
 
 	/**
@@ -20,12 +34,12 @@ class AnydayWooOrder
 	public function adm_register_refund_order_status()
 	{
 		register_post_status( 'wc-adm-refunded', array(
-	        'label'                     => __( 'ANYDAY Refunded', 'adm' ),
-	        'public'                    => true,
+	        'label'                     => _x( 'ANYDAY Refunded', 'Order status', 'adm' ),
+	        'public'                    => false,
 	        'exclude_from_search'       => false,
 	        'show_in_admin_all_list'    => true,
 	        'show_in_admin_status_list' => true,
-	        'label_count'               => __( 'ANYDAY Refunded', 'adm' )
+	        'label_count'               => _n_noop( 'ANYDAY Refunded <span class="count">(%s)</span>', 'ANYDAY Refunded <span class="count">(%s)</span>', 'adm' )
 	    ) );
 
 		add_filter( 'wc_order_statuses', function( $statuses ) {
@@ -67,6 +81,9 @@ class AnydayWooOrder
 		$captured_amount = 0;
 		$refunded_amount = 0;
 
+		update_post_meta( $order->get_id(),'full_captured_amount', 'false' );
+		update_post_meta( $order->get_id(),'full_refunded_amount', 'false' );
+
 		foreach( get_post_meta( $order->get_id() ) as $key => $meta ) {
 			if( strpos($key, 'anyday_captured_payment') !== false ) {
 				$captured_amount += $meta[0];
@@ -87,17 +104,18 @@ class AnydayWooOrder
 
 
 		if( $order->get_payment_method() == 'anyday_payment_gateway' ) {
+			if ( $order->get_status() != 'cancelled' ) {
+				if ( get_post_meta( $order->get_id(), 'full_captured_amount' )[0] != 'true' ) {
+					echo '<button type="button" class="button anyday-capture anyday-payment-action" data-anyday-action="adm_capture_payment" data-order-id="'.$order->get_id().'">'. __("ANYDAY Capture", "adm") .'</button>';
+				}
 
-			if ( get_post_meta( $order->get_id(), 'full_captured_amount' )[0] != 'true' ) {
-				echo '<button type="button" class="button anyday-capture anyday-payment-action" data-anyday-action="adm_capture_payment" data-order-id="'.$order->get_id().'">'. __("ANYDAY Capture", "adm") .'</button>';
-			}
+				if ( get_post_meta( $order->get_id(), 'full_captured_amount' )[0] != 'true' && get_post_meta( $order->get_id(), 'full_refunded_amount' )[0] != 'true' ) {
+					echo '<button type="button" class="button anyday-cancel anyday-payment-action" data-anyday-action="adm_cancel_payment" data-order-id="'.$order->get_id().'">'. __("ANYDAY Cancel", "adm") .'</button>';
+				}
 
-			if ( $order->get_status() == 'on-hold' ) {
-				echo '<button type="button" class="button anyday-cancel anyday-payment-action" data-anyday-action="adm_cancel_payment" data-order-id="'.$order->get_id().'">'. __("ANYDAY Cancel", "adm") .'</button>';
-			}
-
-			if ( get_post_meta( $order->get_id(), 'full_refunded_amount' )[0] != 'true' ) {
-				echo '<button type="button" class="button anyday-refund anyday-payment-action" data-anyday-action="adm_refund_payment" data-order-id="'.$order->get_id().'">'. __("ANYDAY Refund", "adm") .'</button>';
+				if ( get_post_meta( $order->get_id(), 'full_refunded_amount' )[0] != 'true' ) {
+					echo '<button type="button" class="button anyday-refund anyday-payment-action" data-anyday-action="adm_refund_payment" data-order-id="'.$order->get_id().'">'. __("ANYDAY Refund", "adm") .'</button>';
+				}
 			}
 
 			$captured_amount = 0;
@@ -288,6 +306,8 @@ width: 100%;margin-top: 20px;">
 
 			if ( $order && $check_order_key && $order->get_payment_method() == 'anyday_payment_gateway' && $order->get_status() != 'cancelled' && $_GET['anydayPayment'] == 'rejected' ) {
 
+				wc_increase_stock_levels( $order->get_id() );
+
 				$order->update_status( 'cancelled', __( 'ANYDAY payment cancelled!', 'adm' ) );
 
 			}
@@ -306,8 +326,127 @@ width: 100%;margin-top: 20px;">
 
 			WC()->cart->empty_cart();
 
-			$order->update_status( 'on-hold', __( 'ANYDAY payment approved!', 'adm' ) );
+			if( get_option("adm_order_status_after_authorized_payment") != "default" ) {
+			
+				$order->update_status( get_option("adm_order_status_after_authorized_payment"), __( 'ANYDAY payment approved!', 'adm' ) );
+			
+			}else {
 
+				$order->update_status( 'on-hold', __( 'ANYDAY payment approved!', 'adm' ) );
+			
+			}
+			
+
+		}
+	}
+	
+	/**
+	 * Add custom bulk action to capture all ANYDAY payments
+	 */
+	public function adm_order_custom_bulk_actions( $bulk_array )
+	{
+		$bulk_array['anyday_capture_payment'] = 'Capture ANYDAY Payment';
+
+		return $bulk_array;
+	}
+
+	public function adm_order_custom_bulk_action_handler( $redirect, $doaction, $object_ids )
+	{
+		$redirect = remove_query_arg( array( 'anyday_capture_payment_successful', 'anyday_capture_payment_unsuccessful', 'anyday_capture_payment_unsuccessful_order_ids' ), $redirect );
+
+		if ( $doaction == 'anyday_capture_payment' ) { 
+
+			$anyday_payment = new AnydayPayment;
+			$successfull = 0;
+			$unsuccessful = 0;
+			$unsuccessful_order_ids = '';
+
+			foreach( $object_ids as $object_id ) {
+
+				$order = wc_get_order( $object_id );
+				$order_amount = $order->get_total();
+
+				if ( $order->get_payment_method() == 'anyday_payment_gateway' ) {
+					$request = $anyday_payment->adm_api_capture( $order, $order_amount );
+
+					if ( $request ) {
+	
+						update_post_meta( $order->get_id(), date("Y-m-d_h:i:sa") . '_anyday_captured_payment', wc_clean( $order_amount ) );
+			
+						if( get_option('adm_order_status_after_captured_payment') != "default" ) {
+			
+							$order->update_status( get_option('adm_order_status_after_captured_payment'), __( 'ANYDAY payment captured!', 'adm' ) );
+			
+						} else {
+			
+							$order->update_status( 'completed', __( 'ANYDAY payment captured!', 'adm' ) );
+			
+						}
+						
+						$order->add_order_note( __( date("Y-m-d, h:i:sa") . ' - Captured amount: ' . number_format($order_amount, 2, ',', ' ') . get_option('woocommerce_currency'), 'adm') );
+						
+						$successfull++;
+					}else  {
+						$unsuccessful++;
+						$unsuccessful_order_ids .= $object_id . ', ';
+					}
+				}
+			}
+
+			$redirect = add_query_arg( array(
+				'anyday_capture_payment_successful' =>  $successfull,
+				'anyday_capture_payment_unsuccessful' => $unsuccessful,
+				'anyday_capture_payment_unsuccessful_order_ids' => substr($unsuccessful_order_ids, 0, -2)
+			), $redirect );
+		}
+
+		return $redirect;
+	}
+
+	public function adm_order_custom_bulk_action_notices()
+	{
+		if( isset( $_REQUEST['anyday_capture_payment_successful'] ) && $_REQUEST['anyday_capture_payment_successful'] > 0 ) {
+			printf( '<div id="message" class="notice notice-success is-dismissible"><p><strong>%s</strong> '. __('payments have been successfully captured', 'adm') .'.</p></div>', sanitize_text_field(intval($_GET['anyday_capture_payment_successful'])) );
+		}
+
+		if ( isset( $_REQUEST['anyday_capture_payment_unsuccessful'] ) && $_REQUEST['anyday_capture_payment_unsuccessful'] > 0 ) {
+			printf( '<div id="message" class="notice notice-error is-dismissible"><p><strong>%s</strong> '. __('payments have failed to be captured', 'adm') .': %s</p></div>', sanitize_text_field(intval($_GET['anyday_capture_payment_unsuccessful'])), sanitize_text_field( $_GET['anyday_capture_payment_unsuccessful_order_ids'] ) );
+		}
+	}
+
+	public function adm_capture_upon_woocommerce_order_status_change( $order_id )
+	{
+		global $pagenow;
+
+		$order = wc_get_order( $order_id );
+		$order_amount = $order->get_total();
+
+		if ( $pagenow == "post.php" && $order->get_payment_method() == 'anyday_payment_gateway' ) {
+			
+			$anyday_payment = new AnydayPayment;
+
+			$request = $anyday_payment->adm_api_capture( $order, $order_amount );
+
+			if ( $request ) {
+
+				update_post_meta( $order->get_id(), date("Y-m-d_h:i:sa") . '_anyday_captured_payment', wc_clean( $order_amount ) );
+	
+				if( get_option('adm_order_status_after_captured_payment') != "default" ) {
+	
+					$order->update_status( get_option('adm_order_status_after_captured_payment'), __( 'ANYDAY payment captured!', 'adm' ) );
+	
+				} else {
+	
+					$order->update_status( 'completed', __( 'ANYDAY payment captured!', 'adm' ) );
+	
+				}
+				
+				$order->add_order_note( __( date("Y-m-d, h:i:sa") . ' - Captured amount: ' . number_format($order_amount, 2, ',', ' ') . get_option('woocommerce_currency'), 'adm') );
+			
+				wp_safe_redirect( home_url("/wp-admin/post.php?post=$order_id&action=edit") );
+				
+				exit;
+			}
 		}
 	}
 }

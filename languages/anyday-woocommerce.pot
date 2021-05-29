@@ -412,3 +412,39 @@ msgstr ""
 msgid ""
 "A fair and transparent online payment solution for you and your customers"
 msgstr ""
+
+#: includes/classes/Core.php:75
+msgid "You have authenticated manually!"
+msgstr ""
+
+#: includes/classes/Core.php:83
+msgid "You have authenticated with your ANYDAY merchant account!"
+msgstr ""
+
+#: includes/classes/WC_Gateway_Anyday_Payment.php:132
+msgid "The payment must be approved in ANYDAY portal before Captured or Refunded"
+msgstr ""
+
+msgid "Before Payment is Authorized"
+msgstr ""
+
+msgid "After Payment is Authorized"
+msgstr ""
+
+msgid "After Payment is Captured"
+msgid ""
+
+msgid "Choose an Order Status for the Woocommerce order before the payment is authorized in ANYDAY portal"
+msgstr ""
+
+msgid "Choose an Order Status for the Woocommerce order after the payment is authorized in ANYDAY portal"
+msgstr ""
+
+msgid "Choose an Order Status for the Woocommerce order after the payment is fully captured in the order details page"
+msgstr ""
+
+msgid "payments have been successfully captured"
+msgstr ""
+
+msgid "payments have failed to be captured"
+msgstr ""

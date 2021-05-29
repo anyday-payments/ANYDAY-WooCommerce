@@ -14,48 +14,195 @@ class Settings extends \WC_Settings_Page
 	    add_action( 'woocommerce_sections_' . $this->id, array( $this, 'output_sections' ) );
 	}
 
+	private function set_authentication() {
+		if ( get_option('adm_authentication_type') == 'auth_manual' && !empty(trim(get_option('adm_manual_prod_api_key'))) && !empty(trim(get_option('adm_manual_test_api_key')) ) ) {
+			update_option( 'adm_manual_authenticated', 'true' );
+			update_option( 'adm_merchant_authenticated', 'false' );
+		} else {
+			update_option( 'adm_manual_authenticated', 'false' );
+		}
+
+		// if ( get_option('adm_authentication_type') == 'auth_account' && !empty(trim(get_option('adm_merchant_username'))) && !empty(trim(get_option('adm_merchant_password')) ) ) {
+		// 	update_option( 'adm_merchant_authenticated', 'true' );
+		// 	update_option( 'adm_manual_authenticated', 'false' );
+		// } else {
+		// 	update_option( 'adm_merchant_authenticated', 'false' );
+		// }
+	}
+
 	/**
 	 * Define the plugin sections
 	 *@method get_sections
 	 */
 	public function get_sections()
 	{
-	    $sections = array(
-	    	'' => __( 'ANYDAY Payment Gateway Settings', 'adm' ),
-	    );
-
+			$this->set_authentication();
+			$sections = array(
+				'' => __( 'ANYDAY Merchant Authentication', 'adm' ),
+			);
+	    $sections['adm_general_setting'] = __( 'ANYDAY Payment Gateway Settings', 'adm' );
 	    $sections['adm_pricetag_settings'] = __( 'ANYDAY Pricetag Settings', 'adm' );
+
+			if ( get_option('adm_merchant_authenticated') != 'true' 
+				&& get_option( 'adm_manual_authenticated' ) != 'true' ) {
+				unset( $sections['adm_general_setting'] );
+				unset( $sections['adm_pricetag_settings'] );
+			}
 
 	    return apply_filters( 'woocommerce_get_sections_' . $this->id, $sections );
 	}
 
 	/**
 	 * Register the plugin settings per section
-	 *@method get_settings
+	 * @method get_settings
 	 */
 	public function get_settings( $current_section = '' )
 	{
 		switch ( $current_section ) {
-			case '':
+			case 'adm_general_setting':
 				return $this->adm_get_payment_gateway_settings( $current_section );
 				break;
 			case 'adm_pricetag_settings':
 				return $this->adm_get_pricetag_settings( $current_section );
 				break;
+			case '':
+				return $this->adm_get_auth_setting( $current_section );
+				break;
 		}
 	}
 
 	/**
-	 * Define the general plugin settings
+	 * function to add activate setting toggle for anyday payment gateway
+	 * This setting adds up before actual plugin setting in $this->output function of this file.
+	 * @method get_initialize_setting
+	 */
+	public function get_initialize_setting() {
+		$gateway = WC()->payment_gateways->payment_gateways()['anyday_payment_gateway'];
+		$method_title = $gateway->get_method_title() ? $gateway->get_method_title() : $gateway->get_title();
+		echo '<h2>ANYDAY Payment Gateway</h2><table class="form-table"><tbody><tr valign="top"><th class="titledesc">Activate</th><td class="forminp">';
+		echo '<a class="wc-payment-gateway-method-toggle-enabled" href="' . esc_url( admin_url( 'admin.php?page=wc-settings&tab=checkout&section=' . strtolower( $gateway->id ) ) ) . '">';
+		if ( wc_string_to_bool( $gateway->enabled ) ) {
+			/* Translators: %s Payment gateway name. */
+			echo '<span class="woocommerce-input-toggle woocommerce-input-toggle--enabled" aria-label="' . esc_attr( sprintf( __( 'The "%s" payment method is currently enabled', 'woocommerce' ), $method_title ) ) . '">' . esc_attr__( 'Yes', 'woocommerce' ) . '</span>';
+		} else {
+			/* Translators: %s Payment gateway name. */
+			echo '<span class="woocommerce-input-toggle woocommerce-input-toggle--disabled" aria-label="' . esc_attr( sprintf( __( 'The "%s" payment method is currently disabled', 'woocommerce' ), $method_title ) ) . '">' . esc_attr__( 'No', 'woocommerce' ) . '</span>';
+		}
+		echo '</a></td></tr></tbody></table>';
+	}
+
+	/**
+	 * @method authFilled
+	 */
+	// private function auth_filled() {
+	// 	if( 
+	// 			(
+	// 				get_option('adm_authentication_type') == 'auth_manual' 
+	// 				&& !empty(get_option('adm_manual_prod_api_key')) 
+	// 				&& !empty(get_option('adm_manual_test_api_key')
+	// 			)
+	// 			||
+	// 			(
+
+	// 			)
+	// 		)
+	// }
+
+	/**
+	 * Define the auth plugin settings
+	 *@method adm_get_auth_setting
+	 */
+	private function adm_get_auth_setting() {
+		$gateway_settings = array(
+			array(
+				'name'	=> __( 'Merchant Authentication', 'adm' ),
+				'type'	=> 'title',
+				'id'	=> 'adm_general_options',
+			),
+			"authentication_type" => array(
+				'type'	=> 'select',
+				'id'	=> 'adm_authentication_type',
+				'name'	=> __( 'Authentication Type', 'adm' ),
+				'options'	=> array(
+					'auth_manual'	=> __( 'Manual', 'adm' ),
+					'auth_account'	=> __( 'ANYDAY Merchant Account', 'adm' )
+				),
+				'class'    => 'wc-enhanced-select',
+				'desc_tip' => __( 'Choose a method how to authenticate in order to save the API keys and Pricetag token', 'adm' ),
+				'default'  => 'auth_account'
+			),
+			"merchant_username" => array(),
+			"merchant_password" => array(),
+			"prod_api_key" => array(),
+			"test_api_key" => array(),
+			array(
+				'type' => 'sectionend',
+				'id'   => 'pricetag_checkout_page_end'
+			)
+		);
+
+		if ( get_option('adm_authentication_type') == 'auth_manual' ) {
+
+			$gateway_settings['prod_api_key']['type']	= 'textarea';
+			$gateway_settings['prod_api_key']['id']		= 'adm_manual_prod_api_key';
+			$gateway_settings['prod_api_key']['name']	= __( 'ANYDAY Production API key', 'adm' );
+			$gateway_settings['test_api_key']['type']	= 'textarea';
+			$gateway_settings['test_api_key']['id']		= 'adm_manual_test_api_key';
+			$gateway_settings['test_api_key']['name']	= __( 'ANYDAY Test API key', 'adm' );
+
+		} elseif ( get_option('adm_authentication_type') == 'auth_account' ) {
+
+			$gateway_settings['merchant_username']['type']		= 'text';
+			$gateway_settings['merchant_username']['id']		= 'adm_merchant_username';
+			$gateway_settings['merchant_username']['name']		= __( 'Merchant Username', 'adm' );
+			$gateway_settings['merchant_username']['desc_tip'] 	= __( 'Enter your ANYDAY merchant account username', 'adm' );
+			$gateway_settings['merchant_password']['type']		= 'password';
+			$gateway_settings['merchant_password']['id']		= 'adm_merchant_password';
+			$gateway_settings['merchant_password']['name']		= __( 'Merchant Password', 'adm' );
+			$gateway_settings['merchant_password']['desc_tip'] 	= __( 'Enter your ANYDAY merchant account password', 'adm' );
+
+		}
+		$this->set_authentication();
+
+		if ( get_option('adm_merchant_authenticated') == 'true' ) {
+
+			// $gateway_settings['merchant_username']['custom_attributes'] = array('readonly' => 'readonly');
+			// $gateway_settings['merchant_password']['custom_attributes'] = array('readonly' => 'readonly');
+			// $gateway_settings['prod_api_key']['custom_attributes'] = array('readonly' => 'readonly');
+			// $gateway_settings['test_api_key']['custom_attributes'] = array('readonly' => 'readonly');
+			// $gateway_settings['pricetag_token']['custom_attributes'] = array('readonly' => 'readonly');
+		}
+
+		if ( get_option( 'adm_manual_authenticated' ) == 'true' ) {
+			
+			// $gateway_settings['merchant_username']['custom_attributes'] = array('readonly' => 'readonly');
+			// $gateway_settings['merchant_password']['custom_attributes'] = array('readonly' => 'readonly');
+			// $gateway_settings['prod_api_key']['custom_attributes'] = array('readonly' => 'readonly');
+			// $gateway_settings['test_api_key']['custom_attributes'] = array('readonly' => 'readonly');
+			// $gateway_settings['pricetag_token']['custom_attributes'] = array('readonly' => 'readonly');
+
+		}
+
+		$settings = apply_filters( 'adm_general_section', $gateway_settings );
+		return apply_filters( 'woocommerce_get_settings_' . $this->id, $settings, $current_section );
+	}
+
+	/**
+	 * Define the prictag plugin settings
 	 *@method adm_get_pricetag_settings
 	 */
 	private function adm_get_pricetag_settings( $current_section )
 	{
-		$settings = apply_filters( 'adm_general_section', array(
+		$settings_array = array(
 			array(
 				'name'	=> __( 'General Settings', 'adm' ),
 				'type'	=> 'title',
 				'id'	=> 'adm_general_options',
+			),
+			array(
+				'type'	=> 'text',
+				'id'	=> 'adm_manual_pricetag_token',
+				'name'	=> __( 'ANYDAY Pricetag token', 'adm' ),
 			),
 			array(
 				'type'	=> 'select',
@@ -80,6 +227,18 @@ class Settings extends \WC_Settings_Page
 				'class'    => 'wc-enhanced-select',
 				'desc_tip' => __( 'Choose the ANYDAY Pricetag format locale', 'adm' ),
 				'default'  => 'da',
+			),
+			array(
+				'type'	=> 'text',
+				'id'	=> 'adm_price_tag_limit',
+				'name'	=> __( 'Minimum Price Limit', 'adm' ),
+				'desc_tip' => __( 'The ANYDAY Pricetag will appear on all amounts equal to or above the specified limit', 'adm' ),
+			),
+			array(
+				'type'	=> 'textarea',
+				'id'	=> 'adm_pricetag_products',
+				'name'	=> __( 'Hide On Product Tags', 'adm' ),
+				'desc_tip' => __( 'Enter products comma seperated values', 'adm' ),
 			),
 			array(
 				'type' => 'sectionend',
@@ -116,14 +275,38 @@ class Settings extends \WC_Settings_Page
 			),
 			array(
 				'type'	=> 'text',
-				'id'	=> 'adm_price_tag_price_variable_product_selector',
-				'name'	=> __( 'Variant Product Price Selector', 'adm' ),
-				'desc_tip' => __( 'Choose a CSS selector from where the price will be taken', 'adm' ),
+				'id'	=> 'adm_price_tag_sale_price_product_selector',
+				'name'	=> __( 'Sale Product Price Selector', 'adm' ),
+				'desc_tip' => __( 'Choose a CSS selector from where the price will be taken.', 'adm' ),
 			),
 			array(
 				'type'	=> 'textarea',
 				'id'	=> 'adm_pricetag_product_styles',
 				'name'	=> __( 'Styles', 'adm' ),
+				'desc_tip' => __( 'Enter any valid CSS to update the ANYDAY Pricetag wrapper element. Pricetag font styles will inherit from these styles if specified.', 'adm' ),
+			),
+			array(
+				'type'	=> 'text',
+				'id'	=> 'adm_price_tag_variant_product_selector',
+				'name'	=> __( 'Variant Product Position Selector', 'adm' ),
+				'desc_tip' => __( 'Choose a CSS selector before which the pricetag will be loaded', 'adm' ),
+			),
+			array(
+				'type'	=> 'text',
+				'id'	=> 'adm_price_tag_price_variable_product_selector',
+				'name'	=> __( 'Variant Product Price Selector', 'adm' ),
+				'desc_tip' => __( 'Choose a CSS selector from where the price will be taken', 'adm' ),
+			),
+			array(
+				'type'	=> 'text',
+				'id'	=> 'adm_price_tag_sale_price_variable_product_selector',
+				'name'	=> __( 'Sale Variant Product Price Selector', 'adm' ),
+				'desc_tip' => __( 'Choose a CSS selector from where the price will be taken', 'adm' ),
+			),
+			array(
+				'type'	=> 'textarea',
+				'id'	=> 'adm_pricetag_variant_product_styles',
+				'name'	=> __( 'Variant Styles', 'adm' ),
 				'desc_tip' => __( 'Enter any valid CSS to update the ANYDAY Pricetag wrapper element. Pricetag font styles will inherit from these styles if specified.', 'adm' ),
 			),
 			array(
@@ -208,8 +391,11 @@ class Settings extends \WC_Settings_Page
 				'type' => 'sectionend',
 				'id'   => 'pricetag_checkout_page_end'
 			)
-		) );
-
+			);
+		if (get_option('adm_authentication_type') == 'auth_account') {
+			unset($settings_array[1]);
+		}
+		$settings = apply_filters( 'adm_general_section', $settings_array );
 		return apply_filters( 'woocommerce_get_settings_' . $this->id, $settings, $current_section );
 	}
 
@@ -220,32 +406,6 @@ class Settings extends \WC_Settings_Page
 	private function adm_get_payment_gateway_settings( $current_section )
 	{
 		$gateway_settings = array(
-			array(
-				'name'	=> __( 'Merchant Authentication', 'adm' ),
-				'type'	=> 'title',
-				'id'	=> 'adm_general_options',
-			),
-			"authentication_type" => array(
-				'type'	=> 'select',
-				'id'	=> 'adm_authentication_type',
-				'name'	=> __( 'Authentication Type', 'adm' ),
-				'options'	=> array(
-					'auth_manual'	=> __( 'Manual', 'adm' ),
-					'auth_account'	=> __( 'ANYDAY Merchant Acount', 'adm' )
-				),
-				'class'    => 'wc-enhanced-select',
-				'desc_tip' => __( 'Choose a method how to authenticate in order to save the API keys and Pricetag token', 'adm' ),
-				'default'  => 'auth_account'
-			),
-			"merchant_username" => array(),
-			"merchant_password" => array(),
-			"prod_api_key" => array(),
-			"test_api_key" => array(),
-			"pricetag_token" => array(),
-			array(
-				'type' => 'sectionend',
-				'id'   => 'pricetag_checkout_page_end'
-			),
 			array(
 				'name'	=> __( 'General Settings', 'adm' ),
 				'type'	=> 'title',
@@ -278,49 +438,61 @@ class Settings extends \WC_Settings_Page
 			array(
 				'type' => 'sectionend',
 				'id'   => 'pricetag_checkout_page_end'
+			),
+			array(
+				'name'	=> __( 'Order Statuses', 'adm' ),
+				'type'	=> 'title',
+				'id'	=> 'adm_payment_gateway_order_statuses',
+			),
+			"adm_order_status_before_authorized_payment" => array(
+				'type'	=> 'select',
+				'id'	=> 'adm_order_status_before_authorized_payment',
+				'name'	=> __( 'Before Payment is Authorized', 'adm' ),
+				'options'	=> array(
+					'default'	=> __( 'Default', 'adm' )
+				),
+				'class'    => 'wc-enhanced-select',
+				'desc_tip' => __( 'Choose an Order Status for the Woocommerce order before the payment is authorized in ANYDAY portal', 'adm' ),
+				'default'  => 'default',
+			),
+			"adm_order_status_after_authorized_payment" => array(
+				'type'	=> 'select',
+				'id'	=> 'adm_order_status_after_authorized_payment',
+				'name'	=> __( 'After Payment is Authorized', 'adm' ),
+				'options'	=> array(
+					'default'	=> __( 'Default', 'adm' )
+				),
+				'class'    => 'wc-enhanced-select',
+				'desc_tip' => __( 'Choose an Order Status for the Woocommerce order after the payment is authorized in ANYDAY portal', 'adm' ),
+				'default'  => 'default',
+			),
+			"adm_order_status_after_captured_payment" => array(
+				'type'	=> 'select',
+				'id'	=> 'adm_order_status_after_captured_payment',
+				'name'	=> __( 'After Payment is Captured', 'adm' ),
+				'options'	=> array(
+					'default'	=> __( 'Default', 'adm' )
+				),
+				'class'    => 'wc-enhanced-select',
+				'desc_tip' => __( 'Choose an Order Status for the Woocommerce order after the payment is fully captured in the order details page', 'adm' ),
+				'default'  => 'default',
+			),
+			array(
+				'type' => 'sectionend',
+				'id'   => 'order_statuses_section_end'
 			)
 		);
 
-		if ( get_option('adm_authentication_type') == 'auth_manual' ) {
+		$order_statuses = wc_get_order_statuses();
 
-			$gateway_settings['prod_api_key']['type']	= 'textarea';
-			$gateway_settings['prod_api_key']['id']		= 'adm_manual_prod_api_key';
-			$gateway_settings['prod_api_key']['name']	= __( 'ANYDAY Production API key', 'adm' );
-			$gateway_settings['test_api_key']['type']	= 'textarea';
-			$gateway_settings['test_api_key']['id']		= 'adm_manual_test_api_key';
-			$gateway_settings['test_api_key']['name']	= __( 'ANYDAY Test API key', 'adm' );
-			$gateway_settings['pricetag_token']['type']	= 'text';
-			$gateway_settings['pricetag_token']['id']	= 'adm_manual_pricetag_token';
-			$gateway_settings['pricetag_token']['name']	= __( 'ANYDAY Pricetag token', 'adm' );
+		foreach( $order_statuses as $key => $order_status ) {
 
-		} elseif ( get_option('adm_authentication_type') == 'auth_account' ) {
-
-			$gateway_settings['merchant_username']['type']		= 'text';
-			$gateway_settings['merchant_username']['id']		= 'adm_merchant_username';
-			$gateway_settings['merchant_username']['name']		= __( 'Merchant Username', 'adm' );
-			$gateway_settings['merchant_username']['desc_tip'] 	= __( 'Enter your ANYDAY merchant account username', 'adm' );
-			$gateway_settings['merchant_password']['type']		= 'password';
-			$gateway_settings['merchant_password']['id']		= 'adm_merchant_password';
-			$gateway_settings['merchant_password']['name']		= __( 'Merchant Password', 'adm' );
-			$gateway_settings['merchant_password']['desc_tip'] 	= __( 'Enter your ANYDAY merchant account password', 'adm' );
-
-		}
-
-		if ( get_option('adm_merchant_authenticated') == 'true' ) {
-
-			$gateway_settings['authentication_type']['custom_attributes'] = array('disabled' => 'disabled');
-			$gateway_settings['merchant_username']['custom_attributes'] = array('readonly' => 'readonly');
-			$gateway_settings['merchant_password']['custom_attributes'] = array('readonly' => 'readonly');
-
-		}
-
-		if ( !empty(get_option('adm_manual_prod_api_key')) && !empty(get_option('adm_manual_test_api_key')) && !empty(get_option('adm_manual_pricetag_token')) ) {
-
-			$gateway_settings['authentication_type']['custom_attributes'] = array('disabled' => 'disabled');
-			$gateway_settings['prod_api_key']['custom_attributes'] = array('readonly' => 'readonly');
-			$gateway_settings['test_api_key']['custom_attributes'] = array('readonly' => 'readonly');
-			$gateway_settings['pricetag_token']['custom_attributes'] = array('readonly' => 'readonly');
-
+			if( $key != "wc-refunded" ) {
+				$gateway_settings['adm_order_status_before_authorized_payment']['options'][$key] = $order_status;
+				$gateway_settings['adm_order_status_after_authorized_payment']['options'][$key] = $order_status;
+				$gateway_settings['adm_order_status_after_captured_payment']['options'][$key] = $order_status;
+			}
+			
 		}
 
 		$settings = apply_filters( 'adm_general_section', $gateway_settings );
@@ -335,9 +507,9 @@ class Settings extends \WC_Settings_Page
 	public function output()
 	{
 	    global $current_section;
-
 	    $settings = $this->get_settings( $current_section );
-
+			if($current_section == 'adm_general_setting')
+				$this->get_initialize_setting();
 	    \WC_Admin_Settings::output_fields( $settings );
 	}
 
@@ -347,13 +519,13 @@ class Settings extends \WC_Settings_Page
 	 */
 	public function save() {
 
-	    global $current_section;
+		global $current_section;
 
-	    $settings = $this->get_settings( $current_section );
+		$settings = $this->get_settings( $current_section );
 
 		\WC_Admin_Settings::save_fields( $settings );
 
-		if ( $current_section == "" && get_option('adm_authentication_type') == 'auth_account' && get_option('adm_merchant_authenticated') == 'false' ) {
+		if ( $current_section == "" && get_option('adm_authentication_type') == 'auth_account' && get_option('adm_merchant_authenticated') == 'false' && get_option('adm_manual_authenticated') == 'false' ) {
 
 	    	$auth = new MerchantAuthentication;
 
