@@ -34,7 +34,7 @@ class PriceTag
 	{
 		if( !$this->checkPluginConditions() ) return;
 
-		wp_enqueue_script( 'anyday-split-script', "https://my.anyday.io/webshopPriceTag/anyday-price-tag-".$this->getPluginLocale()."-es2015.js", array(), date('Ymd'), true);
+		wp_enqueue_script( 'anyday-split-script', $this->get_price_tag_js_url(), array(), get_option('adm_pricetag_js_version'), true);
 	}
 
 	private function validLimit() {
@@ -268,5 +268,28 @@ class PriceTag
 		}
 
 		return $price;
+	}
+
+	/**
+	 * This function caches the external JS file to plugin directory. Each version of cached 
+	 * file refreshed on a new day which is calculated from PHP date.
+	 * @return string
+	 */
+	public function get_price_tag_js_url() {
+		$locale = $this->getPluginLocale();
+		$actual_version = get_option('adm_pricetag_js_version');
+		$expected_version = date('Ymd');
+		$url = ABSPATH . '/wp-content/plugins/anyday-woocommerce/assets/public/js/anyday-price-tag-';
+		if(!$actual_version || $expected_version !== $actual_version) {
+			foreach(array('en', 'da') as $lang) {
+				$file_url = 'https://my.anyday.io/webshopPriceTag/anyday-price-tag-'.$lang.'-es2015.js';
+				file_put_contents(
+					$url.$lang.'.js',
+					file_get_contents($file_url)
+				);
+			}
+			update_option('adm_pricetag_js_version', $expected_version);
+		} 
+		return ADM_URL . 'assets/public/js/anyday-price-tag-'.$locale.'.js';
 	}
 }
