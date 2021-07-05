@@ -28,16 +28,20 @@ Why wait until tomorrow? Offer Anyday today.
 2. Install the plugin.
 3. Configure the Anyday WooCommerce plugin
 
-= FAQ =
+== Frequently Asked Questions ==
+
 = What does it cost to get Anyday? =
+
 Nothing. There is no sign up fee with Anyday and no monthly subscription fee. You pay a fixed transaction fee of 3.95 %, and this is your only expense.
 
 Additionally, Anyday will happily help install their plugin on your site. Free of charge. Feel free to contact onboarding@anyday.io with any questions you may have.
 
 = When will I receive the money for an order? =
+
 You will be paid weekly. Orders captured Monday through Sunday are paid out in full the following Thursday.
 
 = What happens if my customer does not pay their installments? =
+
 Anyday assumes all credit risk as soon as a purchase is made. You will receive all of your money minus the transaction fee on the specified payout date.
 
 == Changelog ==
