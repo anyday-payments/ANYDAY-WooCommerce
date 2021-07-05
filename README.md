@@ -2,7 +2,7 @@
 
 Description: A fair and transparent online payment solution for you and your customers
 
-Version: 1.0
+Version: 1.1
 
 ## Plugin installation
 
@@ -21,3 +21,5 @@ Version: 1.0
 ## Changelog
 
 Version 1.0 - Initial plugin upload.
+
+Version 1.1 - Updating plugin assets and description.
