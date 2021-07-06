@@ -2,7 +2,7 @@
 
 Description: A fair and transparent online payment solution for you and your customers
 
-Version: 1.1
+Version: 1.2
 
 ## Plugin installation
 
@@ -23,3 +23,5 @@ Version: 1.1
 Version 1.0 - Initial plugin upload.
 
 Version 1.1 - Updating plugin assets and description.
+
+Version 1.2 -Adding caching functionality to store external JS to the Wordpress server.
