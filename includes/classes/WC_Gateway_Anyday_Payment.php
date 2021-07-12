@@ -15,7 +15,7 @@ class WC_Gateway_Anyday_Payment extends WC_Payment_Gateway {
 		$this->id                 = 'anyday_payment_gateway';
 		$this->icon               = apply_filters('woocommerce_offline_icon', '');
 		$this->has_fields         = false;
-		$this->method_title       = __( 'ANYDAY Split', 'adm' );
+		$this->method_title       = __( 'Anyday', 'adm' );
 		$this->method_description = __( 'A fair and transparent partial payment solution. Split your payment into 4 installments with no interest or fees.', 'adm' );
 
 		// Load the settings.
@@ -45,7 +45,7 @@ class WC_Gateway_Anyday_Payment extends WC_Payment_Gateway {
 			'enabled' => array(
 				'title'   => __( 'Enable/Disable', 'adm' ),
 				'type'    => 'checkbox',
-				'label'   => __( 'Enable ANYDAY Split', 'adm' ),
+				'label'   => __( 'Enable Anyday', 'adm' ),
 				'default' => 'yes'
 			),
 
@@ -53,7 +53,7 @@ class WC_Gateway_Anyday_Payment extends WC_Payment_Gateway {
 				'title'       => __( 'Title', 'adm' ),
 				'type'        => 'text',
 				'description' => __( 'This controls the title for the payment method the customer sees during checkout.', 'adm' ),
-				'default'     => __( 'ANYDAY Split', 'adm' ),
+				'default'     => __( 'Anyday', 'adm' ),
 				'desc_tip'    => true,
 			),
 
@@ -67,7 +67,7 @@ class WC_Gateway_Anyday_Payment extends WC_Payment_Gateway {
 			'instructions' => array(
 				'title'       => __( 'Instructions', 'adm' ),
 				'type'        => 'textarea',
-				'description' => __( 'ANYDAY payment instructions.', 'adm' ),
+				'description' => __( 'Anyday payment instructions.', 'adm' ),
 				'default'     => '',
 				'desc_tip'    => true,
 			),
@@ -129,7 +129,7 @@ class WC_Gateway_Anyday_Payment extends WC_Payment_Gateway {
 
 			}
 
-			$order->add_order_note( __("The payment must be approved in ANYDAY portal before Captured or Refunded", "adm") );
+			$order->add_order_note( __("The payment must be approved in Anyday portal before Captured or Refunded", "adm") );
 
 			return array(
 				'result' 	=> 'success',

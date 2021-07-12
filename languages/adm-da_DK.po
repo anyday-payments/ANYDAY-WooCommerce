@@ -23,61 +23,61 @@ msgstr ""
 "X-Poedit-SearchPathExcluded-1: ../am-wordpress-23.11/vendor\n"
 
 #: includes/classes/AnydayPayment.php:114
-msgid "ANYDAY payment failed!"
-msgstr "ANYDAY betaling fejlede!"
+msgid "Anyday payment failed!"
+msgstr "Anyday betaling fejlede!"
 
 #: includes/classes/AnydayPayment.php:134
-msgid "ANYDAY payment captured!"
-msgstr "ANYDAY betaling indhentet!"
+msgid "Anyday payment captured!"
+msgstr "Anyday betaling indhentet!"
 
 #: includes/classes/AnydayPayment.php:136
 msgid " - Captured amount: "
 msgstr " - Indhentet beløb: "
 
 #: includes/classes/AnydayPayment.php:138
-msgid "ANYDAY payment successfully captured."
-msgstr "ANYDAY betaling blev gennemført."
+msgid "Anyday payment successfully captured."
+msgstr "Anyday betaling blev gennemført."
 
 #: includes/classes/AnydayPayment.php:142
-msgid "Payment could not be captured. Please contact ANYDAY support."
+msgid "Payment could not be captured. Please contact Anyday support."
 msgstr ""
-"Din betaling kunne ikke indhentes. Henvend dig venligst til ANYDAY support."
+"Din betaling kunne ikke indhentes. Henvend dig venligst til Anyday support."
 
 #: includes/classes/AnydayPayment.php:202
 #: includes/classes/AnydayWooOrder.php:291
-msgid "ANYDAY payment cancelled!"
-msgstr "ANYDAY betaling annulleret!"
+msgid "Anyday payment cancelled!"
+msgstr "Anyday betaling annulleret!"
 
 #: includes/classes/AnydayPayment.php:204
-msgid "ANYDAY payment successfully cancelled."
-msgstr "ANYDAY betaling blev annulleret."
+msgid "Anyday payment successfully cancelled."
+msgstr "Anyday betaling blev annulleret."
 
 #: includes/classes/AnydayPayment.php:212
-msgid "Payment could not be cancelled. Please contact ANYDAY support."
+msgid "Payment could not be cancelled. Please contact Anyday support."
 msgstr ""
-"Din betaling kunne ikke annulleres. Henvend dig venligst til ANYDAY support."
+"Din betaling kunne ikke annulleres. Henvend dig venligst til Anyday support."
 
 #: includes/classes/AnydayPayment.php:265
-msgid "ANYDAY payment refunded!"
-msgstr "ANYDAY betaling refunderet!"
+msgid "Anyday payment refunded!"
+msgstr "Anyday betaling refunderet!"
 
 #: includes/classes/AnydayPayment.php:267
 msgid " - Refunded amount: "
 msgstr " - Refunderede beløb: "
 
 #: includes/classes/AnydayPayment.php:269
-msgid "ANYDAY payment successfully refunded."
-msgstr "Din ANYDAY betaling blev refunderet."
+msgid "Anyday payment successfully refunded."
+msgstr "Din Anyday betaling blev refunderet."
 
 #: includes/classes/AnydayPayment.php:273
-msgid "Payment could not be refunded. Please contact ANYDAY support."
+msgid "Payment could not be refunded. Please contact Anyday support."
 msgstr ""
-"Din betaling kunne ikke refunderes. Henvend dig venligst til ANYDAY support."
+"Din betaling kunne ikke refunderes. Henvend dig venligst til Anyday support."
 
 #: includes/classes/AnydayWooOrder.php:23
 #: includes/classes/AnydayWooOrder.php:28
-msgid "ANYDAY Refunded"
-msgstr "ANYDAY Refunderet"
+msgid "Anyday Refunded"
+msgstr "Anyday Refunderet"
 
 #: includes/classes/AnydayWooOrder.php:33
 msgid "Refunded"
@@ -86,24 +86,24 @@ msgstr "Refunderet"
 #: includes/classes/AnydayWooOrder.php:52
 #, fuzzy
 #| msgid "Anyday Transaction ID:"
-msgid "ANYDAY Transaction ID:"
-msgstr "ANYDAY Transaktions-ID:"
+msgid "Anyday Transaction ID:"
+msgstr "Anyday Transaktions-ID:"
 
 #: includes/classes/AnydayWooOrder.php:92
-msgid "ANYDAY Capture"
-msgstr "ANYDAY Indhent Beløb"
+msgid "Anyday Capture"
+msgstr "Anyday Indhent Beløb"
 
 #: includes/classes/AnydayWooOrder.php:96
-msgid "ANYDAY Cancel"
-msgstr "ANYDAY Annullering"
+msgid "Anyday Cancel"
+msgstr "Anyday Annullering"
 
 #: includes/classes/AnydayWooOrder.php:100
-msgid "ANYDAY Refund"
-msgstr "ANYDAY Refundering"
+msgid "Anyday Refund"
+msgstr "Anyday Refundering"
 
 #: includes/classes/AnydayWooOrder.php:309
-msgid "ANYDAY payment approved!"
-msgstr "ANYDAY betaling gennemført!"
+msgid "Anyday payment approved!"
+msgstr "Anyday betaling gennemført!"
 
 #: includes/classes/Assets.php:17
 msgid ""
@@ -131,31 +131,31 @@ msgstr ""
 "fortrydes."
 
 #: includes/classes/Core.php:55
-msgid "Please authenticate with your ANYDAY merchant account!"
-msgstr "Godkend venligst med din ANYDAY konto!"
+msgid "Please authenticate with your Anyday merchant account!"
+msgstr "Godkend venligst med din Anyday konto!"
 
 #: includes/classes/Core.php:65
 msgid ""
-"The ANYDAY Production API key, ANYDAY Test API key and ANYDAY Pricetag token "
+"The Anyday Production API key, Anyday Test API key and Anyday Pricetag token "
 "fields are mandatory. Please make sure to save the correct values. In case "
-"you do not have them contact ANYDAY support. "
+"you do not have them contact Anyday support. "
 msgstr ""
-"ANYDAY API nøglen, ANYDAY Test API nøglen og information om ANYDAY Pricetag "
+"Anyday API nøglen, Anyday Test API nøglen og information om Anyday Pricetag "
 "felterne er obligatoriske. Venligt gem alle de korrekte værdier. Hvis du "
-"ikke har dem, bedes du kontakte ANYDAY support. "
+"ikke har dem, bedes du kontakte Anyday support. "
 
 #: includes/classes/Core.php:75
 msgid ""
-"Your ANYDAY environment is set to Test Mode. Do not fulfill or ship any "
-"orders placed with ANYDAY! Change to Live Mode to begin accepting orders:"
+"Your Anyday environment is set to Test Mode. Do not fulfill or ship any "
+"orders placed with Anyday! Change to Live Mode to begin accepting orders:"
 msgstr ""
-"Din ANYDAY betaling er indstillet til testtilstand. Du bedes ikke gennemføre "
-"eller sende ordrer, der er placeret med ANYDAY! Skift til live tilstand for "
+"Din Anyday betaling er indstillet til testtilstand. Du bedes ikke gennemføre "
+"eller sende ordrer, der er placeret med Anyday! Skift til live tilstand for "
 "at kunne gennemføre og sende ordrer:"
 
 #: includes/classes/Core.php:75 includes/classes/Settings.php:24
-msgid "ANYDAY Payment Gateway Settings"
-msgstr "Indstillinger ANYDAY betalingsløsning"
+msgid "Anyday Payment Gateway Settings"
+msgstr "Indstillinger Anyday betalingsløsning"
 
 #: includes/classes/Core.php:110
 msgid "Configure"
@@ -174,17 +174,17 @@ msgid "Merchant authenticaton successful."
 msgstr "Webshoppen er nu godkendt."
 
 #: includes/classes/MerchantAuthentication.php:114
-msgid "An error occurred. Please contact ANYDAY support."
-msgstr "En fejl opstod. Kontakt ANYDAY support."
+msgid "An error occurred. Please contact Anyday support."
+msgstr "En fejl opstod. Kontakt Anyday support."
 
 #. Author of the plugin/theme
 #: includes/classes/Settings.php:9
-msgid "ANYDAY"
-msgstr "ANYDAY"
+msgid "Anyday"
+msgstr "Anyday"
 
 #: includes/classes/Settings.php:27
-msgid "ANYDAY Pricetag Settings"
-msgstr "ANYDAY Pricetag Indstillinger"
+msgid "Anyday Pricetag Settings"
+msgstr "Anyday Pricetag Indstillinger"
 
 #: includes/classes/Settings.php:56 includes/classes/Settings.php:250
 msgid "General Settings"
@@ -203,16 +203,16 @@ msgid "en"
 msgstr "en"
 
 #: includes/classes/Settings.php:69
-msgid "Choose the ANYDAY Pricetag language"
-msgstr "Vælg dit ANYDAY Pricetag sprog. "
+msgid "Choose the Anyday Pricetag language"
+msgstr "Vælg dit Anyday Pricetag sprog. "
 
 #: includes/classes/Settings.php:75
 msgid "Price Format Locale"
 msgstr "Valuta"
 
 #: includes/classes/Settings.php:81
-msgid "Choose the ANYDAY Pricetag format locale"
-msgstr "Vælg din ANYDAY Pricetag valuta. "
+msgid "Choose the Anyday Pricetag format locale"
+msgstr "Vælg din Anyday Pricetag valuta. "
 
 #: includes/classes/Settings.php:89
 msgid "Product Page"
@@ -234,8 +234,8 @@ msgid "Disabled"
 msgstr "Deaktiveret"
 
 #: includes/classes/Settings.php:102
-msgid "Disable/enable the ANYDAY Pricetag on product page"
-msgstr "Deaktivér/Aktivér ANYDAY pricetag på produktside. "
+msgid "Disable/enable the Anyday Pricetag on product page"
+msgstr "Deaktivér/Aktivér Anyday pricetag på produktside. "
 
 #: includes/classes/Settings.php:108 includes/classes/Settings.php:153
 #: includes/classes/Settings.php:192
@@ -244,8 +244,8 @@ msgstr "Lokation selector"
 
 #: includes/classes/Settings.php:109 includes/classes/Settings.php:154
 #: includes/classes/Settings.php:193
-msgid "Choose a CSS selector before which the ANYDAY Pricetag will be loaded"
-msgstr "Vælg en CSS selector før dit ANYDAY Pricetag vil blive indlæst. "
+msgid "Choose a CSS selector before which the Anyday Pricetag will be loaded"
+msgstr "Vælg en CSS selector før dit Anyday Pricetag vil blive indlæst. "
 
 #: includes/classes/Settings.php:114
 msgid "Product Price Selector"
@@ -268,10 +268,10 @@ msgstr "Designs"
 #: includes/classes/Settings.php:127 includes/classes/Settings.php:166
 #: includes/classes/Settings.php:205
 msgid ""
-"Enter any valid CSS to update the ANYDAY Pricetag wrapper element. Pricetag "
+"Enter any valid CSS to update the Anyday Pricetag wrapper element. Pricetag "
 "font styles will inherit from these styles if specified."
 msgstr ""
-"Indtast gyldigt CSS for at opdatere dit ANYDAY Pricetag's design. Dit "
+"Indtast gyldigt CSS for at opdatere dit Anyday Pricetag's design. Dit "
 "Pricetag's skrifttype bliver indhentet herfra."
 
 #: includes/classes/Settings.php:134
@@ -279,8 +279,8 @@ msgid "Cart Page"
 msgstr "Kurv side"
 
 #: includes/classes/Settings.php:147
-msgid "Disable/enable the ANYDAY Pricetag on cart page"
-msgstr "Deaktivér/aktivér ANYDAY Pricetag på kurv siden. "
+msgid "Disable/enable the Anyday Pricetag on cart page"
+msgstr "Deaktivér/aktivér Anyday Pricetag på kurv siden. "
 
 #: includes/classes/Settings.php:159 includes/classes/Settings.php:198
 msgid "Price Selector"
@@ -291,8 +291,8 @@ msgid "Checkout Page"
 msgstr "Checkout side"
 
 #: includes/classes/Settings.php:186
-msgid "Disable/enable the ANYDAY Pricetag on checkout page"
-msgstr "Deaktivér/Aktivér ANYDAY Pricetag på checkout siden. "
+msgid "Disable/enable the Anyday Pricetag on checkout page"
+msgstr "Deaktivér/Aktivér Anyday Pricetag på checkout siden. "
 
 #: includes/classes/Settings.php:224
 msgid "Merchant Authentication"
@@ -307,8 +307,8 @@ msgid "Manual"
 msgstr "Manual"
 
 #: includes/classes/Settings.php:234
-msgid "ANYDAY Merchant Acount"
-msgstr "ANYDAY Webshop konto"
+msgid "Anyday Merchant Acount"
+msgstr "Anyday Webshop konto"
 
 #: includes/classes/Settings.php:237
 msgid ""
@@ -331,8 +331,8 @@ msgid "Test"
 msgstr "Test"
 
 #: includes/classes/Settings.php:263
-msgid "Choose ANYDAY Environment"
-msgstr "Vælg ANYDAY tilstand. "
+msgid "Choose Anyday Environment"
+msgstr "Vælg Anyday tilstand. "
 
 #: includes/classes/Settings.php:269
 msgid "Error Log"
@@ -340,43 +340,43 @@ msgstr "Fejl log"
 
 #: includes/classes/Settings.php:275
 msgid ""
-"Log each ANYDAY API error in a debug.log file which is located in the plugin "
+"Log each Anyday API error in a debug.log file which is located in the plugin "
 "root directory"
 msgstr ""
-"Log ANYDAY API fejl i en debug.log fil Du finder den i plugin rodmappen. "
+"Log Anyday API fejl i en debug.log fil Du finder den i plugin rodmappen. "
 
 #: includes/classes/Settings.php:288
-msgid "ANYDAY Production API key"
-msgstr "ANYDAY API nøgle"
+msgid "Anyday Production API key"
+msgstr "Anyday API nøgle"
 
 #: includes/classes/Settings.php:291
-msgid "ANYDAY Test API key"
-msgstr "ANYDAY Test API nøgle"
+msgid "Anyday Test API key"
+msgstr "Anyday Test API nøgle"
 
 #: includes/classes/Settings.php:294
-msgid "ANYDAY Pricetag token"
-msgstr "ANYDAY Pricetag token"
+msgid "Anyday Pricetag token"
+msgstr "Anyday Pricetag token"
 
 #: includes/classes/Settings.php:300
 msgid "Merchant Username"
 msgstr "Webshop Brugernavn"
 
 #: includes/classes/Settings.php:301
-msgid "Enter your ANYDAY merchant account username"
-msgstr "Indtast din webshops ANYDAY brugernavn. "
+msgid "Enter your Anyday merchant account username"
+msgstr "Indtast din webshops Anyday brugernavn. "
 
 #: includes/classes/Settings.php:304
 msgid "Merchant Password"
 msgstr "Webshop Kodeord"
 
 #: includes/classes/Settings.php:305
-msgid "Enter your ANYDAY merchant account password"
-msgstr "Indtast din webshops ANYDAY kodeord. "
+msgid "Enter your Anyday merchant account password"
+msgstr "Indtast din webshops Anyday kodeord. "
 
 #: includes/classes/WC_Gateway_Anyday_Payment.php:18
 #: includes/classes/WC_Gateway_Anyday_Payment.php:56
-msgid "ANYDAY Split"
-msgstr "ANYDAY Split"
+msgid "Anyday"
+msgstr "Anyday"
 
 #: includes/classes/WC_Gateway_Anyday_Payment.php:19
 #: includes/classes/WC_Gateway_Anyday_Payment.php:64
@@ -392,8 +392,8 @@ msgid "Enable/Disable"
 msgstr "Aktivér/Deaktivér"
 
 #: includes/classes/WC_Gateway_Anyday_Payment.php:48
-msgid "Enable ANYDAY Split"
-msgstr "Aktivér ANYDAY Split"
+msgid "Enable Anyday"
+msgstr "Aktivér Anyday"
 
 #: includes/classes/WC_Gateway_Anyday_Payment.php:53
 msgid "Title"
@@ -416,16 +416,16 @@ msgid "Instructions"
 msgstr "Instruktioner"
 
 #: includes/classes/WC_Gateway_Anyday_Payment.php:70
-msgid "ANYDAY payment instructions."
-msgstr "ANYDAY betaling instruktioner."
+msgid "Anyday payment instructions."
+msgstr "Anyday betaling instruktioner."
 
 #: includes/classes/WC_Gateway_Anyday_Payment.php:126
-msgid "Order status Pending until the order is Approved by ANYDAY."
-msgstr "Ordrestatus afventer indtil ordren er godkendt af ANYDAY."
+msgid "Order status Pending until the order is Approved by Anyday."
+msgstr "Ordrestatus afventer indtil ordren er godkendt af Anyday."
 
 #. Plugin Name of the plugin/theme
-msgid "ANYDAY WooCommerce"
-msgstr "ANYDAY WooCommerce"
+msgid "Anyday WooCommerce"
+msgstr "Anyday WooCommerce"
 
 #. Plugin URI of the plugin/theme
 #. Author URI of the plugin/theme
