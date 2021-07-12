@@ -15,7 +15,7 @@ Anyday is a truly free way for shoppers to buy now and pay later.
 
 Shoppers can purchase for up to 5.000 DKK, and the credit line is recurring. This means they can start purchasing again as soon as installments have been paid.
 
-With no costs and no fees for the shopper, Anyday guarantees a great shopping experience with no unexpected surprises.
+With no costs and no fees for the shopper, Anyday guarantees a great shopping experience with no unpleasant surprises.
 
 Anyday does not wish to contribute to overconsumption. Therefore, shoppers must pay 25 % of the purchase at checkout. This serves as the first installment. The remainder will be paid on the last banking day of the following 3 months.
 
@@ -53,15 +53,15 @@ Anyday assumes all credit risk as soon as a purchase is made. You will receive a
 
 = 1.1 =
 
-#### � Enhancements
+#### 🚀 Enhancements
 - Updating plugin assets.
 
 = 1.2 =
 
-#### � Enhancements
+#### 🚀 Enhancements
 - Adding caching functionality to store external JS to the Wordpress server.
 
 = 1.3 =
 
-#### � Enhancements
+#### 🚀 Enhancements
 - Minor version fixing.

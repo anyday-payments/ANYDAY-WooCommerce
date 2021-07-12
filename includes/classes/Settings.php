@@ -6,7 +6,7 @@ class Settings extends \WC_Settings_Page
 	public function __construct()
 	{
 		$this->id    = 'anydaypricetag';
-	    $this->label = __( 'ANYDAY', 'adm' );
+	    $this->label = __( 'Anyday', 'adm' );
 
 	    add_filter( 'woocommerce_settings_tabs_array', array( $this, 'add_settings_page' ), 20 );
 	    add_action( 'woocommerce_settings_' . $this->id, array( $this, 'output' ) );
@@ -38,10 +38,10 @@ class Settings extends \WC_Settings_Page
 	{
 			$this->set_authentication();
 			$sections = array(
-				'' => __( 'ANYDAY Merchant Authentication', 'adm' ),
+				'' => __( 'Anyday Merchant Authentication', 'adm' ),
 			);
-	    $sections['adm_general_setting'] = __( 'ANYDAY Payment Gateway Settings', 'adm' );
-	    $sections['adm_pricetag_settings'] = __( 'ANYDAY Pricetag Settings', 'adm' );
+	    $sections['adm_general_setting'] = __( 'Anyday Payment Gateway Settings', 'adm' );
+	    $sections['adm_pricetag_settings'] = __( 'Anyday Pricetag Settings', 'adm' );
 
 			if ( get_option('adm_merchant_authenticated') != 'true' 
 				&& get_option( 'adm_manual_authenticated' ) != 'true' ) {
@@ -79,7 +79,7 @@ class Settings extends \WC_Settings_Page
 	public function get_initialize_setting() {
 		$gateway = WC()->payment_gateways->payment_gateways()['anyday_payment_gateway'];
 		$method_title = $gateway->get_method_title() ? $gateway->get_method_title() : $gateway->get_title();
-		echo '<h2>ANYDAY Payment Gateway</h2><table class="form-table"><tbody><tr valign="top"><th class="titledesc">Activate</th><td class="forminp">';
+		echo '<h2>Anyday Payment Gateway</h2><table class="form-table"><tbody><tr valign="top"><th class="titledesc">Activate</th><td class="forminp">';
 		echo '<a class="wc-payment-gateway-method-toggle-enabled" href="' . esc_url( admin_url( 'admin.php?page=wc-settings&tab=checkout&section=' . strtolower( $gateway->id ) ) ) . '">';
 		if ( wc_string_to_bool( $gateway->enabled ) ) {
 			/* Translators: %s Payment gateway name. */
@@ -125,7 +125,7 @@ class Settings extends \WC_Settings_Page
 				'name'	=> __( 'Authentication Type', 'adm' ),
 				'options'	=> array(
 					'auth_manual'	=> __( 'Manual', 'adm' ),
-					'auth_account'	=> __( 'ANYDAY Merchant Account', 'adm' )
+					'auth_account'	=> __( 'Anyday Merchant Account', 'adm' )
 				),
 				'class'    => 'wc-enhanced-select',
 				'desc_tip' => __( 'Choose a method how to authenticate in order to save the API keys and Pricetag token', 'adm' ),
@@ -145,21 +145,21 @@ class Settings extends \WC_Settings_Page
 
 			$gateway_settings['prod_api_key']['type']	= 'textarea';
 			$gateway_settings['prod_api_key']['id']		= 'adm_manual_prod_api_key';
-			$gateway_settings['prod_api_key']['name']	= __( 'ANYDAY Production API key', 'adm' );
+			$gateway_settings['prod_api_key']['name']	= __( 'Anyday Production API key', 'adm' );
 			$gateway_settings['test_api_key']['type']	= 'textarea';
 			$gateway_settings['test_api_key']['id']		= 'adm_manual_test_api_key';
-			$gateway_settings['test_api_key']['name']	= __( 'ANYDAY Test API key', 'adm' );
+			$gateway_settings['test_api_key']['name']	= __( 'Anyday Test API key', 'adm' );
 
 		} elseif ( get_option('adm_authentication_type') == 'auth_account' ) {
 
 			$gateway_settings['merchant_username']['type']		= 'text';
 			$gateway_settings['merchant_username']['id']		= 'adm_merchant_username';
 			$gateway_settings['merchant_username']['name']		= __( 'Merchant Username', 'adm' );
-			$gateway_settings['merchant_username']['desc_tip'] 	= __( 'Enter your ANYDAY merchant account username', 'adm' );
+			$gateway_settings['merchant_username']['desc_tip'] 	= __( 'Enter your Anyday merchant account username', 'adm' );
 			$gateway_settings['merchant_password']['type']		= 'password';
 			$gateway_settings['merchant_password']['id']		= 'adm_merchant_password';
 			$gateway_settings['merchant_password']['name']		= __( 'Merchant Password', 'adm' );
-			$gateway_settings['merchant_password']['desc_tip'] 	= __( 'Enter your ANYDAY merchant account password', 'adm' );
+			$gateway_settings['merchant_password']['desc_tip'] 	= __( 'Enter your Anyday merchant account password', 'adm' );
 
 		}
 		$this->set_authentication();
@@ -202,7 +202,7 @@ class Settings extends \WC_Settings_Page
 			array(
 				'type'	=> 'text',
 				'id'	=> 'adm_manual_pricetag_token',
-				'name'	=> __( 'ANYDAY Pricetag token', 'adm' ),
+				'name'	=> __( 'Anyday Pricetag token', 'adm' ),
 			),
 			array(
 				'type'	=> 'select',
@@ -213,7 +213,7 @@ class Settings extends \WC_Settings_Page
 					'en'	=> __( 'en', 'adm' )
 				),
 				'class'    => 'wc-enhanced-select',
-				'desc_tip' => __( 'Choose the ANYDAY Pricetag language', 'adm' ),
+				'desc_tip' => __( 'Choose the Anyday Pricetag language', 'adm' ),
 				'default'  => 'da',
 			),
 			array(
@@ -225,14 +225,14 @@ class Settings extends \WC_Settings_Page
 					'en'	=> __( 'en', 'adm' )
 				),
 				'class'    => 'wc-enhanced-select',
-				'desc_tip' => __( 'Choose the ANYDAY Pricetag format locale', 'adm' ),
+				'desc_tip' => __( 'Choose the Anyday Pricetag format locale', 'adm' ),
 				'default'  => 'da',
 			),
 			array(
 				'type'	=> 'text',
 				'id'	=> 'adm_price_tag_limit',
 				'name'	=> __( 'Minimum Price Limit', 'adm' ),
-				'desc_tip' => __( 'The ANYDAY Pricetag will appear on all amounts equal to or above the specified limit', 'adm' ),
+				'desc_tip' => __( 'The Anyday Pricetag will appear on all amounts equal to or above the specified limit', 'adm' ),
 			),
 			array(
 				'type'	=> 'textarea',
@@ -258,14 +258,14 @@ class Settings extends \WC_Settings_Page
 					'disabled'	=> __( 'Disabled', 'adm' )
 				),
 				'class'    => 'wc-enhanced-select',
-				'desc_tip' => __( 'Disable/enable the ANYDAY Pricetag on product page', 'adm' ),
+				'desc_tip' => __( 'Disable/enable the Anyday Pricetag on product page', 'adm' ),
 				'default'  => 'enabled',
 			),
 			array(
 				'type'	=> 'text',
 				'id'	=> 'adm_price_tag_product_selector',
 				'name'	=> __( 'Position Selector', 'adm' ),
-				'desc_tip' => __( 'Choose a CSS selector before which the ANYDAY Pricetag will be loaded', 'adm' ),
+				'desc_tip' => __( 'Choose a CSS selector before which the Anyday Pricetag will be loaded', 'adm' ),
 			),
 			array(
 				'type'	=> 'text',
@@ -283,7 +283,7 @@ class Settings extends \WC_Settings_Page
 				'type'	=> 'textarea',
 				'id'	=> 'adm_pricetag_product_styles',
 				'name'	=> __( 'Styles', 'adm' ),
-				'desc_tip' => __( 'Enter any valid CSS to update the ANYDAY Pricetag wrapper element. Pricetag font styles will inherit from these styles if specified.', 'adm' ),
+				'desc_tip' => __( 'Enter any valid CSS to update the Anyday Pricetag wrapper element. Pricetag font styles will inherit from these styles if specified.', 'adm' ),
 			),
 			array(
 				'type'	=> 'text',
@@ -307,7 +307,7 @@ class Settings extends \WC_Settings_Page
 				'type'	=> 'textarea',
 				'id'	=> 'adm_pricetag_variant_product_styles',
 				'name'	=> __( 'Variant Styles', 'adm' ),
-				'desc_tip' => __( 'Enter any valid CSS to update the ANYDAY Pricetag wrapper element. Pricetag font styles will inherit from these styles if specified.', 'adm' ),
+				'desc_tip' => __( 'Enter any valid CSS to update the Anyday Pricetag wrapper element. Pricetag font styles will inherit from these styles if specified.', 'adm' ),
 			),
 			array(
 				'type' => 'sectionend',
@@ -327,14 +327,14 @@ class Settings extends \WC_Settings_Page
 					'disabled'	=> __( 'Disabled', 'adm' )
 				),
 				'class'    => 'wc-enhanced-select',
-				'desc_tip' => __( 'Disable/enable the ANYDAY Pricetag on cart page', 'adm' ),
+				'desc_tip' => __( 'Disable/enable the Anyday Pricetag on cart page', 'adm' ),
 				'default'  => 'enabled',
 			),
 			array(
 				'type'	=> 'text',
 				'id'	=> 'adm_price_tag_cart_selector',
 				'name'	=> __( 'Position Selector', 'adm' ),
-				'desc_tip' => __( 'Choose a CSS selector before which the ANYDAY Pricetag will be loaded', 'adm' ),
+				'desc_tip' => __( 'Choose a CSS selector before which the Anyday Pricetag will be loaded', 'adm' ),
 			),
 			array(
 				'type'	=> 'text',
@@ -346,7 +346,7 @@ class Settings extends \WC_Settings_Page
 				'type'	=> 'textarea',
 				'id'	=> 'adm_pricetag_cart_styles',
 				'name'	=> __( 'Styles', 'adm' ),
-				'desc_tip' => __( 'Enter any valid CSS to update the ANYDAY Pricetag wrapper element. Pricetag font styles will inherit from these styles if specified.', 'adm' ),
+				'desc_tip' => __( 'Enter any valid CSS to update the Anyday Pricetag wrapper element. Pricetag font styles will inherit from these styles if specified.', 'adm' ),
 			),
 			array(
 				'type' => 'sectionend',
@@ -366,14 +366,14 @@ class Settings extends \WC_Settings_Page
 					'disabled'	=> __( 'Disabled', 'adm' )
 				),
 				'class'    => 'wc-enhanced-select',
-				'desc_tip' => __( 'Disable/enable the ANYDAY Pricetag on checkout page', 'adm' ),
+				'desc_tip' => __( 'Disable/enable the Anyday Pricetag on checkout page', 'adm' ),
 				'default'  => 'enabled',
 			),
 			array(
 				'type'	=> 'text',
 				'id'	=> 'adm_price_tag_checkout_selector',
 				'name'	=> __( 'Position Selector', 'adm' ),
-				'desc_tip' => __( 'Choose a CSS selector before which the ANYDAY Pricetag will be loaded', 'adm' ),
+				'desc_tip' => __( 'Choose a CSS selector before which the Anyday Pricetag will be loaded', 'adm' ),
 			),
 			array(
 				'type'	=> 'text',
@@ -385,7 +385,7 @@ class Settings extends \WC_Settings_Page
 				'type'	=> 'textarea',
 				'id'	=> 'adm_pricetag_checkout_styles',
 				'name'	=> __( 'Styles', 'adm' ),
-				'desc_tip' => __( 'Enter any valid CSS to update the ANYDAY Pricetag wrapper element. Pricetag font styles will inherit from these styles if specified.', 'adm' ),
+				'desc_tip' => __( 'Enter any valid CSS to update the Anyday Pricetag wrapper element. Pricetag font styles will inherit from these styles if specified.', 'adm' ),
 			),
 			array(
 				'type' => 'sectionend',
@@ -420,7 +420,7 @@ class Settings extends \WC_Settings_Page
 					'test'	=> __( 'Test', 'adm' )
 				),
 				'class'    => 'wc-enhanced-select',
-				'desc_tip' => __( 'Choose ANYDAY Environment', 'adm' ),
+				'desc_tip' => __( 'Choose Anyday Environment', 'adm' ),
 				'default'  => 'live',
 			),
 			array(
@@ -432,7 +432,7 @@ class Settings extends \WC_Settings_Page
 					'disabled'	=> __( 'Disabled', 'adm' )
 				),
 				'class'    => 'wc-enhanced-select',
-				'desc_tip' => __( 'Log each ANYDAY API error in a debug.log file which is located in the plugin root directory', 'adm' ),
+				'desc_tip' => __( 'Log each Anyday API error in a debug.log file which is located in the plugin root directory', 'adm' ),
 				'default'  => 'disabled',
 			),
 			array(
@@ -452,7 +452,7 @@ class Settings extends \WC_Settings_Page
 					'default'	=> __( 'Default', 'adm' )
 				),
 				'class'    => 'wc-enhanced-select',
-				'desc_tip' => __( 'Choose an Order Status for the Woocommerce order before the payment is authorized in ANYDAY portal', 'adm' ),
+				'desc_tip' => __( 'Choose an Order Status for the Woocommerce order before the payment is authorized in Anyday portal', 'adm' ),
 				'default'  => 'default',
 			),
 			"adm_order_status_after_authorized_payment" => array(
@@ -463,7 +463,7 @@ class Settings extends \WC_Settings_Page
 					'default'	=> __( 'Default', 'adm' )
 				),
 				'class'    => 'wc-enhanced-select',
-				'desc_tip' => __( 'Choose an Order Status for the Woocommerce order after the payment is authorized in ANYDAY portal', 'adm' ),
+				'desc_tip' => __( 'Choose an Order Status for the Woocommerce order after the payment is authorized in Anyday portal', 'adm' ),
 				'default'  => 'default',
 			),
 			"adm_order_status_after_captured_payment" => array(

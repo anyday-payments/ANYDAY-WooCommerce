@@ -6,7 +6,7 @@ Description: A fair and transparent online payment solution for you and your cus
 Version: 1.3
 Requires at least: 5.2
 Requires PHP: 7.1.33
-Author: ANYDAY
+Author: Anyday
 Author URI: https://github.com/anyday-payments/ANYDAY-WooCommerce/graphs/contributors
 License: MIT
 License URI: https://opensource.org/licenses/MIT

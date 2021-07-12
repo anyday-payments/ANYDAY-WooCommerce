@@ -111,7 +111,7 @@ use GuzzleHttp\Psr7;
 
 				add_action( 'admin_notices', function() use ( $merchant_authentication ) {
 			        echo '<div id="message" class="notice notice-error is-dismissible">
-			        <p><strong>'. __( "An error occurred. Please contact ANYDAY support.", "adm" ) .'</strong></p>
+			        <p><strong>'. __( "An error occurred. Please contact Anyday support.", "adm" ) .'</strong></p>
 			        <p>'. __( sanitize_text_field( $merchant_authentication ), "adm" ) .'</p>
 			        </div>';
 			    });

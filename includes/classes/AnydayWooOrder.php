@@ -29,17 +29,17 @@ class AnydayWooOrder
 	}
 
 	/**
-	 * Registers a new order status ANYDAY Refunded
+	 * Registers a new order status Anyday Refunded
 	 */
 	public function adm_register_refund_order_status()
 	{
 		register_post_status( 'wc-adm-refunded', array(
-	        'label'                     => _x( 'ANYDAY Refunded', 'Order status', 'adm' ),
+	        'label'                     => _x( 'Anyday Refunded', 'Order status', 'adm' ),
 	        'public'                    => false,
 	        'exclude_from_search'       => false,
 	        'show_in_admin_all_list'    => true,
 	        'show_in_admin_status_list' => true,
-	        'label_count'               => _n_noop( 'ANYDAY Refunded <span class="count">(%s)</span>', 'ANYDAY Refunded <span class="count">(%s)</span>', 'adm' )
+	        'label_count'               => _n_noop( 'Anyday Refunded <span class="count">(%s)</span>', 'Anyday Refunded <span class="count">(%s)</span>', 'adm' )
 	    ) );
 
 		add_filter( 'wc_order_statuses', function( $statuses ) {
@@ -63,7 +63,7 @@ class AnydayWooOrder
 		if( $order->get_payment_method() == 'anyday_payment_gateway' ) {
 			woocommerce_wp_text_input( array(
 				'id' => 'anyday_payment_transaction',
-				'label' => __('ANYDAY Transaction ID:'),
+				'label' => __('Anyday Transaction ID:'),
 				'value' => $anyday_payment_transaction,
 				'wrapper_class' => 'form-field-wide',
 				'custom_attributes' => array('readonly' => 'readonly')
@@ -72,7 +72,7 @@ class AnydayWooOrder
 	}
 
 	/**
-	 * Add ANYDAY action buttons along with capture and refund history sections
+	 * Add Anyday action buttons along with capture and refund history sections
 	 *@method adm_wc_order_item_add_action_buttons_callback
 	 *@return html
 	 */
@@ -106,15 +106,15 @@ class AnydayWooOrder
 		if( $order->get_payment_method() == 'anyday_payment_gateway' ) {
 			if ( $order->get_status() != 'cancelled' ) {
 				if ( get_post_meta( $order->get_id(), 'full_captured_amount' )[0] != 'true' ) {
-					echo '<button type="button" class="button anyday-capture anyday-payment-action" data-anyday-action="adm_capture_payment" data-order-id="'.$order->get_id().'">'. __("ANYDAY Capture", "adm") .'</button>';
+					echo '<button type="button" class="button anyday-capture anyday-payment-action" data-anyday-action="adm_capture_payment" data-order-id="'.$order->get_id().'">'. __("Anyday Capture", "adm") .'</button>';
 				}
 
 				if ( get_post_meta( $order->get_id(), 'full_captured_amount' )[0] != 'true' && get_post_meta( $order->get_id(), 'full_refunded_amount' )[0] != 'true' ) {
-					echo '<button type="button" class="button anyday-cancel anyday-payment-action" data-anyday-action="adm_cancel_payment" data-order-id="'.$order->get_id().'">'. __("ANYDAY Cancel", "adm") .'</button>';
+					echo '<button type="button" class="button anyday-cancel anyday-payment-action" data-anyday-action="adm_cancel_payment" data-order-id="'.$order->get_id().'">'. __("Anyday Cancel", "adm") .'</button>';
 				}
 
 				if ( get_post_meta( $order->get_id(), 'full_refunded_amount' )[0] != 'true' ) {
-					echo '<button type="button" class="button anyday-refund anyday-payment-action" data-anyday-action="adm_refund_payment" data-order-id="'.$order->get_id().'">'. __("ANYDAY Refund", "adm") .'</button>';
+					echo '<button type="button" class="button anyday-refund anyday-payment-action" data-anyday-action="adm_refund_payment" data-order-id="'.$order->get_id().'">'. __("Anyday Refund", "adm") .'</button>';
 				}
 			}
 
@@ -294,7 +294,7 @@ width: 100%;margin-top: 20px;">
 	}
 
 	/**
-	 * Update the order status after the user rejects the payment on ANYDAY portal
+	 * Update the order status after the user rejects the payment on Anyday portal
 	 *@method adm_user_anyday_order_rejection
 	 */
 	public function adm_user_anyday_order_rejection()
@@ -308,14 +308,14 @@ width: 100%;margin-top: 20px;">
 
 				wc_increase_stock_levels( $order->get_id() );
 
-				$order->update_status( 'cancelled', __( 'ANYDAY payment cancelled!', 'adm' ) );
+				$order->update_status( 'cancelled', __( 'Anyday payment cancelled!', 'adm' ) );
 
 			}
 		}
 	}
 
 	/**
-	 * Update the order status after the user approves the payment on ANYDAY portal
+	 * Update the order status after the user approves the payment on Anyday portal
 	 *@method adm_user_anyday_order_approval
 	 */
 	public function adm_user_anyday_order_approval( $order_id )
@@ -328,11 +328,11 @@ width: 100%;margin-top: 20px;">
 
 			if( get_option("adm_order_status_after_authorized_payment") != "default" ) {
 			
-				$order->update_status( get_option("adm_order_status_after_authorized_payment"), __( 'ANYDAY payment approved!', 'adm' ) );
+				$order->update_status( get_option("adm_order_status_after_authorized_payment"), __( 'Anyday payment approved!', 'adm' ) );
 			
 			}else {
 
-				$order->update_status( 'on-hold', __( 'ANYDAY payment approved!', 'adm' ) );
+				$order->update_status( 'on-hold', __( 'Anyday payment approved!', 'adm' ) );
 			
 			}
 			
@@ -341,11 +341,11 @@ width: 100%;margin-top: 20px;">
 	}
 	
 	/**
-	 * Add custom bulk action to capture all ANYDAY payments
+	 * Add custom bulk action to capture all Anyday payments
 	 */
 	public function adm_order_custom_bulk_actions( $bulk_array )
 	{
-		$bulk_array['anyday_capture_payment'] = 'Capture ANYDAY Payment';
+		$bulk_array['anyday_capture_payment'] = 'Capture Anyday Payment';
 
 		return $bulk_array;
 	}
@@ -375,11 +375,11 @@ width: 100%;margin-top: 20px;">
 			
 						if( get_option('adm_order_status_after_captured_payment') != "default" ) {
 			
-							$order->update_status( get_option('adm_order_status_after_captured_payment'), __( 'ANYDAY payment captured!', 'adm' ) );
+							$order->update_status( get_option('adm_order_status_after_captured_payment'), __( 'Anyday payment captured!', 'adm' ) );
 			
 						} else {
 			
-							$order->update_status( 'completed', __( 'ANYDAY payment captured!', 'adm' ) );
+							$order->update_status( 'completed', __( 'Anyday payment captured!', 'adm' ) );
 			
 						}
 						
@@ -433,11 +433,11 @@ width: 100%;margin-top: 20px;">
 	
 				if( get_option('adm_order_status_after_captured_payment') != "default" ) {
 	
-					$order->update_status( get_option('adm_order_status_after_captured_payment'), __( 'ANYDAY payment captured!', 'adm' ) );
+					$order->update_status( get_option('adm_order_status_after_captured_payment'), __( 'Anyday payment captured!', 'adm' ) );
 	
 				} else {
 	
-					$order->update_status( 'completed', __( 'ANYDAY payment captured!', 'adm' ) );
+					$order->update_status( 'completed', __( 'Anyday payment captured!', 'adm' ) );
 	
 				}
 				

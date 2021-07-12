@@ -55,7 +55,7 @@ class Core
 
 			add_action( 'admin_notices', function() {
 		        echo '<div id="message" class="notice notice-error">
-		        <p><strong>'. __( "Please authenticate with your ANYDAY merchant account!", "adm" ) .'</strong></p>
+		        <p><strong>'. __( "Please authenticate with your Anyday merchant account!", "adm" ) .'</strong></p>
 		        </div>';
 		    });
 
@@ -65,7 +65,7 @@ class Core
 
 			add_action( 'admin_notices', function() {
 		        echo '<div id="message" class="notice notice-error">
-		        <p><strong>'. __( "The ANYDAY Production API key, ANYDAY Test API key and ANYDAY Pricetag token fields are mandatory. Please make sure to save the correct values. In case you do not have them contact ANYDAY support. ", "adm" ) .'</strong></p>
+		        <p><strong>'. __( "The Anyday Production API key, Anyday Test API key and Anyday Pricetag token fields are mandatory. Please make sure to save the correct values. In case you do not have them contact Anyday support. ", "adm" ) .'</strong></p>
 		        </div>';
 		    });
 
@@ -85,7 +85,7 @@ class Core
 
 				add_action( 'admin_notices', function() {
 			        echo '<div id="message" class="notice notice-warning">
-			        <p><strong>'. __( "You have authenticated with your ANYDAY merchant account!", "adm" ) .'</strong></p>
+			        <p><strong>'. __( "You have authenticated with your Anyday merchant account!", "adm" ) .'</strong></p>
 			        </div>';
 				});
 
@@ -98,7 +98,7 @@ class Core
 
 			add_action( 'admin_notices', function() {
 		        echo '<div id="message" class="notice notice-warning">
-		        <p><strong>'. __( "Your ANYDAY environment is set to Test Mode. Do not fulfill or ship any orders placed with ANYDAY! Change to Live Mode to begin accepting orders:", "adm" ) . ' <a href="' . admin_url( 'admin.php?page=wc-settings&tab=anydaypricetag&section' ) . '">'. __( "ANYDAY Payment Gateway Settings", "adm" ) .'</a></strong></p>
+		        <p><strong>'. __( "Your Anyday environment is set to Test Mode. Do not fulfill or ship any orders placed with Anyday! Change to Live Mode to begin accepting orders:", "adm" ) . ' <a href="' . admin_url( 'admin.php?page=wc-settings&tab=anydaypricetag&section' ) . '">'. __( "Anyday Payment Gateway Settings", "adm" ) .'</a></strong></p>
 		        </div>';
 		    });
 
@@ -159,7 +159,7 @@ class Core
 	}
 
 	/**
-	 * Add ANYDAY logo in the checkout payment method
+	 * Add Anyday logo in the checkout payment method
 	 *@method adm_payment_gateway_icons
 	 */
 	public function adm_payment_gateway_icons( $icon, $gateway_id )
