@@ -48,20 +48,20 @@ Anyday assumes all credit risk as soon as a purchase is made. You will receive a
 
 = 1.0 =
 
-#### � Enhancements
+#### 🚀 Enhancements
 - Releasing first version on AnyDay WooCommerce plugin.
 
 = 1.1 =
 
-#### � Enhancements
+#### 🚀 Enhancements
 - Updating plugin assets.
 
 = 1.2 =
 
-#### � Enhancements
+#### 🚀 Enhancements
 - Adding caching functionality to store external JS to the Wordpress server.
 
 = 1.3 =
 
-#### � Enhancements
+#### 🚀 Enhancements
 - Minor version fixing.
