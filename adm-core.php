@@ -3,7 +3,7 @@
 Plugin Name: Anyday WooCommerce
 Plugin URI: https://www.anyday.io
 Description: A fair and transparent online payment solution for you and your customers
-Version: 1.2
+Version: 1.3
 Requires at least: 5.2
 Requires PHP: 7.1.33
 Author: ANYDAY
@@ -27,7 +27,7 @@ if ( ! defined( 'WPINC' ) ) {
  **/
 if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
 
-	define( 'ADM_VERSION', '1.2' );
+	define( 'ADM_VERSION', '1.3' );
 	define( 'ADM_PATH', plugin_dir_path( __FILE__ ) );
 	define( 'ADM_URL', plugin_dir_url( __FILE__ ) );
 	define( 'ADM_PLUGIN_SLUG', "am-wordpress" );
