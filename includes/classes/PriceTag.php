@@ -280,7 +280,7 @@ class PriceTag
 		$actual_version = get_option('adm_pricetag_js_version');
 		$expected_version = date('Ymd');
 		$url = ABSPATH . '/wp-content/plugins/anyday-woocommerce/assets/public/js/anyday-price-tag-';
-		if(!$actual_version || $expected_version !== $actual_version) {
+		if(empty($actual_version) || $expected_version !== $actual_version) {
 			foreach(array('en', 'da') as $lang) {
 				$file_url = 'https://my.anyday.io/webshopPriceTag/anyday-price-tag-'.$lang.'-es2015.js';
 				file_put_contents(
