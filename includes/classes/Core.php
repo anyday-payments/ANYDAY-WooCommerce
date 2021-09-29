@@ -120,7 +120,7 @@ class Core
      */
     public function anyday_payment_gateway_add_to_gateways( $gateways )
 	{
-		if((float)WC()->cart->total <= 5000) {
+		if((float)WC()->cart->total <= 30000) {
 			$gateways[] = 'WC_Gateway_Anyday_Payment';
 		}
 
