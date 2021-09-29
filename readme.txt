@@ -13,7 +13,7 @@ Anyday WooCommerce plugin is is the official payment extension which provides su
 
 Anyday is a truly free way for shoppers to buy now and pay later.
 
-Shoppers can purchase for up to 5.000 DKK, and the credit line is recurring. This means they can start purchasing again as soon as installments have been paid.
+Shoppers can purchase for up to 30.000 DKK, and the credit line is recurring. This means they can start purchasing again as soon as installments have been paid.
 
 With no costs and no fees for the shopper, Anyday guarantees a great shopping experience with no unpleasant surprises.
 
