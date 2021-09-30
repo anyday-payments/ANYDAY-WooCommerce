@@ -2,8 +2,8 @@
 Contributors: anyday2020
 Tags: Payments, Instalments, WooCommerce, Payment Gateway, Buy Now Pay Later, BNPL, Conversion Rate, Basket Size, Anyday
 Requires at least: 4.3.1
-Tested up to: 5.8
-Stable tag: 1.4
+Tested up to: 5.8.1
+Stable tag: 1.5
 License: MIT
 License URI: https://opensource.org/licenses/MIT
 
@@ -13,7 +13,7 @@ Anyday WooCommerce plugin is is the official payment extension which provides su
 
 Anyday is a truly free way for shoppers to buy now and pay later.
 
-Shoppers can purchase for up to 5.000 DKK, and the credit line is recurring. This means they can start purchasing again as soon as installments have been paid.
+Shoppers can purchase for up to 30.000 DKK, and the credit line is recurring. This means they can start purchasing again as soon as installments have been paid.
 
 With no costs and no fees for the shopper, Anyday guarantees a great shopping experience with no unpleasant surprises.
 
@@ -70,3 +70,8 @@ Anyday assumes all credit risk as soon as a purchase is made. You will receive a
 
 #### 👾 Bug Fixes
 - Fixing JS caching bug which happens after deactivation of plugin.
+
+= 1.5 =
+
+#### 🚀 Enhancements
+- Updating plugin to accept purchases up to 30k of order amount.

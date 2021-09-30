@@ -2,7 +2,7 @@
 
 Description: A fair and transparent online payment solution for you and your customers
 
-Version: 1.4
+Version: 1.5
 
 ## Plugin installation
 
@@ -29,3 +29,5 @@ Version 1.2 - Adding caching functionality to store external JS to the Wordpress
 Version 1.3 - Fixing minor versioning.
 
 Version 1.4 - Fixing JS caching bug which happens after deactivation of plugin.
+
+Version 1.5 - Updating plugin to accept purchases up to 30k of order amount.
