@@ -16,7 +16,7 @@ class WC_Gateway_Anyday_Payment extends WC_Payment_Gateway {
 		$this->icon               = apply_filters('woocommerce_offline_icon', '');
 		$this->has_fields         = false;
 		$this->method_title       = __( 'Anyday', 'adm' );
-		$this->method_description = __( 'A fair and transparent partial payment solution. Split your payment into 4 installments with no interest or fees.', 'adm' );
+		$this->method_description = __( 'A fair and transparent partial payment solution. Split your payment into monthly installments with no interest or fees.', 'adm' );
 
 		// Load the settings.
 		$this->init_form_fields();
