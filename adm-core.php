@@ -16,6 +16,7 @@ require plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
 use Adm\Activator;
 use Adm\Deactivator;
 use Adm\Core;
+use Adm\PriceTag;
 
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
@@ -60,4 +61,20 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
     add_action( 'plugins_loaded', function(){
 		load_plugin_textdomain( 'adm', FALSE, basename( dirname( __FILE__ ) ) . '/languages/' );
 	});
+
+	add_action( 'upgrader_process_complete', 'de_upgrader_process_complete', 10, 2 );
+
+	function de_upgrader_process_complete( $upgrader_object, $options ) {
+		$pricetag = new PriceTag;
+		$pricetag->get_price_tag_js_url();
+		if ( isset( $options['plugins'] ) && is_array( $options['plugins'] ) ) {
+			foreach ( $options['plugins'] as $index => $plugin ) {
+					if ( 'anyday-woocommerce/adm-core.php' === $plugin ) {
+						update_option( 'adm_pricetag_js_version', '' );
+						$pricetag->get_price_tag_js_url();
+						break;
+					}
+			}
+		}
+	}
 }
