@@ -66,7 +66,6 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 
 	function de_upgrader_process_complete( $upgrader_object, $options ) {
 		$pricetag = new PriceTag;
-		$pricetag->get_price_tag_js_url();
 		if ( isset( $options['plugins'] ) && is_array( $options['plugins'] ) ) {
 			foreach ( $options['plugins'] as $index => $plugin ) {
 					if ( 'anyday-woocommerce/adm-core.php' === $plugin ) {
