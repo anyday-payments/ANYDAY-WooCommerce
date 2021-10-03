@@ -161,11 +161,6 @@ msgstr ""
 msgid "An error occurred. Please contact Anyday support."
 msgstr ""
 
-#. Author of the plugin/theme
-#: includes/classes/Settings.php:9
-msgid "Anyday"
-msgstr ""
-
 #: includes/classes/Settings.php:27
 msgid "Anyday Pricetag Settings"
 msgstr ""
@@ -354,13 +349,14 @@ msgstr ""
 
 #: includes/classes/WC_Gateway_Anyday_Payment.php:18
 #: includes/classes/WC_Gateway_Anyday_Payment.php:56
+#: includes/classes/Settings.php:9
 msgid "Anyday"
 msgstr ""
 
 #: includes/classes/WC_Gateway_Anyday_Payment.php:19
 #: includes/classes/WC_Gateway_Anyday_Payment.php:64
 msgid ""
-"A fair and transparent partial payment solution. Split your payment into 4 "
+"A fair and transparent partial payment solution. Split your payment into monthly "
 "installments with no interest or fees."
 msgstr ""
 
@@ -369,7 +365,7 @@ msgid "Enable/Disable"
 msgstr ""
 
 #: includes/classes/WC_Gateway_Anyday_Payment.php:48
-msgid "Enable Anyday Split"
+msgid "Enable Anyday"
 msgstr ""
 
 #: includes/classes/WC_Gateway_Anyday_Payment.php:53

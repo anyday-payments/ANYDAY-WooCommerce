@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ANYDAY WooCommerce\n"
-"POT-Creation-Date: 2020-11-23 09:48+0700\n"
-"PO-Revision-Date: 2020-11-23 09:49+0700\n"
+"POT-Creation-Date: 2020-11-23 09:45+0700\n"
+"PO-Revision-Date: 2021-10-03 10:21+0700\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: da\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.4.2\n"
+"X-Generator: Poedit 2.4.3\n"
 "X-Poedit-Basepath: ../../ANYDAY-WooCommerce-v1.5\n"
 "X-Poedit-Flags-xgettext: --add-comments=translators:\n"
 "X-Poedit-WPHeader: adm-core.php\n"
@@ -84,8 +84,6 @@ msgid "Refunded"
 msgstr "Refunderet"
 
 #: includes/classes/AnydayWooOrder.php:52
-#, fuzzy
-#| msgid "Anyday Transaction ID:"
 msgid "Anyday Transaction ID:"
 msgstr "Anyday Transaktions-ID:"
 
@@ -176,11 +174,6 @@ msgstr "Webshoppen er nu godkendt."
 #: includes/classes/MerchantAuthentication.php:114
 msgid "An error occurred. Please contact Anyday support."
 msgstr "En fejl opstod. Kontakt Anyday support."
-
-#. Author of the plugin/theme
-#: includes/classes/Settings.php:9
-msgid "Anyday"
-msgstr "Anyday"
 
 #: includes/classes/Settings.php:27
 msgid "Anyday Pricetag Settings"
@@ -375,17 +368,18 @@ msgstr "Indtast din webshops Anyday kodeord. "
 
 #: includes/classes/WC_Gateway_Anyday_Payment.php:18
 #: includes/classes/WC_Gateway_Anyday_Payment.php:56
+#: includes/classes/Settings.php:9
 msgid "Anyday"
 msgstr "Anyday"
 
 #: includes/classes/WC_Gateway_Anyday_Payment.php:19
 #: includes/classes/WC_Gateway_Anyday_Payment.php:64
 msgid ""
-"A fair and transparent partial payment solution. Split your payment into 4 "
-"installments with no interest or fees."
+"A fair and transparent partial payment solution. Split your payment into "
+"monthly installments with no interest or fees."
 msgstr ""
-"Fair og transparent delbetalingsløsning. Split dit beløb i 4 rater uden "
-"renter eller gebyrer."
+"Fair og transparent delbetalingsløsning. Split dit beløb i månedlige rater "
+"uden renter eller gebyrer."
 
 #: includes/classes/WC_Gateway_Anyday_Payment.php:46
 msgid "Enable/Disable"
@@ -438,3 +432,43 @@ msgid ""
 msgstr ""
 "Fair og transparent delbetalingsløsning. Split dit beløb i 4 rater uden "
 "renter eller gebyrer. "
+
+#: includes/classes/Core.php:75
+msgid "You have authenticated manually!"
+msgstr ""
+
+#: includes/classes/Core.php:83
+msgid "You have authenticated with your Anyday merchant account!"
+msgstr "Godkend venligst med din Anyday konto!"
+
+#: includes/classes/WC_Gateway_Anyday_Payment.php:132
+msgid ""
+"The payment must be approved in Anyday portal before Captured or Refunded"
+msgstr ""
+
+msgid "Before Payment is Authorized"
+msgstr ""
+
+msgid "After Payment is Authorized"
+msgstr ""
+
+msgid ""
+"Choose an Order Status for the Woocommerce order before the payment is "
+"authorized in Anyday portal"
+msgstr ""
+
+msgid ""
+"Choose an Order Status for the Woocommerce order after the payment is "
+"authorized in Anyday portal"
+msgstr ""
+
+msgid ""
+"Choose an Order Status for the Woocommerce order after the payment is fully "
+"captured in the order details page"
+msgstr ""
+
+msgid "payments have been successfully captured"
+msgstr "Anyday betaling blev gennemført."
+
+msgid "payments have failed to be captured"
+msgstr ""
