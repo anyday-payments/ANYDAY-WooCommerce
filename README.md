@@ -30,4 +30,4 @@ Version 1.3 - Fixing minor versioning.
 
 Version 1.4 - Fixing JS caching bug which happens after deactivation of plugin.
 
-Version 1.5 - Updating plugin to accept purchases up to 30k of order amount.
+Version 1.5 - Updating plugin to accept purchases up to 30k of order amount, Updated translations, Refresh the cached anyday js script on the upgrade of the plugin.

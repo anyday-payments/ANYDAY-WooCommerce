@@ -75,3 +75,5 @@ Anyday assumes all credit risk as soon as a purchase is made. You will receive a
 
 #### 🚀 Enhancements
 - Updating plugin to accept purchases up to 30k of order amount.
+- Updated translations
+- Refresh the cached anyday js script on the upgrade of the plugin.
