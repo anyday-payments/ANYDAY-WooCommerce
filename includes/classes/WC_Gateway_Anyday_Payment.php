@@ -61,7 +61,7 @@ class WC_Gateway_Anyday_Payment extends WC_Payment_Gateway {
 				'title'       => __( 'Description', 'adm' ),
 				'type'        => 'textarea',
 				'description' => __( 'Description', 'adm' ),
-				'default'     => __( 'A fair and transparent partial payment solution. Split your payment into 4 installments with no interest or fees.', 'adm' ),
+				'default'     => __( 'A fair and transparent partial payment solution. Split your payment into monthly installments with no interest or fees.', 'adm' ),
 				'desc_tip'    => true,
 			),
 			'instructions' => array(
