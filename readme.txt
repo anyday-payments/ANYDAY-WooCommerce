@@ -3,7 +3,7 @@ Contributors: anyday2020
 Tags: Payments, Instalments, WooCommerce, Payment Gateway, Buy Now Pay Later, BNPL, Conversion Rate, Basket Size, Anyday
 Requires at least: 4.3.1
 Tested up to: 5.8.1
-Stable tag: 1.5
+Stable tag: 1.6
 License: MIT
 License URI: https://opensource.org/licenses/MIT
 
@@ -17,7 +17,7 @@ Shoppers can purchase for up to 30.000 DKK, and the credit line is recurring. Th
 
 With no costs and no fees for the shopper, Anyday guarantees a great shopping experience with no unpleasant surprises.
 
-Anyday does not wish to contribute to overconsumption. Therefore, shoppers must pay 25 % of the purchase at checkout. This serves as the first installment. The remainder will be paid on the last banking day of the following 3 months.
+Shoppers must pay 10% of the purchase at checkout. This serves as the first installment. The remainder will be paid on the last banking day of the following 9 months.
 
 Help your customers to a better shopping experience, while increasing your average order value.
 
@@ -77,3 +77,8 @@ Anyday assumes all credit risk as soon as a purchase is made. You will receive a
 - Updating plugin to accept purchases up to 30k of order amount.
 - Updated translations
 - Refresh the cached anyday js script on the upgrade of the plugin.
+
+= 1.6 =
+
+#### 🚀 Enhancements
+- Updating plugin description appearing in plugin directory.
