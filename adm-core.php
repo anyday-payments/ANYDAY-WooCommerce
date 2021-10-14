@@ -68,7 +68,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 		$pricetag = new PriceTag;
 		if ( isset( $options['plugins'] ) && is_array( $options['plugins'] ) ) {
 			foreach ( $options['plugins'] as $index => $plugin ) {
-					if ( 'anyday-woocommerce/adm-core.php' === $plugin ) {
+					if ( strpos( $plugin, 'adm-core.php' ) !== false ) {
 						update_option( 'adm_pricetag_js_version', '' );
 						$pricetag->get_price_tag_js_url();
 						break;
