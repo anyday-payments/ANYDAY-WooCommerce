@@ -2,7 +2,7 @@
 
 Description: A fair and transparent online payment solution for you and your customers
 
-Version: 1.5
+Version: 1.7
 
 ## Plugin installation
 
@@ -33,3 +33,5 @@ Version 1.4 - Fixing JS caching bug which happens after deactivation of plugin.
 Version 1.5 - Updating plugin to accept purchases up to 30k of order amount, Updated translations, Refresh the cached anyday js script on the upgrade of the plugin.
 
 Version 1.6 - Updating plugin description appearing in plugin directory.
+
+Version 1.7 - Disabling SSL verification while fetching public script from the server.
