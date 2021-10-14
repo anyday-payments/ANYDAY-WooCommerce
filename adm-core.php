@@ -3,7 +3,7 @@
 Plugin Name: Anyday WooCommerce
 Plugin URI: https://www.anyday.io
 Description: A fair and transparent online payment solution for you and your customers
-Version: 1.6
+Version: 1.7
 Requires at least: 5.2
 Requires PHP: 7.1.33
 Author: Anyday
@@ -28,7 +28,7 @@ if ( ! defined( 'WPINC' ) ) {
  **/
 if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
 
-	define( 'ADM_VERSION', '1.6' );
+	define( 'ADM_VERSION', '1.7' );
 	define( 'ADM_PATH', plugin_dir_path( __FILE__ ) );
 	define( 'ADM_URL', plugin_dir_url( __FILE__ ) );
 	define( 'ADM_PLUGIN_SLUG', "am-wordpress" );
@@ -68,7 +68,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 		$pricetag = new PriceTag;
 		if ( isset( $options['plugins'] ) && is_array( $options['plugins'] ) ) {
 			foreach ( $options['plugins'] as $index => $plugin ) {
-					if ( 'anyday-woocommerce/adm-core.php' === $plugin ) {
+					if ( strpos( $plugin, 'adm-core.php' ) !== false ) {
 						update_option( 'adm_pricetag_js_version', '' );
 						$pricetag->get_price_tag_js_url();
 						break;
