@@ -2,7 +2,7 @@
 
 Description: A fair and transparent online payment solution for you and your customers
 
-Version: 1.7
+Version: 1.7.1
 
 ## Plugin installation
 
@@ -35,3 +35,5 @@ Version 1.5 - Updating plugin to accept purchases up to 30k of order amount, Upd
 Version 1.6 - Updating plugin description appearing in plugin directory.
 
 Version 1.7 - Disabling SSL verification while fetching public script from the server.
+
+Version 1.7.1 - Updating not to fetch scripts on update immediatly on plugin upgrade.
