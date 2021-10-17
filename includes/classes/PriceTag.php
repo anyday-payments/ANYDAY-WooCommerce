@@ -280,21 +280,27 @@ class PriceTag
 		$actual_version = get_option('adm_pricetag_js_version');
 		$expected_version = date('Ymd');
 		$url = ABSPATH . '/wp-content/plugins/anyday-woocommerce/assets/public/js/anyday-price-tag-';
-		$sslSetting=array(
-			"ssl"=>array(
-					"verify_peer"=>false,
-					"verify_peer_name"=>false,
-			),
-		);
 		if(empty($actual_version) || $expected_version !== $actual_version) {
 			foreach(array('en', 'da') as $lang) {
 				$file_url = 'https://my.anyday.io/webshopPriceTag/anyday-price-tag-'.$lang.'-es2015.js';
-				file_put_contents(
-					$url.$lang.'.js',
-					file_get_contents($file_url, false, stream_context_create($sslSetting))
-				);
+				$fp = fopen($url.$lang.'.js', "w+");
+				$ch = curl_init($file_url);
+				curl_setopt($ch, CURLOPT_FILE, $fp);
+				curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+				curl_exec($ch);
+				$st_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+				if($st_code !== 200) {
+					fclose($fp);
+					break;
+				}
+				curl_close($ch);
+				fclose($fp);
 			}
-			update_option('adm_pricetag_js_version', $expected_version);
+			if ($st_code === 200) {
+				update_option('adm_pricetag_js_version', $expected_version);
+			} else {
+				update_option('adm_pricetag_js_version', '');
+			}
 		} 
 		return ADM_URL . 'assets/public/js/anyday-price-tag-'.$locale.'.js';
 	}
