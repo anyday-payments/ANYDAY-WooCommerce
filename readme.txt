@@ -3,7 +3,7 @@ Contributors: anyday2020
 Tags: Payments, Instalments, WooCommerce, Payment Gateway, Buy Now Pay Later, BNPL, Conversion Rate, Basket Size, Anyday
 Requires at least: 4.3.1
 Tested up to: 5.8.1
-Stable tag: 1.7.1
+Stable tag: 1.7.2
 License: MIT
 License URI: https://opensource.org/licenses/MIT
 
@@ -92,3 +92,8 @@ Anyday assumes all credit risk as soon as a purchase is made. You will receive a
 
 #### � Enhancements
 - Updating not to fetch scripts on update immediatly on plugin upgrade.
+
+= 1.7.2 =
+
+#### � Enhancements
+- Changed JS file cached with CURL.
