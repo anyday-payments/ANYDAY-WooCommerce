@@ -16,7 +16,6 @@ require plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
 use Adm\Activator;
 use Adm\Deactivator;
 use Adm\Core;
-use Adm\PriceTag;
 
 // If this file is called directly, abort.
 if ( ! defined( 'WPINC' ) ) {
@@ -34,6 +33,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 	define( 'ADM_PLUGIN_SLUG', "am-wordpress" );
 	define( 'ADM_API_BASE_URL', "https://my.anyday.io" );
 	define( 'ADM_PLUGIN_BASE_NAME', plugin_basename(__FILE__) );
+	define( 'ADM_PLUGIN_PATH', plugin_dir_path(__FILE__) );
 	define( 'ADM_CURRENCY', "DKK" );
 
 	// Execute code upon plugin activation
