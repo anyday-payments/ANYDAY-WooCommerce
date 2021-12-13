@@ -41,7 +41,7 @@ class AnydayPayment
 				break;
 		}
 
-		$this->client = new Client(['verify' => false]);
+		$this->client = new Client();
 	}
 
 	/**
@@ -76,7 +76,7 @@ class AnydayPayment
 	}
 
 	/**
-	 * Authorize a payment
+	 * Authorize a payment / bulk payments
 	 *@method adm_authorize_payment
 	 *@param  object $order
 	 */
@@ -117,7 +117,7 @@ class AnydayPayment
 	}
 
 	/**
-	 * Capture a payment
+	 * Capture a payment / bulk payments
 	 *@method adm_capture_payment
 	 *@return json
 	 */
@@ -191,7 +191,7 @@ class AnydayPayment
 	}
 
 	/**
-	 * Cancel a payment
+	 * Cancel a payment / bulk payments
 	 *@method adm_cancel_payment
 	 *@return json
 	 */

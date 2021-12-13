@@ -394,6 +394,9 @@ width: 100%;margin-top: 20px;">
 		return $redirect;
 	}
 
+	/**
+	 * get notices message to display on order page after submitting bulk order actions.
+	 */
 	public function adm_order_custom_bulk_action_notices()
 	{
 		$messages = array();
@@ -468,6 +471,10 @@ width: 100%;margin-top: 20px;">
 		}
 	}
 
+	/**
+	 * Get total captured amount for the order.
+	 * @param WC_Order $order
+	 */
 	private function get_total_captured_amount($order) {
 		$captured_amount = 0;
 		foreach( get_post_meta( $order->get_id() ) as $key => $meta ) {
@@ -478,6 +485,10 @@ width: 100%;margin-top: 20px;">
 		return $captured_amount;
 	}
 
+	/**
+	 * Get total refunded amount for the order.
+	 * @param WC_Order $order
+	 */
 	private function get_total_refunded_amount($order) {
 		$refunded_amount = 0;
 		foreach (get_post_meta($order->get_id()) as $key => $meta) {
