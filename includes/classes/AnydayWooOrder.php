@@ -346,71 +346,92 @@ width: 100%;margin-top: 20px;">
 	public function adm_order_custom_bulk_actions( $bulk_array )
 	{
 		$bulk_array['anyday_capture_payment'] = 'Capture Anyday Payment';
-
+		$bulk_array['anyday_refund_payment'] = 'Refund Anyday Payment';
+		$bulk_array['anyday_cancel_payment'] = 'Cancel Anyday Payment';
 		return $bulk_array;
 	}
 
 	public function adm_order_custom_bulk_action_handler( $redirect, $doaction, $object_ids )
 	{
-		$redirect = remove_query_arg( array( 'anyday_capture_payment_successful', 'anyday_capture_payment_unsuccessful', 'anyday_capture_payment_unsuccessful_order_ids' ), $redirect );
+		$redirect               = remove_query_arg( array( 'anyday_capture_payment_successful', 'anyday_capture_payment_unsuccessful', 'anyday_capture_payment_unsuccessful_order_ids' ), $redirect );
+		$anyday_payment         = new AnydayPayment;
+		$successfull            = 0;
+		$unsuccessful           = 0;
+		$unsuccessful_order_ids = '';
 
-		if ( $doaction == 'anyday_capture_payment' ) { 
+		foreach( $object_ids as $object_id ) {
+			$order = wc_get_order( $object_id );
+			if ( $order->get_payment_method() == 'anyday_payment_gateway' ) {
+				switch( $doaction ) {
+					case 'anyday_capture_payment':
+						$order_amount = $order->get_total();
+						$status = $anyday_payment->adm_capture_payment($order, $order_amount);
+						break;
+					case 'anyday_refund_payment':
+						$total_captured_amount = number_format($this->get_total_captured_amount($order) - $this->get_total_refunded_amount($order), 2, ',', ' ');
+						$status = $anyday_payment->adm_refund_payment($object_id, $total_captured_amount);
+						break;
+					case 'anyday_cancel_payment':
+						$status = $anyday_payment->adm_cancel_payment($object_id);
+						break;
+				}
 
-			$anyday_payment = new AnydayPayment;
-			$successfull = 0;
-			$unsuccessful = 0;
-			$unsuccessful_order_ids = '';
-
-			foreach( $object_ids as $object_id ) {
-
-				$order = wc_get_order( $object_id );
-				$order_amount = $order->get_total();
-
-				if ( $order->get_payment_method() == 'anyday_payment_gateway' ) {
-					$request = $anyday_payment->adm_api_capture( $order, $order_amount );
-
-					if ( $request ) {
-	
-						update_post_meta( $order->get_id(), date("Y-m-d_h:i:sa") . '_anyday_captured_payment', wc_clean( $order_amount ) );
-			
-						if( get_option('adm_order_status_after_captured_payment') != "default" ) {
-			
-							$order->update_status( get_option('adm_order_status_after_captured_payment'), __( 'Anyday payment captured!', 'adm' ) );
-			
-						} else {
-			
-							$order->update_status( 'completed', __( 'Anyday payment captured!', 'adm' ) );
-			
-						}
-						
-						$order->add_order_note( __( date("Y-m-d, h:i:sa") . ' - Captured amount: ' . number_format($order_amount, 2, ',', ' ') . get_option('woocommerce_currency'), 'adm') );
-						
-						$successfull++;
-					}else  {
-						$unsuccessful++;
-						$unsuccessful_order_ids .= $object_id . ', ';
-					}
+				if( $status ) {
+					$successfull++;
+				} else  {
+					$unsuccessful++;
+					$unsuccessful_order_ids .= $object_id . ', ';
 				}
 			}
-
-			$redirect = add_query_arg( array(
-				'anyday_capture_payment_successful' =>  $successfull,
-				'anyday_capture_payment_unsuccessful' => $unsuccessful,
-				'anyday_capture_payment_unsuccessful_order_ids' => substr($unsuccessful_order_ids, 0, -2)
-			), $redirect );
 		}
-
+		
+		$redirect = add_query_arg( array(
+			'anyday_order_type' => $doaction,
+			'anyday_payment_successful' =>  $successfull,
+			'anyday_payment_unsuccessful' => $unsuccessful,
+			'anyday_payment_unsuccessful_order_ids' => substr($unsuccessful_order_ids, 0, -2)
+		), $redirect );
 		return $redirect;
 	}
 
+	/**
+	 * get notices message to display on order page after submitting bulk order actions.
+	 */
 	public function adm_order_custom_bulk_action_notices()
 	{
-		if( isset( $_REQUEST['anyday_capture_payment_successful'] ) && $_REQUEST['anyday_capture_payment_successful'] > 0 ) {
-			printf( '<div id="message" class="notice notice-success is-dismissible"><p><strong>%s</strong> '. __('payments have been successfully captured', 'adm') .'.</p></div>', sanitize_text_field(intval($_GET['anyday_capture_payment_successful'])) );
+		$messages = array();
+		$orderType = isset( $_REQUEST['anyday_order_type'] ) ? $_REQUEST['anyday_order_type'] : null;
+		switch( $orderType ) {
+			case 'anyday_capture_payment':
+				if(isset( $_REQUEST['anyday_payment_successful'] ) && $_REQUEST['anyday_payment_successful'] > 0 ) {
+					$messages[] = array('notice' => 'payments have been successfully captured', 'count' => sanitize_text_field(intval($_GET['anyday_payment_successful'])));
+				}
+				if ( isset( $_REQUEST['anyday_payment_unsuccessful'] ) && $_REQUEST['anyday_payment_unsuccessful'] > 0 ) {
+					$messages[] = array('notice' => 'payments have failed to be captured', 'count' => sanitize_text_field(intval($_GET['anyday_payment_unsuccessful'])));
+				}
+				break;
+			case 'anyday_refund_payment':
+				if(isset( $_REQUEST['anyday_payment_successful'] ) && $_REQUEST['anyday_payment_successful'] > 0 ) {
+					$messages[] = array('notice' => 'payments have been successfully refunded', 'count' => sanitize_text_field(intval($_GET['anyday_payment_successful'])));
+
+				}
+				if ( isset( $_REQUEST['anyday_payment_unsuccessful'] ) && $_REQUEST['anyday_payment_unsuccessful'] > 0 ) {
+					$messages[] = array('notice' => 'payments have failed to be refunded', 'count' => sanitize_text_field(intval($_GET['anyday_payment_unsuccessful'])));
+				}
+				break;
+			case 'anyday_cancel_payment':
+				if(isset( $_REQUEST['anyday_payment_successful'] ) && $_REQUEST['anyday_payment_successful'] > 0 ) {
+					$messages[] = array('notice' => 'payments have been successfully cancelled', 'count' => sanitize_text_field(intval($_GET['anyday_payment_successful'])));
+
+				}
+				if ( isset( $_REQUEST['anyday_payment_unsuccessful'] ) && $_REQUEST['anyday_payment_unsuccessful'] > 0 ) {
+					$messages[] = array('notice' => 'payments have failed to be cancelled', 'count' => sanitize_text_field(intval($_GET['anyday_payment_unsuccessful'])));
+				}
+				break;
 		}
 
-		if ( isset( $_REQUEST['anyday_capture_payment_unsuccessful'] ) && $_REQUEST['anyday_capture_payment_unsuccessful'] > 0 ) {
-			printf( '<div id="message" class="notice notice-error is-dismissible"><p><strong>%s</strong> '. __('payments have failed to be captured', 'adm') .': %s</p></div>', sanitize_text_field(intval($_GET['anyday_capture_payment_unsuccessful'])), sanitize_text_field( $_GET['anyday_capture_payment_unsuccessful_order_ids'] ) );
+		foreach ($messages as $message) {
+			printf( '<div id="message" class="notice notice-success is-dismissible"><p><strong>%s</strong> '. __($message['notice'], 'adm') .'.</p></div>', $message['count'] );
 		}
 	}
 
@@ -448,5 +469,33 @@ width: 100%;margin-top: 20px;">
 				exit;
 			}
 		}
+	}
+
+	/**
+	 * Get total captured amount for the order.
+	 * @param WC_Order $order
+	 */
+	private function get_total_captured_amount($order) {
+		$captured_amount = 0;
+		foreach( get_post_meta( $order->get_id() ) as $key => $meta ) {
+			if( strpos($key, 'anyday_captured_payment') !== false ) {
+				$captured_amount += $meta[0];
+			}
+		}
+		return $captured_amount;
+	}
+
+	/**
+	 * Get total refunded amount for the order.
+	 * @param WC_Order $order
+	 */
+	private function get_total_refunded_amount($order) {
+		$refunded_amount = 0;
+		foreach (get_post_meta($order->get_id()) as $key => $meta) {
+			if (strpos($key, 'anyday_refunded_payment') !== false) {
+					$refunded_amount += $meta[0];
+			}
+		}
+		return $refunded_amount;
 	}
 }

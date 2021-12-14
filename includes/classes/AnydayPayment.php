@@ -76,7 +76,7 @@ class AnydayPayment
 	}
 
 	/**
-	 * Authorize a payment
+	 * Authorize a payment / bulk payments
 	 *@method adm_authorize_payment
 	 *@param  object $order
 	 */
@@ -117,19 +117,21 @@ class AnydayPayment
 	}
 
 	/**
-	 * Capture a payment
+	 * Capture a payment / bulk payments
 	 *@method adm_capture_payment
 	 *@return json
 	 */
-	public function adm_capture_payment()
+	public function adm_capture_payment($order_id = null, $amount = null)
 	{
-		$order = wc_get_order( $_POST['orderId'] );
-
-		$request = $this->adm_api_capture( $order, $_POST['amount'] );
+		$success = false;
+		$id = ($order_id) ? $order_id : $_POST['orderId'];
+		$order = wc_get_order( $id );
+		$amount = ($amount) ? $amount : $_POST['amount'];
+		$request = $this->adm_api_capture( $order, $amount );
 
 		if ( $request ) {
 
-			update_post_meta( $order->get_id(), date("Y-m-d_h:i:sa") . '_anyday_captured_payment', wc_clean( $_POST['amount'] ) );
+			update_post_meta( $order->get_id(), date("Y-m-d_h:i:sa") . '_anyday_captured_payment', wc_clean( $amount ) );
 
 			if( get_option('adm_order_status_after_captured_payment') != "default" ) {
 
@@ -140,19 +142,21 @@ class AnydayPayment
 				$order->update_status( 'completed', __( 'Anyday payment captured!', 'adm' ) );
 
 			}
-			
 
-			$order->add_order_note( __( date("Y-m-d, h:i:sa") . ' - Captured amount: ' . number_format($_POST['amount'], 2, ',', ' ') . get_option('woocommerce_currency'), 'adm') );
-
-			echo json_encode( ["success" => __('Anyday payment successfully captured.', 'adm')] );
-
-		} else {
-
-			echo json_encode( ["error" => __('Payment could not be captured. Please contact Anyday support.', 'adm')] );
-
+			$order->add_order_note( __( date("Y-m-d, h:i:sa") . ' - Captured amount: ' . number_format($amount, 2, ',', ' ') . get_option('woocommerce_currency'), 'adm') );
+			$success = true;
 		}
 
-		exit;
+		if($order_id) {
+			return ($success) ? true : false;
+		} else {
+			if($success) {
+				echo json_encode( ["success" => __('Anyday payment successfully captured.', 'adm')] ) ;
+			} else {
+				echo json_encode( ["error" => __('Payment could not be captured. Please contact Anyday support.', 'adm')] );
+			}
+			exit;
+		}
 	}
 
 	/**
@@ -187,13 +191,15 @@ class AnydayPayment
 	}
 
 	/**
-	 * Cancel a payment
+	 * Cancel a payment / bulk payments
 	 *@method adm_cancel_payment
 	 *@return json
 	 */
-	public function adm_cancel_payment()
+	public function adm_cancel_payment($order_id = null)
 	{
-		$order = wc_get_order( $_POST['orderId'] );
+		$success = false;
+		$id = ($order_id) ? $order_id : $_POST['orderId'];
+		$order = wc_get_order( $id );
 
 		try {
 
@@ -212,7 +218,7 @@ class AnydayPayment
 
 				$order->update_status( 'cancelled', __( 'Anyday payment cancelled!', 'adm' ) );
 
-				echo json_encode( ["success" => __('Anyday payment successfully cancelled.', 'adm')] );
+				$success = true;
 
 			}
 
@@ -220,10 +226,19 @@ class AnydayPayment
 
 			$this->adm_log_anyday_error( Psr7\str($e->getResponse()) );
 
-			echo json_encode(["error" => __('Payment could not be cancelled. Please contact Anyday support.', 'adm')]);
 		}
 
-		exit;
+
+		if($order_id) {
+			return ($success) ? true : false;
+		} else {
+			if($success) {
+				echo json_encode( ["success" => __('Anyday payment successfully cancelled.', 'adm')] ) ;
+			} else {
+				echo json_encode( ["error" => __('Payment could not be cancelled. Please contact Anyday support.', 'adm')] );
+			}
+			exit;
+		}
 	}
 
 
@@ -263,29 +278,37 @@ class AnydayPayment
 	 *@method adm_refund_payment
 	 *@return json
 	 */
-	public function adm_refund_payment()
+	public function adm_refund_payment($order_id = null, $amount = null)
 	{
-		$order = wc_get_order( $_POST['orderId'] );
+		$success = false;
+		$id = ($order_id) ? $order_id : $_POST['orderId'];
+		$order = wc_get_order( $id );
+		$amount = ($amount) ? $amount : $_POST['amount'];
 
-		$request = $this->adm_api_refund( $order, $_POST['amount'] );
+		$request = $this->adm_api_refund( $order, $amount );
 
 		if( $request ) {
 
-			update_post_meta( $order->get_id(), date("Y-m-d_h:i:sa") . '_anyday_refunded_payment', wc_clean( $_POST['amount'] ) );
+			update_post_meta( $order->get_id(), date("Y-m-d_h:i:sa") . '_anyday_refunded_payment', wc_clean( $amount ) );
 
 			$order->update_status( 'wc-adm-refunded', __( 'Anyday payment refunded!', 'adm' ) );
 
-			$order->add_order_note( __( date("Y-m-d, h:i:sa") . ' - Refunded amount: ' . number_format($_POST['amount'], 2, ',', ' ') . get_option('woocommerce_currency'), 'adm') );
+			$order->add_order_note( __( date("Y-m-d, h:i:sa") . ' - Refunded amount: ' . number_format($amount, 2, ',', ' ') . get_option('woocommerce_currency'), 'adm') );
 
-			echo json_encode( ["success" => __('Anyday payment successfully refunded.', 'adm')] );
-
-		} else {
-
-			echo json_encode(["error" => __('Payment could not be refunded. Please contact Anyday support.', 'adm')]);
+			$success = true;
 
 		}
 
-		exit;
+		if($order_id) {
+			return ($success) ? true : false;
+		} else {
+			if($success) {
+				echo json_encode( ["success" => __('Anyday payment successfully refunded.', 'adm')] ) ;
+			} else {
+				echo json_encode( ["error" => __('Payment could not be refunded. Please contact Anyday support.', 'adm')] );
+			}
+			exit;
+		}
 	}
 
 	/**
@@ -293,6 +316,7 @@ class AnydayPayment
 	 */
 	private function adm_log_anyday_error( $message )
 	{
+		$contents = "";
 		if ( get_option('adm_module_error_log') == 'enabled' ) {
 
 			$contents .= "$message\n";
