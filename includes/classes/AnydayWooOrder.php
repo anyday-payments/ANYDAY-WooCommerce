@@ -138,7 +138,7 @@ width: 100%;margin-top: 20px;">
 									</td>
 									<td class="line_cost" width="1%">
 										<div class="view">
-											<span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol"><?php echo $order->get_currency(); ?></span><?php echo number_format($meta[0], 2, ',', ' '); ?></span>
+											<span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol"><?php echo $order->get_currency(); ?></span><?php echo number_format($meta[0], 2, ',', '.'); ?></span>
 										</div>
 									</td>
 								</tr>
@@ -154,14 +154,14 @@ width: 100%;margin-top: 20px;">
 									<td class="label refunded-total">Total Captured Amount:</td>
 									<td width="1%"></td>
 									<td class="total refunded-total">
-										<span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol"><?php echo $order->get_currency(); ?></span><?php echo number_format((float)$captured_amount, 2, ',', ' '); ?></span>
+										<span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol"><?php echo $order->get_currency(); ?></span><?php echo number_format((float)$captured_amount, 2, ',', '.'); ?></span>
 									</td>
 								</tr>
 								<tr>
 									<td class="label">Amount left to be Captured:</td>
 									<td width="1%"></td>
 									<td class="total">
-										<span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol"><?php echo $order->get_currency(); ?></span><?php echo number_format((float)$order->get_total() - (float)$captured_amount, 2, ',', ' ');
+										<span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol"><?php echo $order->get_currency(); ?></span><?php echo number_format((float)$order->get_total() - (float)$captured_amount, 2, ',', '.');
 
 										if ( ((float)$order->get_total() - (float)$captured_amount) == 0 ) {
 											update_post_meta( $order->get_id(),'full_captured_amount', 'true' );
@@ -192,7 +192,7 @@ width: 100%;margin-top: 20px;">
 									</td>
 									<td class="line_cost" width="1%">
 										<div class="view">
-											<span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol"><?php echo $order->get_currency(); ?></span><?php echo number_format($meta[0], 2, ',', ' '); ?></span>
+											<span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol"><?php echo $order->get_currency(); ?></span><?php echo number_format($meta[0], 2, ',', '.'); ?></span>
 										</div>
 									</td>
 								</tr>
@@ -208,14 +208,14 @@ width: 100%;margin-top: 20px;">
 									<td class="label refunded-total">Total Refunded Amount:</td>
 									<td width="1%"></td>
 									<td class="total refunded-total">
-										<span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol"><?php echo $order->get_currency(); ?></span><?php echo number_format((float)$refunded_amount, 2, ',', ' '); ?></span>
+										<span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol"><?php echo $order->get_currency(); ?></span><?php echo number_format((float)$refunded_amount, 2, ',', '.'); ?></span>
 									</td>
 								</tr>
 								<tr>
 									<td class="label">Amount left to be Refunded:</td>
 									<td width="1%"></td>
 									<td class="total">
-										<span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol"><?php echo $order->get_currency(); ?></span><?php echo  number_format((float)$order->get_total() - (float)$refunded_amount, 2, ',', ' ');
+										<span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol"><?php echo $order->get_currency(); ?></span><?php echo  number_format((float)$order->get_total() - (float)$refunded_amount, 2, ',', '.');
 
 										if ( ((float)$order->get_total() - (float)$refunded_amount) == 0 ) {
 											update_post_meta( $order->get_id(),'full_refunded_amount', 'true' );
@@ -227,7 +227,7 @@ width: 100%;margin-top: 20px;">
 									<td class="label label-highlight">Net Payment:</td>
 									<td width="1%"></td>
 									<td class="total">
-									<span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol"><?php echo $order->get_currency(); ?></span><?php echo number_format($captured_amount - $refunded_amount, 2, ',', ' '); ?></bdi></span></td>
+									<span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol"><?php echo $order->get_currency(); ?></span><?php echo number_format($captured_amount - $refunded_amount, 2, ',', '.'); ?></bdi></span></td>
 								</tr>
 							</tbody>
 						</table>
@@ -364,11 +364,11 @@ width: 100%;margin-top: 20px;">
 			if ( $order->get_payment_method() == 'anyday_payment_gateway' ) {
 				switch( $doaction ) {
 					case 'anyday_capture_payment':
-						$order_amount = number_format($order->get_total() - $this->get_total_captured_amount($order), 2, '.', '');
+						$order_amount = number_format($order->get_total() - $this->get_total_captured_amount($order), 2, ',', '');
 						$status = $anyday_payment->adm_capture_payment($order, $order_amount);
 						break;
 					case 'anyday_refund_payment':
-						$total_captured_amount = number_format($this->get_total_captured_amount($order) - $this->get_total_refunded_amount($order), 2, '.', '');
+						$total_captured_amount = number_format($this->get_total_captured_amount($order) - $this->get_total_refunded_amount($order), 2, ',', '');
 						$status = $anyday_payment->adm_refund_payment($object_id, $total_captured_amount);
 						break;
 					case 'anyday_cancel_payment':
@@ -462,7 +462,7 @@ width: 100%;margin-top: 20px;">
 	
 				}
 				
-				$order->add_order_note( __( date("Y-m-d, h:i:sa") . ' - Captured amount: ' . number_format($order_amount, 2, ',', ' ') . get_option('woocommerce_currency'), 'adm') );
+				$order->add_order_note( __( date("Y-m-d, h:i:sa") . ' - Captured amount: ' . number_format($order_amount, 2, ',', '.') . get_option('woocommerce_currency'), 'adm') );
 			
 				wp_safe_redirect( home_url("/wp-admin/post.php?post=$order_id&action=edit") );
 				

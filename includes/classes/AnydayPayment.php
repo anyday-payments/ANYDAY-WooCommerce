@@ -143,7 +143,7 @@ class AnydayPayment
 
 			}
 
-			$order->add_order_note( __( date("Y-m-d, h:i:sa") . ' - Captured amount: ' . number_format($amount, 2, ',', ' ') . get_option('woocommerce_currency'), 'adm') );
+			$order->add_order_note( __( date("Y-m-d, h:i:sa") . ' - Captured amount: ' . number_format($amount, 2, ',', '.') . get_option('woocommerce_currency'), 'adm') );
 			$success = true;
 		}
 
