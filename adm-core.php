@@ -74,4 +74,36 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 			}
 		}
 	}
+
+	add_filter( 'woocommerce_can_reduce_order_stock', 'adm_do_not_reduce_stock', 10, 2 );
+
+	/**
+	 * do not reduce the stock if order status is pending or on-hold.
+	 */
+	function adm_do_not_reduce_stock( $reduce_stock, $order ) {
+			if ( ( $order->has_status( 'pending' ) || $order->has_status( 'on-hold' ) ) && $order->get_payment_method() == 'anyday_payment_gateway' ) {
+					$reduce_stock = false;
+			}
+			return $reduce_stock;
+	}
+
+	add_action( 'woocommerce_order_status_changed', 'adm_order_stock_reduction_based_on_status', 20, 4 );
+
+	/**
+	 * add stock back whenever order is cancelled or refunded.
+	 */
+	function adm_order_stock_reduction_based_on_status( $order_id, $old_status, $new_status, $order ){
+		if($order->get_payment_method() !== 'anyday_payment_gateway')
+			return;
+		$stock_reduced = get_post_meta( $order_id, '_order_stock_reduced', true );
+		if(empty($stock_reduced) ){
+			if ( $new_status == 'processing' || $new_status == 'completed' ){
+				wc_reduce_stock_levels($order_id);
+			}
+		} else {
+			if ( $new_status == 'refunded' || $new_status == 'cancelled' ){
+				wc_increase_stock_levels($order_id);
+			}
+		}
+	}
 }
