@@ -364,11 +364,11 @@ width: 100%;margin-top: 20px;">
 			if ( $order->get_payment_method() == 'anyday_payment_gateway' ) {
 				switch( $doaction ) {
 					case 'anyday_capture_payment':
-						$order_amount = number_format($order->get_total() - $this->get_total_captured_amount($order), 2, ',', '');
+						$order_amount = $order->get_total() - $this->get_total_captured_amount($order);
 						$status = $anyday_payment->adm_capture_payment($order, $order_amount);
 						break;
 					case 'anyday_refund_payment':
-						$total_captured_amount = number_format($this->get_total_captured_amount($order) - $this->get_total_refunded_amount($order), 2, ',', '');
+						$total_captured_amount = $this->get_total_captured_amount($order) - $this->get_total_refunded_amount($order);
 						$status = $anyday_payment->adm_refund_payment($object_id, $total_captured_amount);
 						break;
 					case 'anyday_cancel_payment':

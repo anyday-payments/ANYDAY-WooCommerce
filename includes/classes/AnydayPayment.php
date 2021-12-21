@@ -127,6 +127,7 @@ class AnydayPayment
 		$id = ($order_id) ? $order_id : $_POST['orderId'];
 		$order = wc_get_order( $id );
 		$amount = ($amount) ? $amount : $_POST['amount'];
+		$amount = number_format($amount, 2, ',', '');
 		$request = $this->adm_api_capture( $order, $amount );
 
 		if ( $request ) {
@@ -284,7 +285,7 @@ class AnydayPayment
 		$id = ($order_id) ? $order_id : $_POST['orderId'];
 		$order = wc_get_order( $id );
 		$amount = ($amount) ? $amount : $_POST['amount'];
-
+		$amount = number_format($amount, 2, ',', '');
 		$request = $this->adm_api_refund( $order, $amount );
 
 		if( $request ) {
