@@ -45,7 +45,12 @@ class PriceTag
 
 		if(is_product()) {
 			$product = wc_get_product( get_the_ID() );
-			$price = $product->get_regular_price();
+
+			if($product->is_on_sale())
+				$price = $product->get_sale_price();
+			else
+				$price = $product->get_regular_price();
+				
 			if($product->is_type( 'variable' )) {
 				$variations = $product->get_available_variations();
 				$first_variation_prices = [];

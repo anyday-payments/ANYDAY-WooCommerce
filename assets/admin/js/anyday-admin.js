@@ -14,9 +14,9 @@
 
         if(amount === null) return;
 
-        amount = parseFloat(amount.replace(',' , '.'));
+        amount = validateAmount(amount);
 
-        if(isNaN(amount)) {
+        if(!amount) {
           alert(anyday.capturePromptValidation);
           return;
         }
@@ -31,9 +31,9 @@
 
         if(amount === null) return;
 
-        amount = parseFloat(amount.replace(',' , '.'));
+        amount = validateAmount(amount);
 
-        if(isNaN(amount)) {
+        if(!amount) {
           alert(anyday.capturePromptValidation);
           return;
         }
@@ -55,6 +55,28 @@
         }
       });
     });
+
+    function validateAmount(amount) {
+      let amtPattern = /^((?:\d{1,3}(?:[\s,]\d{3})+|\d+)(?:.\d{0,2}$))$|^((?:\d{1,3}(?:[\s.]\d{3})+|\d+)(?:,\d{0,2}$)|(^\d+$))$/;
+      var dotPattern = [];
+      var zeroReg    = /^0+$/;
+      var amt        = false;
+      var dec, decLength;
+      if(amtPattern.test(amount)) {
+        dotPattern = amount.match(/[,|\.]/g);
+        amt = amount.match(/\d+/g).join('');
+        if(zeroReg.test(amt))
+          return false;
+        if(dotPattern && dotPattern.length > 0) {
+          dec = dotPattern[dotPattern.length - 1];
+          decLength = amount.split(dec)[1].length;
+          amt = amt.substring(0, amt.length - decLength) + "." + amt.substring(amt.length - decLength);
+        } else {
+          return amt;
+        }
+      }
+      return amt;
+    }
 
     $( '#mainform' ).on( 'click', '.wc-payment-gateway-method-toggle-enabled', function() {
       var $link   = $( this ),
