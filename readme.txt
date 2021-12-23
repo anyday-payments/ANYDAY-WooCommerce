@@ -3,25 +3,29 @@ Contributors: anyday2020
 Tags: Payments, Instalments, WooCommerce, Payment Gateway, Buy Now Pay Later, BNPL, Conversion Rate, Basket Size, Anyday
 Requires at least: 4.3.1
 Tested up to: 5.8.1
-Stable tag: 1.7.2
+Stable tag: 1.7.3
 License: MIT
 License URI: https://opensource.org/licenses/MIT
 
-Anyday WooCommerce plugin is is the official payment extension which provides support for Anyday payment gateway for store builders working on the WooCommerce platform.
+Anyday is a new way to pay. An interest-free financing solution with no fees or interest for your customers.
 
 == Description ==
 
-Anyday is a truly free way for shoppers to buy now and pay later.
+Anyday is a fair and transparent installment payment method you can add to your online store. It is interest-free and without any unexpected expenses and unpleasant surprises.
 
-Shoppers can purchase for up to 30.000 DKK, and the credit line is recurring. This means they can start purchasing again as soon as installments have been paid.
+The plugin allows your customers to split their payments into 4 equal installments. The first installment is always paid at checkout and the remaining installments are paid on the last banking day of the following three months.
 
-With no costs and no fees for the shopper, Anyday guarantees a great shopping experience with no unpleasant surprises.
+Anyday is always completely free of interest and your customers pay no additional fees as long as their installments are paid on time. In short: Anyday is both fair and transparent.
 
-Shoppers must pay 10% of the purchase at checkout. This serves as the first installment. The remainder will be paid on the last banking day of the following 9 months.
+To sign up for Anyday customers go through a quick but thorough credit evaluation and upon being accepted they will be granted credit. The credit with Anyday is revolving, which allows customers to utilize their available credit multiple times after paying off installments. Regardless of how many times a customer chooses to utilize their credit the terms remain the same - no fees, no interest.
 
-Help your customers to a better shopping experience, while increasing your average order value.
+When you sign an agreement and implement Anyday in your online store you will be added to Anyday’s shop collection. Furthermore, Anyday will upon request provide you with marketing material, feature you in their consumer newsletters, and link to your store via social media. All are completely free of charge.
 
-Why wait until tomorrow? Offer Anyday today.
+Anyday assumes the credit risk when a customer chooses to pay with Anyday so you can focus on what you do best - running your business. Orders will be paid out to you in full on a weekly basis.
+
+It is in everyone’s best interest that customers pay installments on time. Therefore, Anyday makes sure to inform customers of when they need to pay and how much they need to pay.
+
+Anyday is fully compliant with Danish legislation.
 
 = How to Get Started =
 1. Sign up for [Anyday](https://www.anyday.io/webshop)
@@ -85,15 +89,29 @@ Anyday assumes all credit risk as soon as a purchase is made. You will receive a
 
 = 1.7 =
 
-#### � Enhancements
+#### 🚀 Enhancements
 - Disabling SSL verification while fetching public script from the server.
 
 = 1.7.1 =
 
-#### � Enhancements
+#### 🚀 Enhancements
 - Updating not to fetch scripts on update immediatly on plugin upgrade.
 
 = 1.7.2 =
 
-#### � Enhancements
+#### 🚀 Enhancements
 - Changed JS file cached with CURL.
+
+= 1.7.3 =
+
+#### 🚀 Enhancements
+- Adding bulk order status update in backend.
+- Anyday payment is enabled for orders with payments greater than and equals to 300 DKK.
+- Stock levels should update only when order is completed or processing. Stock added back on order cancelled and refunded.
+- Fixing number format throughout the plugin.
+- Adding validation to check number format while input for capture/refund from the backend.
+
+#### 👾 Bug Fixes
+- Fixing cached JS URL for some instances using permalinks.
+- Fixed backend configuration page which was broken.
+- Minimum price limit for pricetag isn't working for on-sale product.

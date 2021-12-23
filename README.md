@@ -1,8 +1,8 @@
 # Anyday WooCommerce
 
-Description: A fair and transparent online payment solution for you and your customers
+Description: Anyday is a new way to pay. An interest-free financing solution with no fees or interest for your customers.
 
-Version: 1.7.2
+Version: 1.7.3
 
 ## Plugin installation
 
@@ -39,3 +39,5 @@ Version 1.7 - Disabling SSL verification while fetching public script from the s
 Version 1.7.1 - Updating not to fetch scripts on update immediatly on plugin upgrade.
 
 Version 1.7.2 - Changed JS file cached with CURL.
+
+Version 1.7.3 - Adding bulk order status update in backend, Anyday payment is enabled for orders with payments greater than and equals to 300 DKK, Stock levels should update only when order is completed or processing. Stock added back on order cancelled and refunded, Fixing number format throughout the plugin, Adding validation to check number format while input for capture/refund from the backend, Fixing cached JS URL for some instances using permalinks, Fixed backend configuration page which was broken, Minimum price limit for pricetag isn't working for on-sale product.
