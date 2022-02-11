@@ -138,7 +138,7 @@ width: 100%;margin-top: 20px;">
 									</td>
 									<td class="line_cost" width="1%">
 										<div class="view">
-											<span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol"><?php echo $order->get_currency(); ?></span><?php echo number_format($meta[0], 2, ',', '.'); ?></span>
+											<span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol"><?php echo $order->get_currency(); ?></span><?php echo number_format((float)$meta[0], 2, ',', '.'); ?></span>
 										</div>
 									</td>
 								</tr>
@@ -192,7 +192,7 @@ width: 100%;margin-top: 20px;">
 									</td>
 									<td class="line_cost" width="1%">
 										<div class="view">
-											<span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol"><?php echo $order->get_currency(); ?></span><?php echo number_format($meta[0], 2, ',', '.'); ?></span>
+											<span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol"><?php echo $order->get_currency(); ?></span><?php echo number_format((float)$meta[0], 2, ',', '.'); ?></span>
 										</div>
 									</td>
 								</tr>
@@ -227,7 +227,7 @@ width: 100%;margin-top: 20px;">
 									<td class="label label-highlight">Net Payment:</td>
 									<td width="1%"></td>
 									<td class="total">
-									<span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol"><?php echo $order->get_currency(); ?></span><?php echo number_format($captured_amount - $refunded_amount, 2, ',', '.'); ?></bdi></span></td>
+									<span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol"><?php echo $order->get_currency(); ?></span><?php echo number_format((float)$captured_amount - $refunded_amount, 2, ',', '.'); ?></bdi></span></td>
 								</tr>
 							</tbody>
 						</table>

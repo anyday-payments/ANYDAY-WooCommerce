@@ -41,7 +41,7 @@ class AnydayPayment
 				break;
 		}
 
-		$this->client = new Client();
+		$this->client = new Client(['verify' => false]);
 	}
 
 	/**
@@ -84,7 +84,7 @@ class AnydayPayment
 	{
 		try {
 
-			$response = $this->client->request('POST', ADM_API_BASE_URL . '/v1/payments', [
+			$response = $this->client->request('POST', ADM_API_BASE_URL . '/v1/orders', [
 				'headers' => [
 			        'Content-Type' => 'application/json',
 			        'Authorization' => 'Bearer ' .  $this->authorization_token
@@ -93,6 +93,7 @@ class AnydayPayment
 					"Amount" => $order->get_total(),
 					"Currency" => get_option('woocommerce_currency'),
 					"OrderId" => $order->get_id(),
+					"CallbackUrl" => get_site_url(null, $this->getWebhookPath()),
 					"SuccessRedirectUrl" => $successURL,
 					"CancelPaymentRedirectUrl" => $cancelURL
 			    ]
@@ -109,7 +110,7 @@ class AnydayPayment
 
 		} catch ( RequestException $e ) {
 
-			$this->adm_log_anyday_error( Psr7\str($e->getResponse()) );
+			$this->adm_log_anyday_error( Psr7\str( $e->getResponse() ) );
 
 			$order->update_status( 'failed', __( 'Anyday payment failed!', 'adm' ) );
 
@@ -168,14 +169,14 @@ class AnydayPayment
 	{
 		try {
 
-			$response = $this->client->request('POST', ADM_API_BASE_URL . '/v1/payments/' . get_post_meta( $order->get_id(), 'anyday_payment_transaction' )[0] . '/capture', [
+			$response = $this->client->request('POST', ADM_API_BASE_URL . '/v1/orders/' . get_post_meta( $order->get_id(), 'anyday_payment_transaction' )[0] . '/capture', [
 				'headers' => [
 			        'Content-Type' => 'application/json',
 			        'Authorization' => 'Bearer ' .  $this->authorization_token
 			    ],
 			    "json" => [
 					"Amount" => (float)$amount
-			    ]
+			  ]
 			]);
 
 			$response = json_decode( $response->getBody()->getContents() );
@@ -204,7 +205,7 @@ class AnydayPayment
 
 		try {
 
-			$response = $this->client->request('POST', ADM_API_BASE_URL . '/v1/payments/' . get_post_meta( $order->get_id(), 'anyday_payment_transaction' )[0] . '/cancel', [
+			$response = $this->client->request('POST', ADM_API_BASE_URL . '/v1/orders/' . get_post_meta( $order->get_id(), 'anyday_payment_transaction' )[0] . '/cancel', [
 				'headers' => [
 			        'Content-Type' => 'application/json',
 			        'Authorization' => 'Bearer ' .  $this->authorization_token
@@ -251,7 +252,7 @@ class AnydayPayment
 	{
 		try {
 
-			$response = $this->client->request('POST', ADM_API_BASE_URL . '/v1/payments/' . get_post_meta( $order->get_id(), 'anyday_payment_transaction' )[0] . '/refund', [
+			$response = $this->client->request('POST', ADM_API_BASE_URL . '/v1/orders/' . get_post_meta( $order->get_id(), 'anyday_payment_transaction' )[0] . '/refund', [
 				'headers' => [
 			        'Content-Type' => 'application/json',
 			        'Authorization' => 'Bearer ' .  $this->authorization_token
@@ -326,5 +327,9 @@ class AnydayPayment
 
 		}
 
+	}
+
+	private function getWebhookPath() {
+		return '/wp-json/' . AnydayRest::ENDPOINT_NAMESPACE . '/' . AnydayRest::ENDPOINT;
 	}
 }

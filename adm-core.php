@@ -31,11 +31,11 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 	define( 'ADM_PATH', plugin_dir_path( __FILE__ ) );
 	define( 'ADM_URL', plugin_dir_url( __FILE__ ) );
 	define( 'ADM_PLUGIN_SLUG', "am-wordpress" );
-	define( 'ADM_API_BASE_URL', "https://my.anyday.io" );
+	//define( 'ADM_API_BASE_URL', "https://my.anyday.io" );
+	define( 'ADM_API_BASE_URL', "https://anyday-qa6.manaosoftware.com" );
 	define( 'ADM_PLUGIN_BASE_NAME', plugin_basename(__FILE__) );
 	define( 'ADM_PLUGIN_PATH', plugin_dir_path(__FILE__) );
 	define( 'ADM_CURRENCY', "DKK" );
-
 	// Execute code upon plugin activation
 	$activator = new Activator;
 	register_activation_hook( __FILE__, array( $activator, 'activate' ) );
@@ -52,6 +52,11 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 	if( get_option('woocommerce_currency') == ADM_CURRENCY ) {
 		add_action( 'plugins_loaded', function() {
 			require_once( ADM_PATH . '/includes/classes/WC_Gateway_Anyday_Payment.php');
+			require_once( ADM_PATH . '/includes/events/AnydayEvent.php');
+			require_once( ADM_PATH . '/includes/events/AnydayEventCapture.php');
+			require_once( ADM_PATH . '/includes/events/AnydayEventCancel.php');
+			require_once( ADM_PATH . '/includes/events/AnydayEventRefund.php');
+			require_once( ADM_PATH . '/includes/events/AnydayEventAuthorize.php');
 		});
 	}
 
