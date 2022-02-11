@@ -41,7 +41,7 @@ class AnydayPayment
 				break;
 		}
 
-		$this->client = new Client(['verify' => false]);
+		$this->client = new Client();
 	}
 
 	/**

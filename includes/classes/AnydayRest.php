@@ -31,8 +31,8 @@ class AnydayRest {
   public function __construct() {
     add_action( 'rest_api_init', function () {
 			$this->register_routes();
-		} );
-  }
+    } );
+	}
 
 	/**
 	 * Registering the routes for webhooks.
