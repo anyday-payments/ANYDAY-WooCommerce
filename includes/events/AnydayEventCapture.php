@@ -5,13 +5,13 @@ defined( 'ABSPATH' ) || exit;
 class AnydayEventCapture extends AnydayEvent {
 	
 	/**
-	 * This `ccapture` event is only being used
+	 * This `capture` event is only being used
 	 */
 	public function resolve() {
 		$transaction = $this->data['Transaction'];
 		$this->order->add_order_note( __( 'Anyday: Received capture webhook event.', 'adm' ) );
 		$order = wc_get_order( $this->order->get_id() );
-		if( 'wc-'.$order->get_status()  ==  get_option('adm_order_status_after_captured_payment') ) {
+		if( $this->handled($order, $transaction['Id']) ) {
 			return;
 		}
 		switch ( $transaction['Status'] ) {
@@ -20,7 +20,7 @@ class AnydayEventCapture extends AnydayEvent {
 				$this->order->add_order_note(
 					sprintf(
 						wp_kses( $message, array( 'br' => array() ) ),
-						$transaction['Amount'],
+						number_format($transaction['Amount'], 2, ',', '.'),
 						$this->order->get_currency()
 					)
 				);
@@ -32,7 +32,7 @@ class AnydayEventCapture extends AnydayEvent {
 				$this->order->add_order_note(
 					sprintf(
 						wp_kses( $message, array( 'br' => array() ) ),
-						$transaction['Amount'],
+						number_format($transaction['Amount'], 2, ',', '.'),
 						$this->order->get_currency()
 					)
 				);

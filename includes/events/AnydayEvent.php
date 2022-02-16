@@ -24,6 +24,20 @@ class AnydayEvent {
 	public function __construct( $data ) {
 		$this->data = $data;
 	}
+
+	public function handled($order, $transaction_id) {
+		$order_data = $order->get_meta('anyday_payment_transactions');
+		if( in_array($transaction_id, $order_data) )  {
+			return true;
+		}
+		$txn = get_post_meta($order->get_id(), 'anyday_payment_transactions', true);
+		if(!is_array($txn)) {
+			$txn = array();
+		}
+		array_push($txn, $transaction_id);
+		update_post_meta($order->get_id(), 'anyday_payment_transactions', $txn);
+		return false;
+	}
 	
 	/**
 	 * validating if order Id does exists, orders transaction id identical with event transaction id and if valid order exists returning true
