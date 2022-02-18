@@ -28,6 +28,11 @@ class AnydayEvents {
 	);
 
 	/**
+   * @var string
+   */
+  const EVENT_CLASS_PREFIX = 'AnydayEvent';
+
+	/**
 	 * @param  string $event_key
 	 * @param  mixed  $data
 	 *
@@ -49,7 +54,7 @@ class AnydayEvents {
 		 */
 		do_action( 'adm_before_handle_event_' . $event_hook_suffix, $data );
 		if ( $event->validate() ) {
-			sleep(7);
+			$this->process_pending_txns($event);
 			$result = $event->resolve();
 
 			/**
@@ -71,5 +76,33 @@ class AnydayEvents {
 		do_action( 'adm_after_handle_event_' . $event_hook_suffix, $event->get_order(), $event->get_data(), $result );
 
 		return $result;
+	}
+
+	/**
+	 * find pending transactions remaining to process
+	 * @var mixed
+	 * @return void
+	 */
+	private function process_pending_txns($event) {
+		$order_data   = $event->get_order()->get_meta('anyday_payment_transactions');
+		$missing_txns = array();
+		foreach(array_shift($this->data['Transactions']) as $txn) {
+			if(!in_array($txn, $order_data) && $txn['Type'] !== 'authorize') {
+				array_push($missing_txns, $txn);
+			}
+		}
+		foreach($missing_txns as $txn) {
+			$event_key = self::EVENT_CLASS_PREFIX.ucfirst($txn['Type']);
+			$eventClass = "Adm\\" . $event_key;
+		
+			if(!class_exists($eventClass)) {
+				return;
+			}
+			$event = new $eventClass( array('Transaction' => $txn) );
+			$event->set_is_pending(true);
+			if ( $event->validate() ) {
+				$event->resolve();
+			} 
+		}
 	}
 }

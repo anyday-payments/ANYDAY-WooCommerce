@@ -30,7 +30,9 @@ class AnydayEventCancel extends AnydayEvent {
 				$message = __( 'Anyday: Payment has been canceled.', 'adm' );
 	
 				$this->order->add_order_note( $message );
-				$this->order->update_status( 'cancelled' );
+				if (! $this->get_is_pending()) {
+						$this->order->update_status('cancelled');
+				}
 			break;
 		}
 		return;

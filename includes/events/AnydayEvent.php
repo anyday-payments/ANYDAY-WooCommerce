@@ -17,17 +17,23 @@ class AnydayEvent {
 	protected $data;
 
 	/**
+	 * @var boolean is pending event
+	 */
+	protected $is_pending;
+
+	/**
 	 * @var \WC_Abstract_Order
 	 */
 	protected $order;
 
 	public function __construct( $data ) {
-		$this->data = $data;
+		$this->data       = $data;
+		$this->is_pending = false;
 	}
 
 	public function handled($order, $transaction_id) {
 		$order_data = $order->get_meta('anyday_payment_transactions');
-		if( in_array($transaction_id, $order_data) )  {
+		if( !$this->get_is_pending() && in_array($transaction_id, $order_data) )  {
 			return true;
 		}
 		$txn = get_post_meta($order->get_id(), 'anyday_payment_transactions', true);
@@ -79,5 +85,19 @@ class AnydayEvent {
 	 */
 	public function get_order() {
 		return $this->order;
+	}
+
+	/**
+	 * @return boolean
+	 */
+	public function get_is_pending() {
+		return $this->is_pending;
+	}
+
+	/**
+	 * @param boolean $is_pending
+	 */
+	public function set_is_pending($is_pending) {
+		$this->is_pending = $is_pending;
 	}
 }

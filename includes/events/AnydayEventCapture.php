@@ -38,7 +38,7 @@ class AnydayEventCapture extends AnydayEvent {
 				);
 				update_post_meta( $this->order->get_id(), date("Y-m-d_h:i:sa") . '_anyday_captured_payment', wc_clean( $transaction['Amount'] ) );
 
-				if ( ! $order->has_status( get_option('adm_order_status_after_captured_payment') ) ) {
+				if ( ! $order->has_status( get_option('adm_order_status_after_captured_payment') ) && ! $this->get_is_pending()) {
 					$order->update_status( get_option('adm_order_status_after_captured_payment') );
 				}
 			break;

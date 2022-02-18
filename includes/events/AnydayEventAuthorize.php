@@ -13,7 +13,7 @@ class AnydayEventAuthorize extends AnydayEvent {
 		$transaction = $this->data['Transaction'];
 		$this->order->add_order_note( __( 'Anyday: Received auth webhook event.', 'adm' ) );
     $order = wc_get_order( $this->order->get_id() );
-		if( $this->handled($order, $transaction['Id']) ) {
+		if( $this->handled($order, $transaction['Id']) && !$order->has_status( get_option( 'adm_order_status_before_authorized_payment' )) ) {
 			return;
 		}
 
@@ -27,7 +27,7 @@ class AnydayEventAuthorize extends AnydayEvent {
 				$message = __( 'Anyday: Payment has been authorized.', 'adm' );
 	
 				$this->order->add_order_note( $message );
-        if( !$order->has_status( get_option( 'adm_order_status_after_authorized_payment' ) ) ) {
+        if( !$order->has_status( get_option( 'adm_order_status_after_authorized_payment' ) ) && ! $this->get_is_pending()) {
           $order->update_status( get_option( 'adm_order_status_after_authorized_payment' ) );
         }
 			break;

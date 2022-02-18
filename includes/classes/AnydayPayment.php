@@ -9,6 +9,7 @@ class AnydayPayment
 {
 	private $client;
 	private $authorization_token;
+	private $headers;
 
 	public function __construct()
 	{
@@ -40,7 +41,10 @@ class AnydayPayment
 
 				break;
 		}
-
+		$this->headers = [
+			'Content-Type' => 'application/json',
+			'Authorization' => 'Bearer ' .  $this->authorization_token
+		];
 		$this->client = new Client();
 	}
 
@@ -85,20 +89,24 @@ class AnydayPayment
 		
 		try {
 
-			$response = $this->client->request('POST', ADM_API_BASE_URL . '/v1/orders', [
-				'headers' => [
-			        'Content-Type' => 'application/json',
-			        'Authorization' => 'Bearer ' .  $this->authorization_token
-			    ],
-			    "json" => [
-					"Amount" => $order->get_total(),
-					"Currency" => get_option('woocommerce_currency'),
-					"OrderId" => $order->get_id(),
-					"CallbackUrl" => get_site_url(null, $this->getWebhookPath()),
-					"SuccessRedirectUrl" => $successURL,
-					"CancelPaymentRedirectUrl" => $cancelURL
-			    ]
-			]);
+			$secret_key = get_option('adm_private_key');
+
+			$body = [
+				"headers" => $this->headers,
+				"json" => [
+				"Amount" => $order->get_total(),
+				"Currency" => get_option('woocommerce_currency'),
+				"OrderId" => $order->get_id(),
+				"SuccessRedirectUrl" => $successURL,
+				"CancelPaymentRedirectUrl" => $cancelURL
+				]
+			];
+
+			if(!empty($secret_key)) {
+				$body["json"]["CallbackUrl"] = get_site_url(null, $this->getWebhookPath());
+			}
+
+			$response = $this->client->request('POST', ADM_API_BASE_URL . '/v1/orders', $body);
 
 			$response = json_decode( $response->getBody()->getContents() );
 
@@ -174,10 +182,7 @@ class AnydayPayment
 		try {
 
 			$response = $this->client->request('POST', ADM_API_BASE_URL . '/v1/orders/' . get_post_meta( $order->get_id(), 'anyday_payment_transaction' )[0] . '/capture', [
-				'headers' => [
-			        'Content-Type' => 'application/json',
-			        'Authorization' => 'Bearer ' .  $this->authorization_token
-			    ],
+				'headers' => $this->headers,
 			    "json" => [
 					"Amount" => (float)$amount
 			  ]
@@ -210,10 +215,7 @@ class AnydayPayment
 		try {
 
 			$response = $this->client->request('POST', ADM_API_BASE_URL . '/v1/orders/' . get_post_meta( $order->get_id(), 'anyday_payment_transaction' )[0] . '/cancel', [
-				'headers' => [
-			        'Content-Type' => 'application/json',
-			        'Authorization' => 'Bearer ' .  $this->authorization_token
-			    ]
+				'headers' => $this->headers
 			]);
 
 			$response = json_decode( $response->getBody()->getContents() );
@@ -257,10 +259,7 @@ class AnydayPayment
 		try {
 
 			$response = $this->client->request('POST', ADM_API_BASE_URL . '/v1/orders/' . get_post_meta( $order->get_id(), 'anyday_payment_transaction' )[0] . '/refund', [
-				'headers' => [
-			        'Content-Type' => 'application/json',
-			        'Authorization' => 'Bearer ' .  $this->authorization_token
-			    ],
+				'headers' => $this->headers,
 			    "json" => [
 					"Amount" => (float)$amount
 			    ]
