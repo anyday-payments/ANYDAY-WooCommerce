@@ -86,18 +86,18 @@ class AnydayWooOrder
 
 		foreach( get_post_meta( $order->get_id() ) as $key => $meta ) {
 			if( strpos($key, 'anyday_captured_payment') !== false ) {
-				$captured_amount += $this->format_amount($meta[0]);
+				$captured_amount += format_amount($meta[0]);
 			}
 
 			if( strpos($key, 'anyday_refunded_payment') !== false ) {
-				$refunded_amount += $this->format_amount($meta[0]);
+				$refunded_amount += format_amount($meta[0]);
 			}
 
 			if ( ($order->get_total() - $captured_amount ) == 0 ) {
 				update_post_meta( $order->get_id(),'full_captured_amount', 'true' );
 			}
 
-			if ( ($captured_amount - $refunded_amount) == 0 ) {
+			if ( $captured_amount && ($captured_amount - $refunded_amount) == 0 ) {
 				update_post_meta( $order->get_id(),'full_refunded_amount', 'true' );
 			}
 		}
@@ -125,7 +125,7 @@ width: 100%;margin-top: 20px;">
 				<table class="woocommerce_order_items" cellspacing="0" cellpadding="0">
 					<tbody id="order_refunds">
 						<?php foreach( get_post_meta( $order->get_id() ) as $key => $meta ) :?>
-							<?php if( strpos($key, 'anyday_captured_payment') !== false ) : $captured_amount = $captured_amount + $this->format_amount($meta[0]);?>
+							<?php if( strpos($key, 'anyday_captured_payment') !== false ) : $captured_amount = $captured_amount + format_amount($meta[0]);?>
 								<tr class="refund ">
 									<td class="thumb">
 										<div></div>
@@ -136,7 +136,7 @@ width: 100%;margin-top: 20px;">
 									</td>
 									<td class="line_cost" width="1%">
 										<div class="view">
-											<span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol"><?php echo $order->get_currency(); ?></span><?php echo number_format($this->format_amount($meta[0]), 2, ',', '.'); ?></span>
+											<span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol"><?php echo $order->get_currency(); ?></span><?php echo number_format(format_amount($meta[0]), 2, ',', '.'); ?></span>
 										</div>
 									</td>
 								</tr>
@@ -180,7 +180,7 @@ width: 100%;margin-top: 20px;">
 				<table class="woocommerce_order_items" cellspacing="0" cellpadding="0">
 					<tbody id="order_refunds">
 						<?php foreach( get_post_meta( $order->get_id() ) as $key => $meta ) :?>
-							<?php if( strpos($key, 'anyday_refunded_payment') !== false ) : $refunded_amount = $refunded_amount + $this->format_amount($meta[0]);?>
+							<?php if( strpos($key, 'anyday_refunded_payment') !== false ) : $refunded_amount = $refunded_amount + format_amount($meta[0]);?>
 								<tr class="refund ">
 									<td class="thumb">
 										<div></div>
@@ -191,7 +191,7 @@ width: 100%;margin-top: 20px;">
 									</td>
 									<td class="line_cost" width="1%">
 										<div class="view">
-											<span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol"><?php echo $order->get_currency(); ?></span><?php echo number_format($this->format_amount($meta[0]), 2, ',', '.'); ?></span>
+											<span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol"><?php echo $order->get_currency(); ?></span><?php echo number_format(format_amount($meta[0]), 2, ',', '.'); ?></span>
 										</div>
 									</td>
 								</tr>
@@ -478,7 +478,7 @@ width: 100%;margin-top: 20px;">
 		$captured_amount = 0;
 		foreach( get_post_meta( $order->get_id() ) as $key => $meta ) {
 			if( strpos($key, 'anyday_captured_payment') !== false ) {
-				$captured_amount += $this->format_amount($meta[0]);
+				$captured_amount += format_amount($meta[0]);
 			}
 		}
 		return $captured_amount;
@@ -492,19 +492,9 @@ width: 100%;margin-top: 20px;">
 		$refunded_amount = 0;
 		foreach (get_post_meta($order->get_id()) as $key => $meta) {
 			if (strpos($key, 'anyday_refunded_payment') !== false) {
-					$refunded_amount += $this->format_amount($meta[0]);
+					$refunded_amount += format_amount($meta[0]);
 			}
 		}
 		return $refunded_amount;
-	}
-
-	/**
-	 * @param string $number
-	 * @return 
-	 */
-	private function format_amount($number) {
-		$number_string = str_replace(',', '', str_replace('.', '', $number));
-		$number = floatval(substr($number_string, 0, strlen($number_string) - 2) . "." . substr($number_string, strlen($number_string) - 2 , strlen($number_string)));
-		return $number;
 	}
 }

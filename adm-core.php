@@ -110,4 +110,14 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 			}
 		}
 	}
+
+	/**
+	 * @param string $number
+	 * @return float
+	 */
+	function format_amount($number) {
+		$number_string = str_replace(',', '', str_replace('.', '', $number));
+		$number = floatval(substr($number_string, 0, strlen($number_string) - 2) . "." . substr($number_string, strlen($number_string) - 2 , strlen($number_string)));
+		return $number;
+	}
 }
