@@ -99,12 +99,13 @@ class AnydayWooOrder
 
 			if ( $captured_amount && ($captured_amount - $refunded_amount) == 0 ) {
 				update_post_meta( $order->get_id(),'full_refunded_amount', 'true' );
+				$order->update_status('wc-adm-refunded');
 			}
 		}
 
 		if( $order->get_payment_method() == 'anyday_payment_gateway' ) {
 			if ( $order->get_status() != 'cancelled' ) {
-				if ( get_post_meta( $order->get_id(), 'full_captured_amount' )[0] != 'true' ) {
+				if ( !$refunded_amount && get_post_meta( $order->get_id(), 'full_captured_amount' )[0] != 'true' ) {
 					echo '<button type="button" class="button anyday-capture anyday-payment-action" data-anyday-action="adm_capture_payment" data-order-id="'.$order->get_id().'">'. __("Anyday Capture", "adm") .'</button>';
 				}
 

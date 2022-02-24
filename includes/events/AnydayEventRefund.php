@@ -31,14 +31,11 @@ class AnydayEventRefund extends AnydayEvent {
 				$this->order->add_order_note( 
 					sprintf(
 						wp_kses( $message, array( 'br' => array() ) ),
-						number_format($this->data['Transaction']['Amount'], 2, ',', '.'),
+						format_amount($this->data['Transaction']['Amount']),
 						$this->order->get_currency()
 					)
 				);
-				update_post_meta( $this->order->get_id(), date("Y-m-d_h:i:sa") . '_anyday_refunded_payment', wc_clean( number_format($this->data['Transaction']['Amount'], 2, ',', '.') ) );
-				if( ! $this->get_is_pending() ) {
-					$this->order->update_status( 'refunded' );
-				}
+				update_post_meta( $this->order->get_id(), date("Y-m-d_h:i:sa") . '_anyday_refunded_payment', wc_clean( format_amount( $this->data['Transaction']['Amount'] ) ) );
 			break;
 		}
 		return;
