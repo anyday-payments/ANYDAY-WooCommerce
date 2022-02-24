@@ -13,7 +13,6 @@
         var amount = prompt(anyday.capturePrompt);
 
         if(amount === null) return;
-
         amount = validateAmount(amount);
 
         if(!amount) {
@@ -29,8 +28,7 @@
       } else if (action === 'adm_refund_payment') {
         var amount = prompt(anyday.refundConfirmation);
 
-        if(amount === null) return;
-
+        if (amount === null) return;
         amount = validateAmount(amount);
 
         if(!amount) {
@@ -57,11 +55,17 @@
     });
 
     function validateAmount(amount) {
-      let amtPattern = /^((?:\d{1,3}(?:[\s,]\d{3})+|\d+)(?:.\d{0,2}$))$|^((?:\d{1,3}(?:[\s.]\d{3})+|\d+)(?:,\d{0,2}$)|(^\d+$))$/;
+      let amtPattern = /^((?:\d{1,3}((?:[\s,]\d{3})+|(?:,\d{0,2}))(?:\.\d{0,2})?)$|^(?:\d{1,3}((?:[\s.]\d{3})+|(?:\.\d{0,2}))(?:\,\d{0,2})?)$|(^\d+[,\.]?)$|(?:\d+[,\.]\d{0,2})$)/;
       var dotPattern = [];
       var zeroReg    = /^0+$/;
       var amt        = false;
       var dec, decLength;
+      if ((amount.charAt(0) == '.' || amount.charAt(0) == ',')) {
+        dotPattern = amount.match(/[,|\.]/g);
+        if (dotPattern.length == 1) {
+          amount = "0" + amount;
+        }
+      }
       if(amtPattern.test(amount)) {
         dotPattern = amount.match(/[,|\.]/g);
         amt = amount.match(/\d+/g).join('');
@@ -70,7 +74,9 @@
         if(dotPattern && dotPattern.length > 0) {
           dec = dotPattern[dotPattern.length - 1];
           decLength = amount.split(dec)[1].length;
-          amt = amt.substring(0, amt.length - decLength) + "." + amt.substring(amt.length - decLength);
+          if ((amount.split(dec)[0] == "0" && dotPattern.length != 1) || decLength <= 2 ) {
+            amt = amt.substring(0, amt.length - decLength) + "." + amt.substring(amt.length - decLength);
+          }
         } else {
           return amt;
         }

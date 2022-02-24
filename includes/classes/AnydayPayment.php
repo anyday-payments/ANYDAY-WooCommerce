@@ -138,14 +138,13 @@ class AnydayPayment
 		$id = ($order_id) ? $order_id : $_POST['orderId'];
 		$order = wc_get_order( $id );
 		$amount = ($amount) ? $amount : $_POST['amount'];
-		$amount = format_amount($amount);
 		$response = $this->adm_api_capture( $order, $amount );
 
 		if ( $response ) {
 
 			if ( !$this->handled( $order, $response->transactionId ) ) {
 
-				update_post_meta( $order->get_id(), date("Y-m-d_h:i:sa") . '_anyday_captured_payment', wc_clean( number_format($amount, 2, ',', '') ) );
+				update_post_meta( $order->get_id(), date("Y-m-d_h:i:sa") . '_anyday_captured_payment', wc_clean( $amount ) );
 				if( get_option('adm_order_status_after_captured_payment') != "default" ) {
 
 					$order->update_status( get_option('adm_order_status_after_captured_payment'), __( 'Anyday payment captured!', 'adm' ) );
@@ -289,13 +288,12 @@ class AnydayPayment
 		$id = ($order_id) ? $order_id : $_POST['orderId'];
 		$order = wc_get_order( $id );
 		$amount = ($amount) ? $amount : $_POST['amount'];
-		$amount = format_amount($amount);
 		$response = $this->adm_api_refund( $order, $amount );
 
 		if( $response ) {
 			if (!$this->handled($order, $response->transactionId)) {
 
-				update_post_meta($order->get_id(), date("Y-m-d_h:i:sa") . '_anyday_refunded_payment', wc_clean( number_format($amount, 2, ',', '') ));
+				update_post_meta($order->get_id(), date("Y-m-d_h:i:sa") . '_anyday_refunded_payment', wc_clean( $amount) );
 
 				$order->update_status('wc-adm-refunded', __('Anyday payment refunded!', 'adm'));
 

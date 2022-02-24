@@ -86,11 +86,11 @@ class AnydayWooOrder
 
 		foreach( get_post_meta( $order->get_id() ) as $key => $meta ) {
 			if( strpos($key, 'anyday_captured_payment') !== false ) {
-				$captured_amount += format_amount($meta[0]);
+				$captured_amount += floatval($meta[0]);
 			}
 
 			if( strpos($key, 'anyday_refunded_payment') !== false ) {
-				$refunded_amount += format_amount($meta[0]);
+				$refunded_amount += floatval($meta[0]);
 			}
 
 			if ( ($order->get_total() - $captured_amount ) == 0 ) {
@@ -109,7 +109,7 @@ class AnydayWooOrder
 					echo '<button type="button" class="button anyday-capture anyday-payment-action" data-anyday-action="adm_capture_payment" data-order-id="'.$order->get_id().'">'. __("Anyday Capture", "adm") .'</button>';
 				}
 
-				if ( get_post_meta( $order->get_id(), 'full_captured_amount' )[0] != 'true' && get_post_meta( $order->get_id(), 'full_refunded_amount' )[0] != 'true' ) {
+				if ( !$refunded_amount && get_post_meta( $order->get_id(), 'full_captured_amount' )[0] != 'true' && get_post_meta( $order->get_id(), 'full_refunded_amount' )[0] != 'true' ) {
 					echo '<button type="button" class="button anyday-cancel anyday-payment-action" data-anyday-action="adm_cancel_payment" data-order-id="'.$order->get_id().'">'. __("Anyday Cancel", "adm") .'</button>';
 				}
 
@@ -126,7 +126,7 @@ width: 100%;margin-top: 20px;">
 				<table class="woocommerce_order_items" cellspacing="0" cellpadding="0">
 					<tbody id="order_refunds">
 						<?php foreach( get_post_meta( $order->get_id() ) as $key => $meta ) :?>
-							<?php if( strpos($key, 'anyday_captured_payment') !== false ) : $captured_amount = $captured_amount + format_amount($meta[0]);?>
+							<?php if( strpos($key, 'anyday_captured_payment') !== false ) : $captured_amount = $captured_amount + floatval($meta[0]);?>
 								<tr class="refund ">
 									<td class="thumb">
 										<div></div>
@@ -137,7 +137,7 @@ width: 100%;margin-top: 20px;">
 									</td>
 									<td class="line_cost" width="1%">
 										<div class="view">
-											<span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol"><?php echo $order->get_currency(); ?></span><?php echo number_format(format_amount($meta[0]), 2, ',', '.'); ?></span>
+											<span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol"><?php echo $order->get_currency(); ?></span><?php echo number_format(floatval($meta[0]), 2, ',', '.'); ?></span>
 										</div>
 									</td>
 								</tr>
@@ -160,7 +160,7 @@ width: 100%;margin-top: 20px;">
 									<td class="label">Amount left to be Captured:</td>
 									<td width="1%"></td>
 									<td class="total">
-										<span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol"><?php echo $order->get_currency(); ?></span><?php echo number_format((float)$order->get_total() - (float)$captured_amount + $refunded_amount, 2, ',', '.');
+										<span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol"><?php echo $order->get_currency(); ?></span><?php echo ( $refunded_amount ) ? number_format(0, 2, ',', '.') : number_format((float)$order->get_total() - (float)$captured_amount, 2, ',', '.');
 
 										if ( ((float)$order->get_total() - $captured_amount) == 0 ) {
 											update_post_meta( $order->get_id(),'full_captured_amount', 'true' );
@@ -181,7 +181,7 @@ width: 100%;margin-top: 20px;">
 				<table class="woocommerce_order_items" cellspacing="0" cellpadding="0">
 					<tbody id="order_refunds">
 						<?php foreach( get_post_meta( $order->get_id() ) as $key => $meta ) :?>
-							<?php if( strpos($key, 'anyday_refunded_payment') !== false ) : $refunded_amount = $refunded_amount + format_amount($meta[0]);?>
+							<?php if( strpos($key, 'anyday_refunded_payment') !== false ) : $refunded_amount = $refunded_amount + floatval($meta[0]);?>
 								<tr class="refund ">
 									<td class="thumb">
 										<div></div>
@@ -192,7 +192,7 @@ width: 100%;margin-top: 20px;">
 									</td>
 									<td class="line_cost" width="1%">
 										<div class="view">
-											<span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol"><?php echo $order->get_currency(); ?></span><?php echo number_format(format_amount($meta[0]), 2, ',', '.'); ?></span>
+											<span class="woocommerce-Price-amount amount"><span class="woocommerce-Price-currencySymbol"><?php echo $order->get_currency(); ?></span><?php echo number_format(floatval($meta[0]), 2, ',', '.'); ?></span>
 										</div>
 									</td>
 								</tr>
@@ -479,7 +479,7 @@ width: 100%;margin-top: 20px;">
 		$captured_amount = 0;
 		foreach( get_post_meta( $order->get_id() ) as $key => $meta ) {
 			if( strpos($key, 'anyday_captured_payment') !== false ) {
-				$captured_amount += format_amount($meta[0]);
+				$captured_amount += floatval($meta[0]);
 			}
 		}
 		return $captured_amount;
@@ -493,7 +493,7 @@ width: 100%;margin-top: 20px;">
 		$refunded_amount = 0;
 		foreach (get_post_meta($order->get_id()) as $key => $meta) {
 			if (strpos($key, 'anyday_refunded_payment') !== false) {
-					$refunded_amount += format_amount($meta[0]);
+					$refunded_amount += floatval($meta[0]);
 			}
 		}
 		return $refunded_amount;
