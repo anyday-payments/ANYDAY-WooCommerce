@@ -2,8 +2,8 @@
 Contributors: anyday2020
 Tags: Payments, Instalments, WooCommerce, Payment Gateway, Buy Now Pay Later, BNPL, Conversion Rate, Basket Size, Anyday
 Requires at least: 4.3.1
-Tested up to: 5.8.1
-Stable tag: 1.7.3
+Tested up to: 5.9.1
+Stable tag: 1.7.4
 License: MIT
 License URI: https://opensource.org/licenses/MIT
 
@@ -115,3 +115,9 @@ Anyday assumes all credit risk as soon as a purchase is made. You will receive a
 - Fixing cached JS URL for some instances using permalinks.
 - Fixed backend configuration page which was broken.
 - Minimum price limit for pricetag isn't working for on-sale product.
+
+= 1.7.4 =
+
+#### 👾 Bug Fixes
+- Fixed miscalculations on order details page, after payment capture/refunds.
+- Fixed decimal point bug which captures incorrect amount due to wrong decimal value conversion. Now users would be able to enter an integer e.g. 1500 or 250, or may enter decimals e.g. 1.500,00 or 250,00. If entered a decimal in the thousandths place, you must use two decimals. e.g. 1.500,00
