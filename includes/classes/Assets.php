@@ -14,10 +14,10 @@ class Assets
     	wp_enqueue_script( 'anyday-admin-javascript', ADM_URL . 'assets/admin/js/anyday-admin.js', array(), false, true );
         wp_localize_script( 'anyday-admin-javascript', 'anyday', array(
             "ajaxUrl" => admin_url( 'admin-ajax.php' ),
-            "capturePrompt" => __( "Enter amount to be captured. Please note the amount cannot be higher than the order total!", "adm" ),
+            "capturePrompt" => __( "Enter an amount to be captured. You may enter an integer e.g. 1500 or 250, or you may enter decimals e.g. 1.500,00 or 250,00. If you enter a decimal in the thousandths place, you must use two decimals. e.g. 1.500,00", "adm" ),
             "capturePromptValidation" => __( "Please enter numeric value!", "adm" ),
             "cancelConfirmation" => __( "Are you sure you want to cancel this order? This action cannot be undone.", "adm" ),
-            "refundConfirmation" => __( "Are you sure you want to refund this order? This action cannot be undone.", "adm" )
+            "refundConfirmation" => __( "Are you sure you want to refund this order? This action cannot be undone. Enter an amount to be refunded. You may enter an integer e.g. 1500 or 250, or you may enter decimals e.g. 1.500,00 or 250,00. If you enter a decimal in the thousandths place, you must use two decimals. e.g. 1.500,00", "adm" )
         ));
 
         wp_enqueue_style( 'anyday-admin-stylesheet', ADM_URL . 'assets/admin/css/anyday-admin.css' );
