@@ -109,10 +109,11 @@ class Core
      * Load the plugin settings
      *@method adm_add_settings
      */
-	public function adm_add_settings()
+	public function adm_add_settings($settings)
 	{
-    	return new Settings();
-    }
+		new Settings();
+		return $settings;
+	}
 
 	/**
      * Register the Anyday payment gateway
