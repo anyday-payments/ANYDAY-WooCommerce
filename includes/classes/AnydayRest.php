@@ -83,7 +83,7 @@ class AnydayRest {
 			return false;
 		}
 		$signedBody = hash_hmac('sha256', $request->get_body(), $private);
-		if($signature === strtoupper($signedBody)) {
+		if($signature === $signedBody) {
 			return true;
 		}
 		return false;

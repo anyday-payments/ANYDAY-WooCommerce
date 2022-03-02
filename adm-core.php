@@ -32,6 +32,7 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 	define( 'ADM_URL', plugin_dir_url( __FILE__ ) );
 	define( 'ADM_PLUGIN_SLUG', "am-wordpress" );
 	define( 'ADM_API_BASE_URL', "https://my.anyday.io" );
+	define( 'ADM_API_ORDERS_BASE_PATH', "/api/v1/orders" );
 	define( 'ADM_PLUGIN_BASE_NAME', plugin_basename(__FILE__) );
 	define( 'ADM_PLUGIN_PATH', plugin_dir_path(__FILE__) );
 	define( 'ADM_CURRENCY', "DKK" );

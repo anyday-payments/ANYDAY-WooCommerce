@@ -94,26 +94,26 @@ class AnydayPayment
 			$body = [
 				"headers" => $this->headers,
 				"json" => [
-				"Amount" => $order->get_total(),
-				"Currency" => get_option('woocommerce_currency'),
-				"OrderId" => $order->get_id(),
-				"SuccessRedirectUrl" => $successURL,
-				"CancelPaymentRedirectUrl" => $cancelURL
+				"amount" => $order->get_total(),
+				"currency" => get_option('woocommerce_currency'),
+				"orderId" => $order->get_id(),
+				"successRedirectUrl" => $successURL,
+				"cancelPaymentRedirectUrl" => $cancelURL
 				]
 			];
 
 			if(!empty($secret_key)) {
-				$body["json"]["CallbackUrl"] = get_site_url(null, $this->getWebhookPath());
+				$body["json"]["callbackUrl"] = get_site_url(null, $this->getWebhookPath());
 			}
 
-			$response = $this->client->request('POST', ADM_API_BASE_URL . '/v1/orders', $body);
+			$response = $this->client->request('POST', ADM_API_BASE_URL . ADM_API_ORDERS_BASE_PATH, $body);
 
 			$response = json_decode( $response->getBody()->getContents() );
 
 			if( $response->errorCode === 0 ) {
 
-				update_post_meta( $order->get_id(), 'anyday_payment_transaction', wc_clean( $response->transactionId ) );
-				$this->handled( $order, $response->transactionId );
+				update_post_meta( $order->get_id(), 'anyday_payment_transaction', wc_clean( $response->purchaseOrderId ) );
+				$this->handled( $order, $response->purchaseOrderId );
 
 				return $response->authorizeUrl;
 			}
@@ -180,10 +180,10 @@ class AnydayPayment
 	{
 		try {
 
-			$response = $this->client->request('POST', ADM_API_BASE_URL . '/v1/orders/' . get_post_meta( $order->get_id(), 'anyday_payment_transaction' )[0] . '/capture', [
+			$response = $this->client->request('POST', ADM_API_BASE_URL . ADM_API_ORDERS_BASE_PATH . '/' . get_post_meta( $order->get_id(), 'anyday_payment_transaction' )[0] . '/capture', [
 				'headers' => $this->headers,
 			    "json" => [
-					"Amount" => (float)$amount
+					"amount" => (float)$amount
 			  ]
 			]);
 
@@ -213,7 +213,7 @@ class AnydayPayment
 
 		try {
 
-			$response = $this->client->request('POST', ADM_API_BASE_URL . '/v1/orders/' . get_post_meta( $order->get_id(), 'anyday_payment_transaction' )[0] . '/cancel', [
+			$response = $this->client->request('POST', ADM_API_BASE_URL . ADM_API_ORDERS_BASE_PATH . '/' . get_post_meta( $order->get_id(), 'anyday_payment_transaction' )[0] . '/cancel', [
 				'headers' => $this->headers
 			]);
 
@@ -257,10 +257,10 @@ class AnydayPayment
 	{
 		try {
 
-			$response = $this->client->request('POST', ADM_API_BASE_URL . '/v1/orders/' . get_post_meta( $order->get_id(), 'anyday_payment_transaction' )[0] . '/refund', [
+			$response = $this->client->request('POST', ADM_API_BASE_URL . ADM_API_ORDERS_BASE_PATH . '/' . get_post_meta( $order->get_id(), 'anyday_payment_transaction' )[0] . '/refund', [
 				'headers' => $this->headers,
 			    "json" => [
-					"Amount" => (float)$amount
+					"amount" => (float)$amount
 			    ]
 			]);
 
