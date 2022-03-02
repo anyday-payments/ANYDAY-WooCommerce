@@ -9,6 +9,7 @@ class AnydayPayment
 {
 	private $client;
 	private $authorization_token;
+	private $headers;
 
 	public function __construct()
 	{
@@ -40,7 +41,10 @@ class AnydayPayment
 
 				break;
 		}
-
+		$this->headers = [
+			'Content-Type' => 'application/json',
+			'Authorization' => 'Bearer ' .  $this->authorization_token
+		];
 		$this->client = new Client();
 	}
 
@@ -82,34 +86,41 @@ class AnydayPayment
 	 */
 	public function adm_authorize_payment($order, $successURL, $cancelURL)
 	{
+		
 		try {
 
-			$response = $this->client->request('POST', ADM_API_BASE_URL . '/v1/payments', [
-				'headers' => [
-			        'Content-Type' => 'application/json',
-			        'Authorization' => 'Bearer ' .  $this->authorization_token
-			    ],
-			    "json" => [
-					"Amount" => $order->get_total(),
-					"Currency" => get_option('woocommerce_currency'),
-					"OrderId" => $order->get_id(),
-					"SuccessRedirectUrl" => $successURL,
-					"CancelPaymentRedirectUrl" => $cancelURL
-			    ]
-			]);
+			$secret_key = get_option('adm_private_key');
+
+			$body = [
+				"headers" => $this->headers,
+				"json" => [
+				"Amount" => $order->get_total(),
+				"Currency" => get_option('woocommerce_currency'),
+				"OrderId" => $order->get_id(),
+				"SuccessRedirectUrl" => $successURL,
+				"CancelPaymentRedirectUrl" => $cancelURL
+				]
+			];
+
+			if(!empty($secret_key)) {
+				$body["json"]["CallbackUrl"] = get_site_url(null, $this->getWebhookPath());
+			}
+
+			$response = $this->client->request('POST', ADM_API_BASE_URL . '/v1/orders', $body);
 
 			$response = json_decode( $response->getBody()->getContents() );
 
 			if( $response->errorCode === 0 ) {
 
 				update_post_meta( $order->get_id(), 'anyday_payment_transaction', wc_clean( $response->transactionId ) );
+				$this->handled( $order, $response->transactionId );
 
 				return $response->authorizeUrl;
 			}
 
 		} catch ( RequestException $e ) {
 
-			$this->adm_log_anyday_error( Psr7\str($e->getResponse()) );
+			$this->adm_log_anyday_error( Psr7\str( $e->getResponse() ) );
 
 			$order->update_status( 'failed', __( 'Anyday payment failed!', 'adm' ) );
 
@@ -127,23 +138,25 @@ class AnydayPayment
 		$id = ($order_id) ? $order_id : $_POST['orderId'];
 		$order = wc_get_order( $id );
 		$amount = ($amount) ? $amount : $_POST['amount'];
-		$request = $this->adm_api_capture( $order, $amount );
+		$response = $this->adm_api_capture( $order, $amount );
 
-		if ( $request ) {
+		if ( $response ) {
 
-			update_post_meta( $order->get_id(), date("Y-m-d_h:i:sa") . '_anyday_captured_payment', wc_clean( $amount ) );
+			if ( !$this->handled( $order, $response->transactionId ) ) {
 
-			if( get_option('adm_order_status_after_captured_payment') != "default" ) {
+				update_post_meta( $order->get_id(), date("Y-m-d_h:i:sa") . '_anyday_captured_payment', wc_clean( $amount ) );
+				if( get_option('adm_order_status_after_captured_payment') != "default" ) {
 
-				$order->update_status( get_option('adm_order_status_after_captured_payment'), __( 'Anyday payment captured!', 'adm' ) );
+					$order->update_status( get_option('adm_order_status_after_captured_payment'), __( 'Anyday payment captured!', 'adm' ) );
 
-			} else {
+				} else {
 
-				$order->update_status( 'completed', __( 'Anyday payment captured!', 'adm' ) );
+					$order->update_status( 'completed', __( 'Anyday payment captured!', 'adm' ) );
 
-			}
+				}
 
-			$order->add_order_note( __( date("Y-m-d, h:i:sa") . ' - Captured amount: ' . number_format($amount, 2, ',', '.') . get_option('woocommerce_currency'), 'adm') );
+				$order->add_order_note( __( date("Y-m-d, h:i:sa") . ' - Captured amount: ' . number_format($amount, 2, ',', '.') . get_option('woocommerce_currency'), 'adm') );
+				}
 			$success = true;
 		}
 
@@ -153,7 +166,7 @@ class AnydayPayment
 			if($success) {
 				echo json_encode( ["success" => __('Anyday payment successfully captured.', 'adm')] ) ;
 			} else {
-				echo json_encode( ["error" => __('Payment could not be captured. Please contact Anyday support.', 'adm')] );
+			  echo json_encode( ["error" => __('Payment could not be captured. Please contact Anyday support.', 'adm')] );
 			}
 			exit;
 		}
@@ -167,21 +180,18 @@ class AnydayPayment
 	{
 		try {
 
-			$response = $this->client->request('POST', ADM_API_BASE_URL . '/v1/payments/' . get_post_meta( $order->get_id(), 'anyday_payment_transaction' )[0] . '/capture', [
-				'headers' => [
-			        'Content-Type' => 'application/json',
-			        'Authorization' => 'Bearer ' .  $this->authorization_token
-			    ],
+			$response = $this->client->request('POST', ADM_API_BASE_URL . '/v1/orders/' . get_post_meta( $order->get_id(), 'anyday_payment_transaction' )[0] . '/capture', [
+				'headers' => $this->headers,
 			    "json" => [
 					"Amount" => (float)$amount
-			    ]
+			  ]
 			]);
 
 			$response = json_decode( $response->getBody()->getContents() );
 
 			if( $response->errorCode === 0 )
 
-			return true;
+			return $response;
 
 		} catch ( RequestException $e ) {
 
@@ -203,23 +213,20 @@ class AnydayPayment
 
 		try {
 
-			$response = $this->client->request('POST', ADM_API_BASE_URL . '/v1/payments/' . get_post_meta( $order->get_id(), 'anyday_payment_transaction' )[0] . '/cancel', [
-				'headers' => [
-			        'Content-Type' => 'application/json',
-			        'Authorization' => 'Bearer ' .  $this->authorization_token
-			    ]
+			$response = $this->client->request('POST', ADM_API_BASE_URL . '/v1/orders/' . get_post_meta( $order->get_id(), 'anyday_payment_transaction' )[0] . '/cancel', [
+				'headers' => $this->headers
 			]);
 
 			$response = json_decode( $response->getBody()->getContents() );
 
 			if( $response->errorCode === 0 ) {
+				if (!$this->handled($order, $response->transactionId)) {
 
-				wc_increase_stock_levels( $order->get_id() );
+					wc_increase_stock_levels($order->get_id());
 
-				$order->update_status( 'cancelled', __( 'Anyday payment cancelled!', 'adm' ) );
-
+					$order->update_status('cancelled', __('Anyday payment cancelled!', 'adm'));
+				}
 				$success = true;
-
 			}
 
 		} catch ( RequestException $e ) {
@@ -250,11 +257,8 @@ class AnydayPayment
 	{
 		try {
 
-			$response = $this->client->request('POST', ADM_API_BASE_URL . '/v1/payments/' . get_post_meta( $order->get_id(), 'anyday_payment_transaction' )[0] . '/refund', [
-				'headers' => [
-			        'Content-Type' => 'application/json',
-			        'Authorization' => 'Bearer ' .  $this->authorization_token
-			    ],
+			$response = $this->client->request('POST', ADM_API_BASE_URL . '/v1/orders/' . get_post_meta( $order->get_id(), 'anyday_payment_transaction' )[0] . '/refund', [
+				'headers' => $this->headers,
 			    "json" => [
 					"Amount" => (float)$amount
 			    ]
@@ -264,7 +268,7 @@ class AnydayPayment
 
 			if( $response->errorCode === 0 )
 
-			return true;
+			return $response;
 
 		} catch ( RequestException $e ) {
 
@@ -284,16 +288,18 @@ class AnydayPayment
 		$id = ($order_id) ? $order_id : $_POST['orderId'];
 		$order = wc_get_order( $id );
 		$amount = ($amount) ? $amount : $_POST['amount'];
-		$request = $this->adm_api_refund( $order, $amount );
+		$response = $this->adm_api_refund( $order, $amount );
 
-		if( $request ) {
+		if( $response ) {
 
-			update_post_meta( $order->get_id(), date("Y-m-d_h:i:sa") . '_anyday_refunded_payment', wc_clean( $amount ) );
+			if (!$this->handled($order, $response->transactionId)) {
 
-			$order->update_status( 'wc-adm-refunded', __( 'Anyday payment refunded!', 'adm' ) );
+				update_post_meta($order->get_id(), date("Y-m-d_h:i:sa") . '_anyday_refunded_payment', wc_clean($amount));
 
-			$order->add_order_note( __( date("Y-m-d, h:i:sa") . ' - Refunded amount: ' . number_format($amount, 2, ',', ' ') . get_option('woocommerce_currency'), 'adm') );
+				$order->update_status('wc-adm-refunded', __('Anyday payment refunded!', 'adm'));
 
+				$order->add_order_note(__(date("Y-m-d, h:i:sa") . ' - Refunded amount: ' . number_format($amount, 2, ',', ' ') . get_option('woocommerce_currency'), 'adm'));
+			}
 			$success = true;
 
 		}
@@ -324,5 +330,36 @@ class AnydayPayment
 
 		}
 
+	}
+
+	/**
+	 * Returns webhook path which accepts request data in JSON format.
+	 * @return string
+	 */
+	private function getWebhookPath() {
+		return '/wp-json/' . AnydayRest::ENDPOINT_NAMESPACE . '/' . AnydayRest::ENDPOINT;
+	}
+
+	/**
+	 * @todo THIS IS DUPLICATE FUNCTION IN CLASS Adm/AnydayEvent, need to refactor
+	 *
+	 * Checks if transaction as been handled before or not by checking transaction id's in order metadata.
+	 * If it is handled previously then returns true otherwise save the transaction id to order metadata
+	 * and returns false.
+	 * @param void
+	 * @return boolean
+	 */
+	private function handled($order, $transaction_id) {
+		$order_data = $order->get_meta('anyday_payment_transactions');
+		if( in_array($transaction_id, $order_data) )  {
+			return true;
+		}
+		$txn = get_post_meta($order->get_id(), 'anyday_payment_transactions', true);
+		if(!is_array($txn)) {
+			$txn = array();
+		}
+		array_push($txn, $transaction_id);
+		update_post_meta($order->get_id(), 'anyday_payment_transactions', $txn);
+		return false;
 	}
 }

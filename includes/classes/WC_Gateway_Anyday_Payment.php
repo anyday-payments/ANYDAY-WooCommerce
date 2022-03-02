@@ -1,6 +1,4 @@
 <?php
-use GuzzleHttp\Client;
-use GuzzleHttp\Exception\RequestException;
 use Adm\AnydayPayment;
 
 class WC_Gateway_Anyday_Payment extends WC_Payment_Gateway {

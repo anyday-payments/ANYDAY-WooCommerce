@@ -8,7 +8,7 @@ class Core
 
     public function __construct()
     {
-    	$this->version = ADM_VERSION;
+    $this->version = ADM_VERSION;
 		$this->plugin_name = 'vconnect-anyday-module';
 
 		add_filter( 'woocommerce_get_settings_pages', array( $this, 'adm_add_settings' ), 15 );
@@ -25,9 +25,9 @@ class Core
 		new MerchantAuthentication();
 		new AnydayWooOrder();
 		new AnydayPayment();
+		new AnydayRest();
 
 		add_action( 'admin_init', array( $this, 'adm_admin_notices' ) );
-
     }
 
     /**

@@ -228,7 +228,7 @@ width: 100%;margin-top: 20px;">
 									<td class="label label-highlight">Net Payment:</td>
 									<td width="1%"></td>
 									<td class="total">
-									<span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol"><?php echo $order->get_currency(); ?></span><?php echo number_format($captured_amount - $refunded_amount, 2, ',', '.'); ?></bdi></span></td>
+									<span class="woocommerce-Price-amount amount"><bdi><span class="woocommerce-Price-currencySymbol"><?php echo $order->get_currency(); ?></span><?php echo number_format((float)$captured_amount - $refunded_amount, 2, ',', '.'); ?></bdi></span></td>
 								</tr>
 							</tbody>
 						</table>
