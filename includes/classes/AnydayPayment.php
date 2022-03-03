@@ -45,7 +45,7 @@ class AnydayPayment
 			'Content-Type' => 'application/json',
 			'Authorization' => 'Bearer ' .  $this->authorization_token
 		];
-		$this->client = new Client();
+		$this->client = new Client(['verify' => false]);
 	}
 
 	/**
@@ -98,12 +98,13 @@ class AnydayPayment
 				"currency" => get_option('woocommerce_currency'),
 				"orderId" => $order->get_id(),
 				"successRedirectUrl" => $successURL,
-				"cancelRedirectUrl" => $cancelURL
+				"cancelRedirectUrl" => $cancelURL,
+				"refererUrl" => get_site_url()
 				]
 			];
 
 			if(!empty($secret_key)) {
-				$body["json"]["refererUrl"] = get_site_url(null, $this->getWebhookPath());
+				$body["json"]["callbackUrl"] = get_site_url(null, $this->getWebhookPath());
 			}
 
 			$response = $this->client->request('POST', ADM_API_BASE_URL . ADM_API_ORDERS_BASE_PATH, $body);
@@ -115,7 +116,7 @@ class AnydayPayment
 				update_post_meta( $order->get_id(), 'anyday_payment_transaction', wc_clean( $response->purchaseOrderId ) );
 				$this->handled( $order, $response->purchaseOrderId );
 
-				return $response->authorizeUrl;
+				return $response->checkoutUrl;
 			}
 
 		} catch ( RequestException $e ) {
