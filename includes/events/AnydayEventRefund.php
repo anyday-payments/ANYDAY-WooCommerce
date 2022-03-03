@@ -35,10 +35,7 @@ class AnydayEventRefund extends AnydayEvent {
 						$this->order->get_currency()
 					)
 				);
-				update_post_meta( $this->order->get_id(), date("Y-m-d_h:i:sa") . '_anyday_refunded_payment', wc_clean( number_format($this->data['Transaction']['Amount'], 2, ',', '.') ) );
-				if( ! $this->get_is_pending() ) {
-					$this->order->update_status( 'refunded' );
-				}
+				update_post_meta( $this->order->get_id(), date("Y-m-d_h:i:sa") . '_anyday_refunded_payment', wc_clean( $this->data['Transaction']['Amount'] ) );
 			break;
 		}
 		return;

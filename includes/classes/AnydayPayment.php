@@ -98,12 +98,12 @@ class AnydayPayment
 				"currency" => get_option('woocommerce_currency'),
 				"orderId" => $order->get_id(),
 				"successRedirectUrl" => $successURL,
-				"cancelPaymentRedirectUrl" => $cancelURL
+				"cancelRedirectUrl" => $cancelURL
 				]
 			];
 
 			if(!empty($secret_key)) {
-				$body["json"]["callbackUrl"] = get_site_url(null, $this->getWebhookPath());
+				$body["json"]["refererUrl"] = get_site_url(null, $this->getWebhookPath());
 			}
 
 			$response = $this->client->request('POST', ADM_API_BASE_URL . ADM_API_ORDERS_BASE_PATH, $body);
