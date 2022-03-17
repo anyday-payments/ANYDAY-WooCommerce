@@ -39,7 +39,7 @@ class AnydayEvents {
 	 * @return void
 	 */
 	public function handle( $event_key, $data ) {
-		$event_hook_suffix= $data['Transaction']['Type'];
+		$event_hook_suffix= $data['transaction']['type'];
 		$eventClass = "Adm\\" . $event_key;
 		
 		if(!class_exists($eventClass)) {
@@ -86,19 +86,19 @@ class AnydayEvents {
 	private function process_pending_txns($event) {
 		$order_data   = $event->get_order()->get_meta('anyday_payment_transactions');
 		$missing_txns = array();
-		foreach(array_shift($this->data['Transactions']) as $txn) {
-			if(!in_array($txn, $order_data) && $txn['Type'] !== 'authorize') {
+		foreach(array_shift($this->data['transactions']) as $txn) {
+			if(!in_array($txn, $order_data) && $txn['type'] !== 'authorize') {
 				array_push($missing_txns, $txn);
 			}
 		}
 		foreach($missing_txns as $txn) {
-			$event_key = self::EVENT_CLASS_PREFIX.ucfirst($txn['Type']);
+			$event_key = self::EVENT_CLASS_PREFIX.ucfirst($txn['type']);
 			$eventClass = "Adm\\" . $event_key;
 		
 			if(!class_exists($eventClass)) {
 				return;
 			}
-			$event = new $eventClass( array('Transaction' => $txn) );
+			$event = new $eventClass( array('transaction' => $txn) );
 			$event->set_is_pending(true);
 			if ( $event->validate() ) {
 				$event->resolve();

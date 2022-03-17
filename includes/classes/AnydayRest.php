@@ -60,12 +60,12 @@ class AnydayRest {
 
     $data = $request->get_json_params();
 		
-		if ( !isset($data['Transaction']) ) {
+		if ( !isset($data['transaction']) ) {
 			return new \WP_Error( 'anyday_rest_wrong_object', __( 'Wrong object type.', 'adm' ), array( 'status' => 400 ) );
 		}
 
 		$event = new AnydayEvents;
-    $eventType = self::EVENT_CLASS_PREFIX.ucfirst($data['Transaction']['Type']);
+    $eventType = self::EVENT_CLASS_PREFIX.ucfirst($data['transaction']['type']);
 		$event = $event->handle( $eventType, $data );
 
 		return rest_ensure_response( $event );

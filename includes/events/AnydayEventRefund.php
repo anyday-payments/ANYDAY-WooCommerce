@@ -10,13 +10,13 @@ class AnydayEventRefund extends AnydayEvent {
 	 * @return void
 	 */
 	public function resolve() {
-		$transaction = $this->data['Transaction'];
+		$transaction = $this->data['transaction'];
 		$this->order->add_order_note( __( 'Anyday: Received refund webhook event.', 'adm' ) );
 		$order = wc_get_order( $this->order->get_id() );
 		if( $this->handled($order, $transaction['Id']) ) {
 			return;
 		}
-		switch ( $this->data['Transaction']['Status'] ) {
+		switch ( $this->data['transaction']['status'] ) {
 			case 'fail':
 				$message         = __( 'Anyday: Payment failed to refund', 'adm' );
 				$this->order->add_order_note(
@@ -31,11 +31,11 @@ class AnydayEventRefund extends AnydayEvent {
 				$this->order->add_order_note( 
 					sprintf(
 						wp_kses( $message, array( 'br' => array() ) ),
-						number_format($this->data['Transaction']['Amount'], 2, ',', '.'),
+						number_format($this->data['transaction']['amount'], 2, ',', '.'),
 						$this->order->get_currency()
 					)
 				);
-				update_post_meta( $this->order->get_id(), date("Y-m-d_h:i:sa") . '_anyday_refunded_payment', wc_clean( $this->data['Transaction']['Amount'] ) );
+				update_post_meta( $this->order->get_id(), date("Y-m-d_h:i:sa") . '_anyday_refunded_payment', wc_clean( $this->data['transaction']['amount'] ) );
 			break;
 		}
 		return;

@@ -51,15 +51,15 @@ class AnydayEvent {
 	 * @return boolean
 	 */
 	public function validate() {
-		if ( ! isset( $this->data['OrderId'] ) ) {
+		if ( ! isset( $this->data['orderId'] ) ) {
 			return false;
 		}
 
-		if ( ! $this->order = wc_get_order( $this->data['OrderId'] ) ) {
+		if ( ! $this->order = wc_get_order( $this->data['orderId'] ) ) {
 			return false;
 		}
 
-		if ( get_post_meta( $this->order->get_id(), 'anyday_payment_transaction' )[0] !== $this->data['Id'] ) {
+		if ( get_post_meta( $this->order->get_id(), 'anyday_payment_transaction' )[0] !== $this->data['id'] ) {
 			return false;
 		}
 
