@@ -13,7 +13,7 @@ class AnydayEventCancel extends AnydayEvent {
 		$transaction = $this->data['transaction'];
 		$this->order->add_order_note( __( 'Anyday: Received cancel webhook event.', 'adm' ) );
 		$order = wc_get_order( $this->order->get_id() );
-		if( $this->handled($order, $transaction['Id']) ) {
+		if( $this->handled($order, $transaction['id']) ) {
 			return;
 		}
 		switch ( $this->data['transaction']['status'] ) {
