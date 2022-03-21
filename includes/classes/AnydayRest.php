@@ -58,8 +58,7 @@ class AnydayRest {
 			return new \WP_Error( 'anyday_rest_wrong_header', __( 'Wrong header type.', 'adm' ), array( 'status' => 400 ) );
 		}
 
-    $data = $request->get_json_params();
-		
+    $data = $this->lcfirstKeys($request->get_json_params());
 		if ( !isset($data['transaction']) ) {
 			return new \WP_Error( 'anyday_rest_wrong_object', __( 'Wrong object type.', 'adm' ), array( 'status' => 400 ) );
 		}
@@ -87,5 +86,14 @@ class AnydayRest {
 			return true;
 		}
 		return false;
+	}
+
+	private function lcfirstKeys($data) {
+		$res = [];
+		foreach ($data as $key => $value) {
+				$newKey = lcfirst($key);
+				$res[$newKey] = is_array($value) ? $this->lcfirstKeys($value) : $value;
+		}
+		return $res;
 	}
 }
