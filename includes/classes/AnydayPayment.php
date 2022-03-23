@@ -92,7 +92,7 @@ class AnydayPayment
 			    "json" => [
 					"Amount" => $order->get_total(),
 					"Currency" => get_option('woocommerce_currency'),
-					"OrderId" => $order->get_id(),
+					"OrderId" => $order->get_order_number(),
 					"SuccessRedirectUrl" => $successURL,
 					"CancelPaymentRedirectUrl" => $cancelURL
 			    ]
