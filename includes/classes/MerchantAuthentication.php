@@ -53,10 +53,10 @@ use GuzzleHttp\Psr7;
 			$result = json_decode($response->getBody()->getContents())->data[0];
 
 			update_option( 'adm_api_key', $result->apiKey );
-	    	update_option( 'adm_test_api_key', $result->testAPIKey );
-	    	update_option( 'adm_pricetag_token', $result->priceTagToken );
-
-	    	return true;
+			update_option( 'adm_test_api_key', $result->testAPIKey );
+			update_option( 'adm_pricetag_token', $result->priceTagToken );
+			update_option( 'adm_private_key', $result->privateKey );
+			return true;
 
 		} catch ( RequestException $e ) {
 

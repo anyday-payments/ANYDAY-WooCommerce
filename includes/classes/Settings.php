@@ -135,6 +135,7 @@ class Settings extends \WC_Settings_Page
 			"merchant_password" => array(),
 			"prod_api_key" => array(),
 			"test_api_key" => array(),
+			"adm_private_key" => array(),
 			array(
 				'type' => 'sectionend',
 				'id'   => 'pricetag_checkout_page_end'
@@ -162,6 +163,9 @@ class Settings extends \WC_Settings_Page
 			$gateway_settings['merchant_password']['desc_tip'] 	= __( 'Enter your Anyday merchant account password', 'adm' );
 
 		}
+		$gateway_settings['adm_private_key']['type']	= 'text';
+		$gateway_settings['adm_private_key']['id']		= 'adm_private_key';
+		$gateway_settings['adm_private_key']['name']	= __( 'Anyday Private key', 'adm' );
 		$this->set_authentication();
 
 		if ( get_option('adm_merchant_authenticated') == 'true' ) {
