@@ -96,7 +96,7 @@ class AnydayPayment
 				"json" => [
 				"amount" => $order->get_total(),
 				"currency" => get_option('woocommerce_currency'),
-				"orderId" => $order->get_id(),
+				"orderId" => $order->get_order_number(),
 				"successRedirectUrl" => $successURL,
 				"cancelRedirectUrl" => $cancelURL,
 				"refererUrl" => get_site_url()
@@ -108,6 +108,7 @@ class AnydayPayment
 			}
 
 			$response = $this->client->request('POST', ADM_API_BASE_URL . ADM_API_ORDERS_BASE_PATH, $body);
+
 
 			$response = json_decode( $response->getBody()->getContents() );
 
