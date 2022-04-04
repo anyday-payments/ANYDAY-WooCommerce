@@ -55,7 +55,11 @@ class AnydayEvent {
 			return false;
 		}
 
-		if ( ! $this->order = wc_get_order( $this->data['orderId'] ) ) {
+		$this->order = (wc_get_order( $this->data['orderId'])) 
+			? wc_get_order( $this->data['orderId']) 
+			:	wc_get_order(wc_sequential_order_numbers()->find_order_by_order_number( $this->data['orderId'] ));
+
+		if ( ! $this->order ) {
 			return false;
 		}
 
