@@ -9,7 +9,6 @@ class AnydayEventCapture extends AnydayEvent {
 	 */
 	public function resolve() {
 		$transaction = $this->data['transaction'];
-		$this->order->add_order_note( __( 'Anyday: Received capture webhook event.', 'adm' ) );
 		$order = wc_get_order( $this->order->get_id() );
 		if( $this->handled($order, $transaction['id']) ) {
 			return;

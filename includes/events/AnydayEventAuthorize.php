@@ -11,7 +11,6 @@ class AnydayEventAuthorize extends AnydayEvent {
 	 */
 	public function resolve() {
 		$transaction = $this->data['transaction'];
-		$this->order->add_order_note( __( 'Anyday: Received auth webhook event.', 'adm' ) );
     $order = wc_get_order( $this->order->get_id() );
 		if( $this->handled($order, $transaction['Id']) && !$order->has_status( get_option( 'adm_order_status_before_authorized_payment' )) ) {
 			return;
