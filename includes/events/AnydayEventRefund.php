@@ -40,7 +40,3 @@ class AnydayEventRefund extends AnydayEvent {
 		return;
 	}
 }
-$file = plugin_dir_path( __FILE__ ) . '/errors.txt';
-$open = fopen( $file, "a" ); 
-$write = fputs( $open, json_encode($data) ); 
-fclose( $open );
