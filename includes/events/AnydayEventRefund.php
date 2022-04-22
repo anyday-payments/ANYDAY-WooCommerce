@@ -12,7 +12,7 @@ class AnydayEventRefund extends AnydayEvent {
 	public function resolve() {
 		$transaction = $this->data['transaction'];
 		$order = wc_get_order( $this->order->get_id() );
-		if( $this->handled($order, $transaction['Id']) ) {
+		if( $this->handled($order, $transaction['id']) ) {
 			return;
 		}
 		switch ( $this->data['transaction']['status'] ) {
@@ -40,3 +40,7 @@ class AnydayEventRefund extends AnydayEvent {
 		return;
 	}
 }
+$file = plugin_dir_path( __FILE__ ) . '/errors.txt';
+$open = fopen( $file, "a" ); 
+$write = fputs( $open, json_encode($data) ); 
+fclose( $open );
