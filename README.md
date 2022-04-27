@@ -2,7 +2,7 @@
 
 Description: Anyday is a new way to pay. An interest-free financing solution with no fees or interest for your customers.
 
-Version: 1.7.4
+Version: 1.7.5
 
 ## Plugin installation
 
@@ -43,3 +43,5 @@ Version 1.7.2 - Changed JS file cached with CURL.
 Version 1.7.3 - Adding bulk order status update in backend, Anyday payment is enabled for orders with payments greater than and equals to 300 DKK, Stock levels should update only when order is completed or processing. Stock added back on order cancelled and refunded, Fixing number format throughout the plugin, Adding validation to check number format while input for capture/refund from the backend, Fixing cached JS URL for some instances using permalinks, Fixed backend configuration page which was broken, Minimum price limit for pricetag isn't working for on-sale product.
 
 Version 1.7.4 - Fixing calculations after capture/refund actions on order details page, Fixing decimal point issue while entering amount to capture/refund. You may enter an integer e.g. 1500 or 250, or you may enter decimals e.g. 1.500,00 or 250,00. If you enter a decimal in the thousandths place, you must use two decimals. e.g. 1.500,00
+
+Version 1.7.5 - Implemented callback feature to receive transactions processed by Order API, IEX - WooCommerce API issue fixed which used to return blank response from WooCommerce setting API, Added support to Sequential order plugin which takes order id from sequence created from plugin.
