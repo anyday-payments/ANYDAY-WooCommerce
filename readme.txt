@@ -3,7 +3,7 @@ Contributors: anyday2020
 Tags: Payments, Instalments, WooCommerce, Payment Gateway, Buy Now Pay Later, BNPL, Conversion Rate, Basket Size, Anyday
 Requires at least: 4.3.1
 Tested up to: 5.9.1
-Stable tag: 1.7.4
+Stable tag: 1.7.5
 License: MIT
 License URI: https://opensource.org/licenses/MIT
 
@@ -121,3 +121,12 @@ Anyday assumes all credit risk as soon as a purchase is made. You will receive a
 #### 👾 Bug Fixes
 - Fixed miscalculations on order details page, after payment capture/refunds.
 - Fixed decimal point bug which captures incorrect amount due to wrong decimal value conversion. Now users would be able to enter an integer e.g. 1500 or 250, or may enter decimals e.g. 1.500,00 or 250,00. If entered a decimal in the thousandths place, you must use two decimals. e.g. 1.500,00
+
+= 1.7.5 =
+
+#### 🚀 Enhancements
+- Implemented callback feature to receive transactions processed by Order API.
+
+#### 👾 Bug Fixes
+- IEX - WooCommerce API issue fixed which used to return blank response from WooCommerce setting API.
+- Added support to Sequential order plugin which takes order id from sequence created from plugin.
