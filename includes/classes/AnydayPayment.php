@@ -134,7 +134,7 @@ class AnydayPayment
 	 *@method adm_capture_payment
 	 *@return json
 	 */
-	public function adm_capture_payment($order_id = null, $amount = null)
+	public function adm_capture_payment($order_id = null, $amount = null, $isWooCommerce = false)
 	{
 		$success = false;
 		$id = ($order_id) ? $order_id : $_POST['orderId'];
@@ -147,18 +147,30 @@ class AnydayPayment
 			if ( !$this->handled( $order, $response->transactionId ) ) {
 
 				update_post_meta( $order->get_id(), date("Y-m-d_h:i:sa") . '_anyday_captured_payment', wc_clean( $amount ) );
-				if( get_option('adm_order_status_after_captured_payment') != "default" ) {
+				$message =  __( 'Anyday: Payment captured successful.<br/>An amount %1$s %2$s has been captured.', 'adm' );
+				$this->order->add_order_note(
+					sprintf(
+						wp_kses( $message, array( 'br' => array() ) ),
+						number_format($amount, 2, ',', '.'),
+						$this->order->get_currency()
+					)
+				);
 
-					$order->update_status( get_option('adm_order_status_after_captured_payment'), __( 'Anyday payment captured!', 'adm' ) );
+				if(!$isWooCommerce) {
+					if( get_option('adm_order_status_after_captured_payment') != "default" ) {
 
-				} else {
+						$order->update_status( get_option('adm_order_status_after_captured_payment') );
 
-					$order->update_status( 'completed', __( 'Anyday payment captured!', 'adm' ) );
+					} else {
 
+						$order->update_status( 'completed' );
+
+					}
 				}
-
 				$order->add_order_note( __( date("Y-m-d, h:i:sa") . ' - Captured amount: ' . number_format($amount, 2, ',', '.') . get_option('woocommerce_currency'), 'adm') );
 				}
+			if( $isWooCommerce )
+				return true;
 			$success = true;
 		}
 
@@ -207,7 +219,7 @@ class AnydayPayment
 	 *@method adm_cancel_payment
 	 *@return json
 	 */
-	public function adm_cancel_payment($order_id = null)
+	public function adm_cancel_payment($order_id = null, $isWooCommerce = false)
 	{
 		$success = false;
 		$id = ($order_id) ? $order_id : $_POST['orderId'];
@@ -226,8 +238,14 @@ class AnydayPayment
 
 					wc_increase_stock_levels($order->get_id());
 
-					$order->update_status('cancelled', __('Anyday payment cancelled!', 'adm'));
+					$comment = __('Anyday payment cancelled!', 'adm');
+
+					if(!$isWooCommerce)
+						$order->update_status('cancelled', $comment);
 				}
+
+				if($isWooCommerce)
+			 		return true;
 				$success = true;
 			}
 
@@ -284,7 +302,7 @@ class AnydayPayment
 	 *@method adm_refund_payment
 	 *@return json
 	 */
-	public function adm_refund_payment($order_id = null, $amount = null)
+	public function adm_refund_payment($order_id = null, $amount = null, $isWooCommerce = false)
 	{
 		$success = false;
 		$id = ($order_id) ? $order_id : $_POST['orderId'];
@@ -297,11 +315,14 @@ class AnydayPayment
 			if (!$this->handled($order, $response->transactionId)) {
 
 				update_post_meta($order->get_id(), date("Y-m-d_h:i:sa") . '_anyday_refunded_payment', wc_clean($amount));
-
-				$order->update_status('wc-adm-refunded', __('Anyday payment refunded!', 'adm'));
+				$comment =  __('Anyday payment refunded!', 'adm');
+				if( !$isWooCommerce )
+					$order->update_status('wc-adm-refunded', $comment);
 
 				$order->add_order_note(__(date("Y-m-d, h:i:sa") . ' - Refunded amount: ' . number_format($amount, 2, ',', ' ') . get_option('woocommerce_currency'), 'adm'));
 			}
+			if($isWooCommerce)
+			 return true;
 			$success = true;
 
 		}
@@ -315,6 +336,24 @@ class AnydayPayment
 				echo json_encode( ["error" => __('Payment could not be refunded. Please contact Anyday support.', 'adm')] );
 			}
 			exit;
+		}
+	}
+
+	public function adm_api_get_order( $order ) {
+		try {
+
+			$response = $this->client->request('GET', ADM_API_BASE_URL . ADM_API_ORDERS_BASE_PATH . '?id=' . get_post_meta( $order->get_id(), 'anyday_payment_transaction' )[0] . '', [
+				'headers' => $this->headers
+			]);
+
+			$response = json_decode( $response->getBody()->getContents() );
+
+			return $response;
+
+		} catch ( RequestException $e ) {
+
+			$this->adm_log_anyday_error( Psr7\str($e->getResponse()) );
+
 		}
 	}
 
