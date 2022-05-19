@@ -121,7 +121,7 @@ class Core
      */
     public function anyday_payment_gateway_add_to_gateways( $gateways )
 	{
-		if(((float)WC()->cart->total >= 300 && (float)WC()->cart->total <= 30000) || is_admin()) {
+		if((WC()->cart && (float)WC()->cart->total >= 300 && (float)WC()->cart->total <= 30000) || is_admin()) {
 			$gateways[] = 'WC_Gateway_Anyday_Payment';
 		}
 
