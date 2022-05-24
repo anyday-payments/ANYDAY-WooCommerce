@@ -148,11 +148,11 @@ class AnydayPayment
 
 				update_post_meta( $order->get_id(), date("Y-m-d_h:i:sa") . '_anyday_captured_payment', wc_clean( $amount ) );
 				$message =  __( 'Anyday: Payment captured successful.<br/>An amount %1$s %2$s has been captured.', 'adm' );
-				$this->order->add_order_note(
+				$order->add_order_note(
 					sprintf(
 						wp_kses( $message, array( 'br' => array() ) ),
 						number_format($amount, 2, ',', '.'),
-						$this->order->get_currency()
+						$order->get_currency()
 					)
 				);
 
