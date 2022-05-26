@@ -22,6 +22,7 @@ class AnydayEventCancel extends AnydayEvent {
 				break;
 
 			case 'success':
+				update_post_meta($order->get_id(), 'anyday_payment_last_status', ANYDAY_STATUS_CANCEL);
 				if ( $this->order->has_status( 'cancelled' ) ) {
 					return;
 				}
