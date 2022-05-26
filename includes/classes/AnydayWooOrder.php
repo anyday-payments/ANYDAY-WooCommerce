@@ -116,7 +116,7 @@ class AnydayWooOrder
 					echo '<button type="button" class="button anyday-cancel anyday-payment-action" data-anyday-action="adm_cancel_payment" data-order-id="'.$order->get_id().'">'. __("Anyday Cancel", "adm") .'</button>';
 				}
 
-				if ( get_post_meta( $order->get_id(), 'full_refunded_amount' )[0] != 'true' ) {
+				if ( get_post_meta( $order->get_id(), 'full_refunded_amount' )[0] != 'true' && !empty($this->get_total_captured_amount($order))) {
 					echo '<button type="button" class="button anyday-refund anyday-payment-action" data-anyday-action="adm_refund_payment" data-order-id="'.$order->get_id().'">'. __("Anyday Refund", "adm") .'</button>';
 				}
 			}
@@ -461,10 +461,9 @@ width: 100%;margin-top: 20px;">
 				update_post_meta( $order->get_id(), date("Y-m-d_h:i:sa") . '_anyday_captured_payment', wc_clean( $order_amount ) );
 	
 				$comment =  __( 'Anyday payment captured!', 'adm' );
-				$comment = null;
 				if( get_option('adm_order_status_after_captured_payment') != "default" ) {
 	
-					$order->update_status( get_option('adm_order_status_after_captured_payment'), $comment );
+					$order->update_status( 'wcompleted', $comment );
 	
 				} else {
 	
@@ -475,8 +474,6 @@ width: 100%;margin-top: 20px;">
 				$order->add_order_note( __( date("Y-m-d, h:i:sa") . ' - Captured amount: ' . number_format($order_amount, 2, ',', '.') . get_option('woocommerce_currency'), 'adm') );
 			
 				wp_safe_redirect( home_url("/wp-admin/post.php?post=$order_id&action=edit") );
-				
-				exit;
 			}
 		}
 	}
