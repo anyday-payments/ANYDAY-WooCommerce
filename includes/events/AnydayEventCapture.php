@@ -27,7 +27,7 @@ class AnydayEventCapture extends AnydayEvent {
 
 			case 'success':
 				$message = __( 'Anyday: Payment captured successful.<br/>An amount %1$s %2$s has been captured', 'adm' );
-
+				update_post_meta($order->get_id(), 'anyday_payment_last_status', ANYDAY_STATUS_CAPTURE);
 				$this->order->add_order_note(
 					sprintf(
 						wp_kses( $message, array( 'br' => array() ) ),

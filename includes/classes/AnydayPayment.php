@@ -45,7 +45,7 @@ class AnydayPayment
 			'Content-Type' => 'application/json',
 			'Authorization' => 'Bearer ' .  $this->authorization_token
 		];
-		$this->client = new Client(['verify' => false]);
+		$this->client = new Client();
 	}
 
 	/**
@@ -115,6 +115,7 @@ class AnydayPayment
 			if( $response->errorCode === 0 ) {
 
 				update_post_meta( $order->get_id(), 'anyday_payment_transaction', wc_clean( $response->purchaseOrderId ) );
+				update_post_meta( $order->get_id(), 'anyday_payment_last_status', ANYDAY_STATUS_PENDING );
 				$this->handled( $order, $response->purchaseOrderId );
 
 				return $response->checkoutUrl;
@@ -145,7 +146,7 @@ class AnydayPayment
 		if ( $response ) {
 
 			if ( !$this->handled( $order, $response->transactionId ) ) {
-
+				update_post_meta($order->get_id(), 'anyday_payment_last_status', ANYDAY_STATUS_CAPTURE);
 				update_post_meta( $order->get_id(), date("Y-m-d_h:i:sa") . '_anyday_captured_payment', wc_clean( $amount ) );
 				if( get_option('adm_order_status_after_captured_payment') != "default" ) {
 
@@ -223,7 +224,7 @@ class AnydayPayment
 
 			if( $response->errorCode === 0 ) {
 				if (!$this->handled($order, $response->transactionId)) {
-
+					update_post_meta($order->get_id(), 'anyday_payment_last_status', ANYDAY_STATUS_CANCEL);
 					wc_increase_stock_levels($order->get_id());
 
 					$order->update_status('cancelled', __('Anyday payment cancelled!', 'adm'));
@@ -295,7 +296,7 @@ class AnydayPayment
 		if( $response ) {
 
 			if (!$this->handled($order, $response->transactionId)) {
-
+				update_post_meta($order->get_id(), 'anyday_payment_last_status', ANYDAY_STATUS_REFUND);
 				update_post_meta($order->get_id(), date("Y-m-d_h:i:sa") . '_anyday_refunded_payment', wc_clean($amount));
 
 				$order->update_status('wc-adm-refunded', __('Anyday payment refunded!', 'adm'));
