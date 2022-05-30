@@ -458,7 +458,7 @@ width: 100%;margin-top: 20px;">
 
 			if ( $request ) {
 
-				update_post_meta( $order->get_id(), date("Y-m-d_h:i:sa") . '_anyday_captured_payment', wc_clean( $order_amount ) );
+				update_post_meta( $order->get_id(), $request->transactionId . '_anyday_captured_payment', wc_clean( $order_amount ) );
 	
 				$comment =  __( 'Anyday payment captured!', 'adm' );
 				if( get_option('adm_order_status_after_captured_payment') != "default" ) {
