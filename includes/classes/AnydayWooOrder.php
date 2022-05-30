@@ -112,7 +112,7 @@ class AnydayWooOrder
 					echo '<button type="button" class="button anyday-capture anyday-payment-action" data-anyday-action="adm_capture_payment" data-order-id="'.$order->get_id().'">'. __("Anyday Capture", "adm") .'</button>';
 				}
 
-				if ( !$refunded_amount && get_post_meta( $order->get_id(), 'full_captured_amount' )[0] != 'true' && get_post_meta( $order->get_id(), 'full_refunded_amount' )[0] != 'true' ) {
+				if ( !$refunded_amount && !$this->get_total_captured_amount( $order ) && get_post_meta( $order->get_id(), 'full_refunded_amount' )[0] != 'true' ) {
 					echo '<button type="button" class="button anyday-cancel anyday-payment-action" data-anyday-action="adm_cancel_payment" data-order-id="'.$order->get_id().'">'. __("Anyday Cancel", "adm") .'</button>';
 				}
 

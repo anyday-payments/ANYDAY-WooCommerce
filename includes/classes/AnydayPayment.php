@@ -147,7 +147,7 @@ class AnydayPayment
 
 			if ( !$this->handled( $order, $response->transactionId ) ) {
 				update_post_meta($order->get_id(), 'anyday_payment_last_status', ANYDAY_STATUS_CAPTURE);
-				update_post_meta( $order->get_id(), date("Y-m-d_h:i:sa") . '_anyday_captured_payment', wc_clean( $amount ) );
+				update_post_meta( $order->get_id(), $response->transactionId . '_anyday_captured_payment', wc_clean( $amount ) );
 				$message =  __( 'Anyday: Payment captured successful.<br/>An amount %1$s %2$s has been captured.', 'adm' );
 				$order->add_order_note(
 					sprintf(
@@ -315,7 +315,7 @@ class AnydayPayment
 
 			if (!$this->handled($order, $response->transactionId)) {
 				update_post_meta($order->get_id(), 'anyday_payment_last_status', ANYDAY_STATUS_REFUND);
-				update_post_meta($order->get_id(), date("Y-m-d_h:i:sa") . '_anyday_refunded_payment', wc_clean($amount));
+				update_post_meta($order->get_id(), $response->transactionId . '_anyday_refunded_payment', wc_clean($amount));
 				$comment =  __('Anyday payment refunded!', 'adm');
 				if( !$isWooCommerce )
 					$order->update_status('wc-adm-refunded', $comment);
