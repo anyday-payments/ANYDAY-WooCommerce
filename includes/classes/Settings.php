@@ -188,7 +188,7 @@ class Settings extends \WC_Settings_Page
 		}
 
 		$settings = apply_filters( 'adm_general_section', $gateway_settings );
-		return apply_filters( 'woocommerce_get_settings_' . $this->id, $settings, $current_section );
+		return apply_filters( 'woocommerce_get_settings_' . $this->id, $settings );
 	}
 
 	/**
