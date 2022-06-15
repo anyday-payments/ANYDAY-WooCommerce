@@ -131,7 +131,7 @@ Anyday assumes all credit risk as soon as a purchase is made. You will receive a
 - IEX - WooCommerce API issue fixed which used to return blank response from WooCommerce setting API.
 - Added support to Sequential order plugin which takes order id from sequence created from plugin.
 
-= 1.7.5 =
+= 1.7.6 =
 
 #### 🚀 Enhancements
 - Added new column to display Anyday OrderID and Anyday Order status in WooCommerce Order list page.
