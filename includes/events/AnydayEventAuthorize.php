@@ -24,7 +24,7 @@ class AnydayEventAuthorize extends AnydayEvent {
 
 			case 'success':
 				$message = __( 'Anyday: Payment has been authorized.', 'adm' );
-	
+				update_post_meta($order->get_id(), 'anyday_payment_last_status', ANYDAY_STATUS_AUTHORIZE);
 				$this->order->add_order_note( $message );
         if( !$order->has_status( get_option( 'adm_order_status_after_authorized_payment' ) ) && ! $this->get_is_pending()) {
           $order->update_status( get_option( 'adm_order_status_after_authorized_payment' ) );

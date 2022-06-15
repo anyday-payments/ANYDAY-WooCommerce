@@ -26,7 +26,7 @@ class AnydayEventRefund extends AnydayEvent {
 			case 'success':
 	
 				$message = __( 'Anyday: Payment has been refunded. <br/>An amount %1$s %2$s has been refunded', 'adm' );
-	
+				update_post_meta($order->get_id(), 'anyday_payment_last_status', ANYDAY_STATUS_REFUND);
 				$this->order->add_order_note( 
 					sprintf(
 						wp_kses( $message, array( 'br' => array() ) ),
@@ -34,7 +34,7 @@ class AnydayEventRefund extends AnydayEvent {
 						$this->order->get_currency()
 					)
 				);
-				update_post_meta( $this->order->get_id(), date("Y-m-d_h:i:sa") . '_anyday_refunded_payment', wc_clean( $this->data['transaction']['amount'] ) );
+				update_post_meta( $this->order->get_id(), $transaction['id'] . '_anyday_refunded_payment', wc_clean( $this->data['transaction']['amount'] ) );
 			break;
 		}
 		return;

@@ -27,7 +27,7 @@ class AnydayEventCapture extends AnydayEvent {
 
 			case 'success':
 				$message = __( 'Anyday: Payment captured successful.<br/>An amount %1$s %2$s has been captured', 'adm' );
-
+				update_post_meta($order->get_id(), 'anyday_payment_last_status', ANYDAY_STATUS_CAPTURE);
 				$this->order->add_order_note(
 					sprintf(
 						wp_kses( $message, array( 'br' => array() ) ),
@@ -35,7 +35,7 @@ class AnydayEventCapture extends AnydayEvent {
 						$this->order->get_currency()
 					)
 				);
-				update_post_meta( $this->order->get_id(), date("Y-m-d_h:i:sa") . '_anyday_captured_payment', wc_clean( $transaction['amount'] ) );
+				update_post_meta( $this->order->get_id(), $transaction['id']. '_anyday_captured_payment', wc_clean( $transaction['amount'] ) );
 
 				if ( ! $order->has_status( get_option('adm_order_status_after_captured_payment') ) && ! $this->get_is_pending()) {
 					$order->update_status( get_option('adm_order_status_after_captured_payment') );

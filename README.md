@@ -2,7 +2,7 @@
 
 Description: Anyday is a new way to pay. An interest-free financing solution with no fees or interest for your customers.
 
-Version: 1.7.5
+Version: 1.7.6
 
 ## Plugin installation
 
@@ -45,3 +45,5 @@ Version 1.7.3 - Adding bulk order status update in backend, Anyday payment is en
 Version 1.7.4 - Fixing calculations after capture/refund actions on order details page, Fixing decimal point issue while entering amount to capture/refund. You may enter an integer e.g. 1500 or 250, or you may enter decimals e.g. 1.500,00 or 250,00. If you enter a decimal in the thousandths place, you must use two decimals. e.g. 1.500,00
 
 Version 1.7.5 - Implemented callback feature to receive transactions processed by Order API, IEX - WooCommerce API issue fixed which used to return blank response from WooCommerce setting API, Added support to Sequential order plugin which takes order id from sequence created from plugin.
+
+Version 1.7.6 - Order status changes in WooCommerce will capture/refund/cancel payments., Anyday WooCommerce plugin spamming wpdebug logs after activation., Added new column to display Anyday OrderID and Anyday Order status in WooCommerce Order list page., Adjustment order notes, transaction history to make it consistency with action from button.

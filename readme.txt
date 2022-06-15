@@ -2,8 +2,8 @@
 Contributors: anyday2020
 Tags: Payments, Instalments, WooCommerce, Payment Gateway, Buy Now Pay Later, BNPL, Conversion Rate, Basket Size, Anyday
 Requires at least: 4.3.1
-Tested up to: 5.9.1
-Stable tag: 1.7.5
+Tested up to: 5.9.3
+Stable tag: 1.7.6
 License: MIT
 License URI: https://opensource.org/licenses/MIT
 
@@ -130,3 +130,13 @@ Anyday assumes all credit risk as soon as a purchase is made. You will receive a
 #### 👾 Bug Fixes
 - IEX - WooCommerce API issue fixed which used to return blank response from WooCommerce setting API.
 - Added support to Sequential order plugin which takes order id from sequence created from plugin.
+
+= 1.7.6 =
+
+#### 🚀 Enhancements
+- Added new column to display Anyday OrderID and Anyday Order status in WooCommerce Order list page.
+- Order status changes in WooCommerce will capture/refund/cancel payments.
+
+#### 👾 Bug Fixes
+- Adjustment order notes, transaction history to make it consistency with action from button.
+- Anyday WooCommerce plugin spamming wpdebug logs after activation.
