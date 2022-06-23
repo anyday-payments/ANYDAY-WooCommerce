@@ -393,7 +393,7 @@ class AnydayPayment
 	 */
 	private function handled($order, $transaction_id) {
 		$order_data = $order->get_meta('anyday_payment_transactions');
-		if( in_array($transaction_id, $order_data) )  {
+		if( !empty($order_data) && in_array($transaction_id, $order_data) )  {
 			return true;
 		}
 		$txn = get_post_meta($order->get_id(), 'anyday_payment_transactions', true);
