@@ -138,8 +138,8 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 		switch ( $column )
 		{
 			case 'anyday-column' :
-				$transaction_id = get_post_meta( $post_id, 'anyday_payment_transaction' )[0];
-				$anyday_status  = get_post_meta( $post_id, 'anyday_payment_last_status' )[0];
+				$transaction_id = (get_post_meta( $post_id, 'anyday_payment_transaction' )) ? get_post_meta( $post_id, 'anyday_payment_transaction' )[0] : null;
+				$anyday_status  = (get_post_meta( $post_id, 'anyday_payment_last_status' )) ? get_post_meta( $post_id, 'anyday_payment_last_status' )[0] : null;
 				switch ($anyday_status) {
 					case ANYDAY_STATUS_PENDING:
 						$anyday_status = 'Pending';
