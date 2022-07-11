@@ -20,10 +20,8 @@ use GuzzleHttp\Psr7;
 
 			$response = $client->request('POST', ADM_API_BASE_URL . '/api/v1/authentication/login', [
 			    "json" => [
-			        "grant_type" => "password",
-					"username" => $username,
-					"password" => $password,
-					"userType" => "merchant"
+						"Username" => $username,
+						"Password" => $password,
 			    ]
 			]);
 
@@ -72,50 +70,47 @@ use GuzzleHttp\Psr7;
 	 */
 	public function adm_merchant_authenticate( $current_section, $settings )
 	{
-		if( $current_section == "" && get_option('adm_merchant_authenticated') == 'false' ) {
+		$options = ["adm_merchant_username" => __("Merchant username is required!", "adm"), "adm_merchant_password" => __("Merchant password is required!", "adm")];
 
-		    $options = ["adm_merchant_username" => __("Merchant username is required!", "adm"), "adm_merchant_password" => __("Merchant password is required!", "adm")];
+		foreach( $options as $option_id => $option_name ) {
 
-			foreach( $options as $option_id => $option_name ) {
+				add_filter( "woocommerce_admin_settings_sanitize_option_" . $option_id, function( $value, $option, $raw_value ) use ( $option_name ) {
 
-			    add_filter( "woocommerce_admin_settings_sanitize_option_" . $option_id, function( $value, $option, $raw_value ) use ( $option_name ) {
+						add_action( 'admin_notices', function() use( $value, $option_name ) {
 
-			        add_action( 'admin_notices', function() use( $value, $option_name ) {
+								if( $value == "" ){
 
-			            if( $value == "" ){
+										echo '<div id="message" class="notice notice-error is-dismissible"><p><strong>'. $option_name .'</strong></p></div>';
 
-			                echo '<div id="message" class="notice notice-error is-dismissible"><p><strong>'. $option_name .'</strong></p></div>';
+								}
 
-			            }
+						});
 
-			        });
+						return $value;
 
-			        return $value;
+				}, 10, 3 );
+		}
 
-			    }, 10, 3 );
-			}
+		\WC_Admin_Settings::save_fields( $settings );
 
-			\WC_Admin_Settings::save_fields( $settings );
+		$merchant_authentication = $this->adm_authenticate( get_option('adm_merchant_username'), get_option('adm_merchant_password') );
 
-			$merchant_authentication = $this->adm_authenticate( get_option('adm_merchant_username'), get_option('adm_merchant_password') );
+		if ( $merchant_authentication === true ) {
 
-			if ( $merchant_authentication === true ) {
+			update_option( 'adm_merchant_authenticated', 'true' );
 
-				update_option( 'adm_merchant_authenticated', 'true' );
+			add_action( 'admin_notices', function() {
+						echo '<div id="message" class="notice notice-success is-dismissible"><p><strong>'. __( "Merchant authenticaton successful.", "adm" ) .'</strong></p></div>';
+				});
 
-				add_action( 'admin_notices', function() {
-			        echo '<div id="message" class="notice notice-success is-dismissible"><p><strong>'. __( "Merchant authenticaton successful.", "adm" ) .'</strong></p></div>';
-			    });
+		} else {
 
-			} else {
-
-				add_action( 'admin_notices', function() use ( $merchant_authentication ) {
-			        echo '<div id="message" class="notice notice-error is-dismissible">
-			        <p><strong>'. __( "An error occurred. Please contact Anyday support.", "adm" ) .'</strong></p>
-			        <p>'. __( sanitize_text_field( $merchant_authentication ), "adm" ) .'</p>
-			        </div>';
-			    });
-			}
+			add_action( 'admin_notices', function() use ( $merchant_authentication ) {
+						echo '<div id="message" class="notice notice-error is-dismissible">
+						<p><strong>'. __( "An error occurred. Please contact Anyday support.", "adm" ) .'</strong></p>
+						<p>'. __( sanitize_text_field( $merchant_authentication ), "adm" ) .'</p>
+						</div>';
+				});
 		}
 	}
  }

@@ -487,7 +487,7 @@ class Settings extends \WC_Settings_Page
 
 		\WC_Admin_Settings::save_fields( $settings );
 
-		if ( $current_section == "" && get_option('adm_authentication_type') == 'auth_account' && get_option('adm_merchant_authenticated') == 'false' && get_option('adm_manual_authenticated') == 'false' ) {
+		if ( $current_section == "" && get_option('adm_authentication_type') == 'auth_account' ) {
 
 	    	$auth = new MerchantAuthentication;
 
