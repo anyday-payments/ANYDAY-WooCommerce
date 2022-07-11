@@ -12,6 +12,7 @@ class Settings extends \WC_Settings_Page
 	    add_action( 'woocommerce_settings_' . $this->id, array( $this, 'output' ) );
 	    add_action( 'woocommerce_settings_save_' . $this->id, array( $this, 'save' ) );
 	    add_action( 'woocommerce_sections_' . $this->id, array( $this, 'output_sections' ) );
+			add_action( 'admin_footer', array( $this , 'adm_setting_js' ), 25 );
 	}
 
 	private function set_authentication() {
@@ -22,12 +23,12 @@ class Settings extends \WC_Settings_Page
 			update_option( 'adm_manual_authenticated', 'false' );
 		}
 
-		// if ( get_option('adm_authentication_type') == 'auth_account' && !empty(trim(get_option('adm_merchant_username'))) && !empty(trim(get_option('adm_merchant_password')) ) ) {
-		// 	update_option( 'adm_merchant_authenticated', 'true' );
-		// 	update_option( 'adm_manual_authenticated', 'false' );
-		// } else {
-		// 	update_option( 'adm_merchant_authenticated', 'false' );
-		// }
+		if ( get_option('adm_authentication_type') == 'auth_account' && !empty(trim(get_option('adm_merchant_username'))) && !empty(trim(get_option('adm_merchant_password')) ) ) {
+			update_option( 'adm_merchant_authenticated', 'true' );
+			update_option( 'adm_manual_authenticated', 'false' );
+		} else {
+			update_option( 'adm_merchant_authenticated', 'false' );
+		}
 	}
 
 	/**
@@ -92,23 +93,6 @@ class Settings extends \WC_Settings_Page
 	}
 
 	/**
-	 * @method authFilled
-	 */
-	// private function auth_filled() {
-	// 	if( 
-	// 			(
-	// 				get_option('adm_authentication_type') == 'auth_manual' 
-	// 				&& !empty(get_option('adm_manual_prod_api_key')) 
-	// 				&& !empty(get_option('adm_manual_test_api_key')
-	// 			)
-	// 			||
-	// 			(
-
-	// 			)
-	// 		)
-	// }
-
-	/**
 	 * Define the auth plugin settings
 	 *@method adm_get_auth_setting
 	 */
@@ -142,50 +126,24 @@ class Settings extends \WC_Settings_Page
 			)
 		);
 
-		if ( get_option('adm_authentication_type') == 'auth_manual' ) {
-
-			$gateway_settings['prod_api_key']['type']	= 'textarea';
-			$gateway_settings['prod_api_key']['id']		= 'adm_manual_prod_api_key';
-			$gateway_settings['prod_api_key']['name']	= __( 'Anyday Production API key', 'adm' );
-			$gateway_settings['test_api_key']['type']	= 'textarea';
-			$gateway_settings['test_api_key']['id']		= 'adm_manual_test_api_key';
-			$gateway_settings['test_api_key']['name']	= __( 'Anyday Test API key', 'adm' );
-
-		} elseif ( get_option('adm_authentication_type') == 'auth_account' ) {
-
-			$gateway_settings['merchant_username']['type']		= 'text';
-			$gateway_settings['merchant_username']['id']		= 'adm_merchant_username';
-			$gateway_settings['merchant_username']['name']		= __( 'Merchant Username', 'adm' );
-			$gateway_settings['merchant_username']['desc_tip'] 	= __( 'Enter your Anyday merchant account username', 'adm' );
-			$gateway_settings['merchant_password']['type']		= 'password';
-			$gateway_settings['merchant_password']['id']		= 'adm_merchant_password';
-			$gateway_settings['merchant_password']['name']		= __( 'Merchant Password', 'adm' );
-			$gateway_settings['merchant_password']['desc_tip'] 	= __( 'Enter your Anyday merchant account password', 'adm' );
-
-		}
+		$gateway_settings['prod_api_key']['type']	= 'textarea';
+		$gateway_settings['prod_api_key']['id']		= 'adm_manual_prod_api_key';
+		$gateway_settings['prod_api_key']['name']	= __( 'Anyday Production API key', 'adm' );
+		$gateway_settings['test_api_key']['type']	= 'textarea';
+		$gateway_settings['test_api_key']['id']		= 'adm_manual_test_api_key';
+		$gateway_settings['test_api_key']['name']	= __( 'Anyday Test API key', 'adm' );
+		$gateway_settings['merchant_username']['type']		= 'text';
+		$gateway_settings['merchant_username']['id']		= 'adm_merchant_username';
+		$gateway_settings['merchant_username']['name']		= __( 'Merchant Username', 'adm' );
+		$gateway_settings['merchant_username']['desc_tip'] 	= __( 'Enter your Anyday merchant account username', 'adm' );
+		$gateway_settings['merchant_password']['type']		= 'password';
+		$gateway_settings['merchant_password']['id']		= 'adm_merchant_password';
+		$gateway_settings['merchant_password']['name']		= __( 'Merchant Password', 'adm' );
+		$gateway_settings['merchant_password']['desc_tip'] 	= __( 'Enter your Anyday merchant account password', 'adm' );
 		$gateway_settings['adm_private_key']['type']	= 'text';
 		$gateway_settings['adm_private_key']['id']		= 'adm_private_key';
 		$gateway_settings['adm_private_key']['name']	= __( 'Anyday Private key', 'adm' );
 		$this->set_authentication();
-
-		if ( get_option('adm_merchant_authenticated') == 'true' ) {
-
-			// $gateway_settings['merchant_username']['custom_attributes'] = array('readonly' => 'readonly');
-			// $gateway_settings['merchant_password']['custom_attributes'] = array('readonly' => 'readonly');
-			// $gateway_settings['prod_api_key']['custom_attributes'] = array('readonly' => 'readonly');
-			// $gateway_settings['test_api_key']['custom_attributes'] = array('readonly' => 'readonly');
-			// $gateway_settings['pricetag_token']['custom_attributes'] = array('readonly' => 'readonly');
-		}
-
-		if ( get_option( 'adm_manual_authenticated' ) == 'true' ) {
-			
-			// $gateway_settings['merchant_username']['custom_attributes'] = array('readonly' => 'readonly');
-			// $gateway_settings['merchant_password']['custom_attributes'] = array('readonly' => 'readonly');
-			// $gateway_settings['prod_api_key']['custom_attributes'] = array('readonly' => 'readonly');
-			// $gateway_settings['test_api_key']['custom_attributes'] = array('readonly' => 'readonly');
-			// $gateway_settings['pricetag_token']['custom_attributes'] = array('readonly' => 'readonly');
-
-		}
 
 		$settings = apply_filters( 'adm_general_section', $gateway_settings );
 		return apply_filters( 'woocommerce_get_settings_' . $this->id, $settings );
@@ -540,5 +498,36 @@ class Settings extends \WC_Settings_Page
 
 	    }
 
+	}
+
+	public function adm_setting_js() {
+		?>
+		<script type="text/javascript" id="adm_setting_js">
+			(function () {
+				function toggle_auth_setting() {
+					if(jQuery('#adm_authentication_type').val() == 'auth_manual') {
+						jQuery('#adm_merchant_username').closest('tr').hide();
+						jQuery('#adm_merchant_password').closest('tr').hide();
+						jQuery('#adm_manual_prod_api_key').val('');
+						jQuery('#adm_manual_test_api_key').val('');
+						jQuery('#adm_private_key').val('');
+						jQuery('#adm_manual_prod_api_key').closest('tr').show();
+						jQuery('#adm_manual_test_api_key').closest('tr').show();
+						jQuery('#adm_private_key').closest('tr').show();
+					} else {
+						jQuery('#adm_merchant_username').closest('tr').show();
+						jQuery('#adm_merchant_password').closest('tr').show();
+						jQuery('#adm_manual_prod_api_key').closest('tr').hide();
+						jQuery('#adm_manual_test_api_key').closest('tr').hide();
+						jQuery('#adm_private_key').closest('tr').hide();
+					}
+				}
+				toggle_auth_setting();
+				jQuery('#adm_authentication_type').change(function() {
+					toggle_auth_setting();
+				});
+			})();
+		</script>
+	<?php
 	}
 }
