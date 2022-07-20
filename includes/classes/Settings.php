@@ -78,7 +78,10 @@ class Settings extends \WC_Settings_Page
 	 * @method get_initialize_setting
 	 */
 	public function get_initialize_setting() {
-		$gateway = WC()->payment_gateways->payment_gateways()['anyday_payment_gateway'];
+		$gateway = (WC()->payment_gateways->payment_gateways()['anyday_payment_gateway']) ? WC()->payment_gateways->payment_gateways()['anyday_payment_gateway'] : null;
+		if(is_null($gateway)) {
+			return;
+		}
 		$method_title = $gateway->get_method_title() ? $gateway->get_method_title() : $gateway->get_title();
 		echo '<h2>Anyday Payment Gateway</h2><table class="form-table"><tbody><tr valign="top"><th class="titledesc">Activate</th><td class="forminp">';
 		echo '<a class="wc-payment-gateway-method-toggle-enabled" href="' . esc_url( admin_url( 'admin.php?page=wc-settings&tab=checkout&section=' . strtolower( $gateway->id ) ) ) . '">';
@@ -504,13 +507,15 @@ class Settings extends \WC_Settings_Page
 		?>
 		<script type="text/javascript" id="adm_setting_js">
 			(function () {
-				function toggle_auth_setting() {
+				function toggle_auth_setting(isonload = false) {
 					if(jQuery('#adm_authentication_type').val() == 'auth_manual') {
 						jQuery('#adm_merchant_username').closest('tr').hide();
 						jQuery('#adm_merchant_password').closest('tr').hide();
-						jQuery('#adm_manual_prod_api_key').val('');
-						jQuery('#adm_manual_test_api_key').val('');
-						jQuery('#adm_private_key').val('');
+						if(!isonload) {
+							jQuery('#adm_manual_prod_api_key').val('');
+							jQuery('#adm_manual_test_api_key').val('');
+							jQuery('#adm_private_key').val('');
+						}
 						jQuery('#adm_manual_prod_api_key').closest('tr').show();
 						jQuery('#adm_manual_test_api_key').closest('tr').show();
 						jQuery('#adm_private_key').closest('tr').show();
@@ -522,9 +527,9 @@ class Settings extends \WC_Settings_Page
 						jQuery('#adm_private_key').closest('tr').hide();
 					}
 				}
-				toggle_auth_setting();
+				toggle_auth_setting(true);
 				jQuery('#adm_authentication_type').change(function() {
-					toggle_auth_setting();
+					toggle_auth_setting(false);
 				});
 			})();
 		</script>
