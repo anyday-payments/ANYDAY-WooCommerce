@@ -16,18 +16,15 @@ class Settings extends \WC_Settings_Page
 	}
 
 	private function set_authentication() {
-		if ( get_option('adm_authentication_type') == 'auth_manual' && !empty(trim(get_option('adm_manual_prod_api_key'))) && !empty(trim(get_option('adm_manual_test_api_key')) ) ) {
+	  if ( get_option('adm_authentication_type') == 'auth_manual' 
+			&& !empty(trim(get_option('adm_manual_prod_api_key'))) 
+			&& !empty(trim(get_option('adm_manual_test_api_key'))) 
+			&& !empty(trim(get_option('adm_private_key')))
+		) {
 			update_option( 'adm_manual_authenticated', 'true' );
 			update_option( 'adm_merchant_authenticated', 'false' );
 		} else {
 			update_option( 'adm_manual_authenticated', 'false' );
-		}
-
-		if ( get_option('adm_authentication_type') == 'auth_account' && !empty(trim(get_option('adm_merchant_username'))) && !empty(trim(get_option('adm_merchant_password')) ) ) {
-			update_option( 'adm_merchant_authenticated', 'true' );
-			update_option( 'adm_manual_authenticated', 'false' );
-		} else {
-			update_option( 'adm_merchant_authenticated', 'false' );
 		}
 	}
 
@@ -78,19 +75,27 @@ class Settings extends \WC_Settings_Page
 	 * @method get_initialize_setting
 	 */
 	public function get_initialize_setting() {
-		$gateway = (WC()->payment_gateways->payment_gateways()['anyday_payment_gateway']) ? WC()->payment_gateways->payment_gateways()['anyday_payment_gateway'] : null;
+		$gateway = 
+			(WC()->payment_gateways->payment_gateways()['anyday_payment_gateway']) 
+			? WC()->payment_gateways->payment_gateways()['anyday_payment_gateway'] 
+			: null;
 		if(is_null($gateway)) {
 			return;
 		}
 		$method_title = $gateway->get_method_title() ? $gateway->get_method_title() : $gateway->get_title();
 		echo '<h2>Anyday Payment Gateway</h2><table class="form-table"><tbody><tr valign="top"><th class="titledesc">Activate</th><td class="forminp">';
-		echo '<a class="wc-payment-gateway-method-toggle-enabled" href="' . esc_url( admin_url( 'admin.php?page=wc-settings&tab=checkout&section=' . strtolower( $gateway->id ) ) ) . '">';
+		echo '<a class="wc-payment-gateway-method-toggle-enabled" href="' 
+		. esc_url( admin_url( 'admin.php?page=wc-settings&tab=checkout&section=' . strtolower( $gateway->id ) ) ) . '">';
 		if ( wc_string_to_bool( $gateway->enabled ) ) {
 			/* Translators: %s Payment gateway name. */
-			echo '<span class="woocommerce-input-toggle woocommerce-input-toggle--enabled" aria-label="' . esc_attr( sprintf( __( 'The "%s" payment method is currently enabled', 'woocommerce' ), $method_title ) ) . '">' . esc_attr__( 'Yes', 'woocommerce' ) . '</span>';
+			echo '<span class="woocommerce-input-toggle woocommerce-input-toggle--enabled" aria-label="' 
+			. esc_attr( sprintf( __( 'The "%s" payment method is currently enabled', 'woocommerce' ), $method_title ) ) . '">' 
+			. esc_attr__( 'Yes', 'woocommerce' ) . '</span>';
 		} else {
 			/* Translators: %s Payment gateway name. */
-			echo '<span class="woocommerce-input-toggle woocommerce-input-toggle--disabled" aria-label="' . esc_attr( sprintf( __( 'The "%s" payment method is currently disabled', 'woocommerce' ), $method_title ) ) . '">' . esc_attr__( 'No', 'woocommerce' ) . '</span>';
+			echo '<span class="woocommerce-input-toggle woocommerce-input-toggle--disabled" aria-label="' 
+			. esc_attr( sprintf( __( 'The "%s" payment method is currently disabled', 'woocommerce' ), $method_title ) ) 
+			. '">' . esc_attr__( 'No', 'woocommerce' ) . '</span>';
 		}
 		echo '</a></td></tr></tbody></table>';
 	}
@@ -492,14 +497,38 @@ class Settings extends \WC_Settings_Page
 
 		if ( $current_section == "" && get_option('adm_authentication_type') == 'auth_account' ) {
 
-	    	$auth = new MerchantAuthentication;
+			$auth = new MerchantAuthentication;
 
-	   		$auth->adm_merchant_authenticate( $current_section, $settings );
+			$merchant_authentication = $auth->adm_merchant_authenticate( $current_section, $settings );
 
-	   		update_option( 'adm_merchant_password', 'Silence' );
+			if ( $merchant_authentication === true ) {
+
+				update_option( 'adm_merchant_authenticated', 'true' );
+				update_option( 'adm_manual_authenticated', 'false' );
+				add_action( 'admin_notices', function() {
+							echo '<div id="message" class="notice notice-success is-dismissible"><p><strong>'
+							. __( "Merchant authenticaton successful.", "adm" ) .'</strong></p></div>';
+					});
+	
+			} else {
+				update_option( 'adm_merchant_authenticated', 'false' );
+				add_action( 'admin_notices', function() use ( $merchant_authentication ) {
+							echo '<div id="message" class="notice notice-error is-dismissible">
+							<p><strong>'. __( "An error occurred. Please contact Anyday support.", "adm" ) .'</strong></p>
+							<p>'. __( sanitize_text_field( $merchant_authentication ), "adm" ) .'</p>
+							</div>';
+					});
+			}
+
+			update_option( 'adm_merchant_password', 'Silence' );
 
 
-	    }
+		} elseif ( $current_section == "" && get_option('adm_authentication_type') == 'auth_manual' ) {
+			if( !empty(get_option('adm_authentication_type')) && !empty(get_option('adm_authentication_type')) ) {
+				update_option( 'adm_manual_authenticated', 'true' );
+				update_option( 'adm_merchant_authenticated', 'false' );
+			}
+		}
 
 	}
 
