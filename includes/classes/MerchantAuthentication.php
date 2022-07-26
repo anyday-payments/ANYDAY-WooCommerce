@@ -32,10 +32,10 @@ use GuzzleHttp\Psr7;
 			if ( $e->hasResponse() ) {
 
 				update_option( 'adm_merchant_authenticated', 'false' );
-
+				update_option( 'adm_manual_authenticated', 'false' );
 				return Psr7\str($e->getResponse());
 
-		    }
+		  }
 
 		}
 
@@ -93,24 +93,6 @@ use GuzzleHttp\Psr7;
 
 		\WC_Admin_Settings::save_fields( $settings );
 
-		$merchant_authentication = $this->adm_authenticate( get_option('adm_merchant_username'), get_option('adm_merchant_password') );
-
-		if ( $merchant_authentication === true ) {
-
-			update_option( 'adm_merchant_authenticated', 'true' );
-
-			add_action( 'admin_notices', function() {
-						echo '<div id="message" class="notice notice-success is-dismissible"><p><strong>'. __( "Merchant authenticaton successful.", "adm" ) .'</strong></p></div>';
-				});
-
-		} else {
-
-			add_action( 'admin_notices', function() use ( $merchant_authentication ) {
-						echo '<div id="message" class="notice notice-error is-dismissible">
-						<p><strong>'. __( "An error occurred. Please contact Anyday support.", "adm" ) .'</strong></p>
-						<p>'. __( sanitize_text_field( $merchant_authentication ), "adm" ) .'</p>
-						</div>';
-				});
-		}
+		return $this->adm_authenticate( get_option('adm_merchant_username'), get_option('adm_merchant_password') );
 	}
  }
