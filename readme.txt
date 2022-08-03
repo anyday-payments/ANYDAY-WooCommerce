@@ -140,3 +140,11 @@ Anyday assumes all credit risk as soon as a purchase is made. You will receive a
 #### 👾 Bug Fixes
 - Adjustment order notes, transaction history to make it consistency with action from button.
 - Anyday WooCommerce plugin spamming wpdebug logs after activation.
+
+= 1.7.7 =
+
+#### 🚀 Enhancements
+- Improved UX in Merchant authentication using Anyday credentials.
+
+#### 👾 Bug Fixes
+- Fixing error message displaying in Anyday column if meta values are null.
