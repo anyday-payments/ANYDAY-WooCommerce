@@ -86,9 +86,11 @@ class AnydayEvents {
 	private function process_pending_txns($event) {
 		$order_data   = $event->get_order()->get_meta('anyday_payment_transactions');
 		$missing_txns = array();
-		foreach(array_shift($this->data['transactions']) as $txn) {
-			if(!in_array($txn, $order_data) && $txn['type'] !== 'authorize') {
-				array_push($missing_txns, $txn);
+		if(!is_null($this->data['transactions'])) {
+			foreach(array_shift($this->data['transactions']) as $txn) {
+				if(!in_array($txn, $order_data) && $txn['type'] !== 'authorize') {
+					array_push($missing_txns, $txn);
+				}
 			}
 		}
 		foreach($missing_txns as $txn) {

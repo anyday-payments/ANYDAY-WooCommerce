@@ -27,20 +27,8 @@ class AnydayPayment
 
 		$environment = get_option('adm_environment');
 
-		switch ( $environment ) {
+		$this->authorization_token = $this->adm_get_api_key( $environment );
 
-			case 'live':
-
-				$this->authorization_token = $this->adm_get_api_key('live');
-
-				break;
-
-			case 'test':
-
-				$this->authorization_token = $this->adm_get_api_key('test');
-
-				break;
-		}
 		$this->headers = [
 			'Content-Type' => 'application/json',
 			'Authorization' => 'Bearer ' .  $this->authorization_token
@@ -53,7 +41,11 @@ class AnydayPayment
 	 */
 	private function adm_get_api_key( $environment )
 	{
-		if ( get_option('adm_authentication_type') == 'auth_manual' ) {
+		if ( get_option('adm_authentication_type') === 'auth_manual' ) {
+
+			if( get_option('adm_manual__authenticated') === 'false' ) {
+				return '';
+			}
 
 			if ( $environment == 'live' ) {
 
@@ -65,7 +57,11 @@ class AnydayPayment
 
 			}
 
-		} elseif ( get_option('adm_authentication_type') == 'auth_account' ) {
+		} elseif ( get_option('adm_authentication_type') === 'auth_account' ) {
+
+			if( get_option('adm_merchant_authenticated') === 'false' ) {
+				return '';
+			}
 
 			if ( $environment == 'live' ) {
 
@@ -393,7 +389,7 @@ class AnydayPayment
 	 */
 	private function handled($order, $transaction_id) {
 		$order_data = $order->get_meta('anyday_payment_transactions');
-		if( in_array($transaction_id, $order_data) )  {
+		if( !empty($order_data) && in_array($transaction_id, $order_data) )  {
 			return true;
 		}
 		$txn = get_post_meta($order->get_id(), 'anyday_payment_transactions', true);

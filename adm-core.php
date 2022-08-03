@@ -3,7 +3,7 @@
 Plugin Name: Anyday WooCommerce
 Plugin URI: https://www.anyday.io
 Description: Anyday is a new way to pay. An interest-free financing solution with no fees or interest for your customers.
-Version: 1.7.6
+Version: 1.7.7
 Requires at least: 5.2
 Requires PHP: 7.1.33
 Author: Anyday
@@ -27,7 +27,7 @@ if ( ! defined( 'WPINC' ) ) {
  **/
 if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) {
 
-	define( 'ADM_VERSION', '1.7.6' );
+	define( 'ADM_VERSION', '1.7.7' );
 	define( 'ADM_PATH', plugin_dir_path( __FILE__ ) );
 	define( 'ADM_URL', plugin_dir_url( __FILE__ ) );
 	define( 'ADM_PLUGIN_SLUG', "am-wordpress" );
@@ -138,8 +138,8 @@ if ( in_array( 'woocommerce/woocommerce.php', apply_filters( 'active_plugins', g
 		switch ( $column )
 		{
 			case 'anyday-column' :
-				$transaction_id = get_post_meta( $post_id, 'anyday_payment_transaction' )[0];
-				$anyday_status  = get_post_meta( $post_id, 'anyday_payment_last_status' )[0];
+				$transaction_id = (get_post_meta( $post_id, 'anyday_payment_transaction' )) ? get_post_meta( $post_id, 'anyday_payment_transaction' )[0] : null;
+				$anyday_status  = (get_post_meta( $post_id, 'anyday_payment_last_status' )) ? get_post_meta( $post_id, 'anyday_payment_last_status' )[0] : null;
 				switch ($anyday_status) {
 					case ANYDAY_STATUS_PENDING:
 						$anyday_status = 'Pending';

@@ -50,59 +50,75 @@ class Core
 	 */
     public function adm_admin_notices()
     {
-
-    	if( get_option('adm_authentication_type') == 'auth_account' && get_option('adm_merchant_authenticated') == 'false' && get_option('adm_manual_authenticated') == 'false' ) {
-
-			add_action( 'admin_notices', function() {
-		        echo '<div id="message" class="notice notice-error">
-		        <p><strong>'. __( "Please authenticate with your Anyday merchant account!", "adm" ) .'</strong></p>
-		        </div>';
-		    });
-
-		}
-
-		if( get_option('adm_authentication_type') == 'auth_manual' && get_option('adm_merchant_authenticated') == 'false' && (empty(get_option('adm_manual_prod_api_key')) || empty(get_option('adm_manual_test_api_key')) || empty(get_option('adm_manual_pricetag_token')) ) ) {
-
-			add_action( 'admin_notices', function() {
-		        echo '<div id="message" class="notice notice-error">
-		        <p><strong>'. __( "The Anyday Production API key, Anyday Test API key and Anyday Pricetag token fields are mandatory. Please make sure to save the correct values. In case you do not have them contact Anyday support. ", "adm" ) .'</strong></p>
-		        </div>';
-		    });
-
-		}
-
-		if ( strpos(esc_url_raw($_SERVER['REQUEST_URI']), 'tab=anydaypricetag') !== false ) {
-
-			if( get_option('adm_manual_authenticated') == 'true'  ) {
+			if( get_option('adm_authentication_type') == 'auth_manual' && get_option('adm_merchant_authenticated') == 'false' && (empty(get_option('adm_manual_prod_api_key')) || empty(get_option('adm_manual_test_api_key')) || empty(get_option('adm_manual_pricetag_token')) ) ) {
 
 				add_action( 'admin_notices', function() {
-			        echo '<div id="message" class="notice notice-warning">
-			        <p><strong>'. __( "You have authenticated manually!", "adm" ) .'</strong></p>
-			        </div>';
-			    });
-
-			} elseif ( get_option('adm_merchant_authenticated') == 'true' ) {
-
-				add_action( 'admin_notices', function() {
-			        echo '<div id="message" class="notice notice-warning">
-			        <p><strong>'. __( "You have authenticated with your Anyday merchant account!", "adm" ) .'</strong></p>
-			        </div>';
-				});
+							echo '<div id="message" class="notice notice-warning">
+							<p><strong>'. __( "The Anyday Production API key, Anyday Test API key and Anyday Pricetag token fields are mandatory. Please make sure to save the correct values. In case you do not have them contact Anyday support. ", "adm" ) .'</strong></p>
+							</div>';
+					});
 
 			}
 
-		}
+			if ( strpos(esc_url_raw($_SERVER['REQUEST_URI']), 'tab=anydaypricetag') !== false ) {
+
+				if( get_option('adm_manual_authenticated') == 'true'
+					&& !empty(get_option('adm_manual_prod_api_key'))
+					&& !empty(get_option('adm_manual_test_api_key'))
+					&& !empty(get_option('adm_private_key'))
+				) {
+
+					add_action( 'admin_notices', function() {
+						echo '<div id="message" class="notice notice-warning">
+						<p><strong>'. __( "You have authenticated manually!", "adm" ) .'</strong></p>
+						</div>';
+					});
+
+				} elseif ( get_option('adm_merchant_authenticated') == 'true' ) {
+
+					add_action( 'admin_notices', function() {
+						echo '<div id="message" class="notice notice-warning">
+						<p><strong>'. __( "You have authenticated with your Anyday merchant account!", "adm" ) .'</strong></p>
+						</div>';
+					});
+
+				}
+
+				if(
+						(
+							$_SERVER['REQUEST_METHOD'] === 'GET'
+							&& get_option('adm_merchant_authenticated') === 'false'
+							&& get_option('adm_manual_authenticated') === 'false'
+						)
+						||
+						(
+							get_option('adm_authentication_type') === 'auth_manual'
+							&& (
+								empty(get_option('adm_manual_prod_api_key'))
+								|| empty(get_option('adm_manual_test_api_key'))
+								|| empty(get_option('adm_private_key'))
+							)
+						)
+					) {
+					add_action( 'admin_notices', function() {
+						echo '<div id="message" class="notice notice-error">
+						<p><strong>'. __( "Anyday plugin needs authentication!", "adm" ) .'</strong></p>
+						</div>';
+					});
+				}
+
+			}
 
 
-		if( get_option('adm_environment') == 'test' ) {
+			if( get_option('adm_environment') == 'test' ) {
 
-			add_action( 'admin_notices', function() {
-		        echo '<div id="message" class="notice notice-warning">
-		        <p><strong>'. __( "Your Anyday environment is set to Test Mode. Do not fulfill or ship any orders placed with Anyday! Change to Live Mode to begin accepting orders:", "adm" ) . ' <a href="' . admin_url( 'admin.php?page=wc-settings&tab=anydaypricetag&section' ) . '">'. __( "Anyday Payment Gateway Settings", "adm" ) .'</a></strong></p>
-		        </div>';
-		    });
+				add_action( 'admin_notices', function() {
+							echo '<div id="message" class="notice notice-warning">
+							<p><strong>'. __( "Your Anyday environment is set to Test Mode. Do not fulfill or ship any orders placed with Anyday! Change to Live Mode to begin accepting orders:", "adm" ) . ' <a href="' . admin_url( 'admin.php?page=wc-settings&tab=anydaypricetag&section' ) . '">'. __( "Anyday Payment Gateway Settings", "adm" ) .'</a></strong></p>
+							</div>';
+					});
 
-		}
+			}
     }
 
     /**
