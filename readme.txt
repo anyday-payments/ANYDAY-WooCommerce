@@ -3,7 +3,7 @@ Contributors: anyday2020
 Tags: Payments, Instalments, WooCommerce, Payment Gateway, Buy Now Pay Later, BNPL, Conversion Rate, Basket Size, Anyday
 Requires at least: 4.3.1
 Tested up to: 5.9.3
-Stable tag: 1.7.6
+Stable tag: 1.7.7
 License: MIT
 License URI: https://opensource.org/licenses/MIT
 
