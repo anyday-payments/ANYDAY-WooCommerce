@@ -60,7 +60,7 @@ class AnydayRest {
 		}
     $data = $this->lcfirstKeys($request->get_json_params());
 		
-		if ( !isset($data['transaction']) ) {
+		if ( is_null($data['transaction']) ) {
 			if($data['cancelled'] === true) {
 				$eventType = self::EVENT_CLASS_PREFIX.ucfirst('cancel');
 				$data['transaction']['type'] = 'cancel';
