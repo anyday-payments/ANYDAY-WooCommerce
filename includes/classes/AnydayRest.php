@@ -64,6 +64,7 @@ class AnydayRest {
 			if($data['cancelled'] === true) {
 				$eventType = self::EVENT_CLASS_PREFIX.ucfirst('cancel');
 				$data['transaction']['type'] = 'cancel';
+				$data['transaction']['status'] = 'success';
 				$event = $event->handle( $eventType, $data );
 				return rest_ensure_response( $event );
 			}
