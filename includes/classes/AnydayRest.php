@@ -54,16 +54,23 @@ class AnydayRest {
 	 * @return \WP_Error|\WP_REST_Response
 	 */
 	public function callback( $request ) {
+		$event = new AnydayEvents;
 		if ( !$this->validSignature($request) || 'application/json' !== $request->get_header( 'Content-Type' ) ) {
 			return new \WP_Error( 'anyday_rest_wrong_header', __( 'Wrong header type.', 'adm' ), array( 'status' => 400 ) );
 		}
-
     $data = $this->lcfirstKeys($request->get_json_params());
-		if ( !isset($data['transaction']) ) {
+		
+		if ( is_null($data['transaction']) ) {
+			if($data['cancelled'] === true) {
+				$eventType = self::EVENT_CLASS_PREFIX.ucfirst('cancel');
+				$data['transaction']['type'] = 'cancel';
+				$data['transaction']['status'] = 'success';
+				$event = $event->handle( $eventType, $data );
+				return rest_ensure_response( $event );
+			}
 			return new \WP_Error( 'anyday_rest_wrong_object', __( 'Wrong object type.', 'adm' ), array( 'status' => 400 ) );
 		}
 
-		$event = new AnydayEvents;
     $eventType = self::EVENT_CLASS_PREFIX.ucfirst($data['transaction']['type']);
 		$event = $event->handle( $eventType, $data );
 
