@@ -2,7 +2,7 @@
 
 Description: Anyday is a new way to pay. An interest-free financing solution with no fees or interest for your customers.
 
-Version: 1.7.7
+Version: 1.7.8
 
 ## Plugin installation
 
@@ -49,3 +49,5 @@ Version 1.7.5 - Implemented callback feature to receive transactions processed b
 Version 1.7.6 - Order status changes in WooCommerce will capture/refund/cancel payments., Anyday WooCommerce plugin spamming wpdebug logs after activation., Added new column to display Anyday OrderID and Anyday Order status in WooCommerce Order list page., Adjustment order notes, transaction history to make it consistency with action from button.
 
 Version 1.7.7 - Improved UX in Merchant authentication using Anyday credentials, Fixing error message displaying in Anyday column if meta values are null.
+
+Version 1.7.8 - Fixing callback which updates order as cancelled after charge expired.
