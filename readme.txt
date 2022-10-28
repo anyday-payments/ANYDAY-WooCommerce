@@ -2,8 +2,8 @@
 Contributors: anyday2020
 Tags: Payments, Instalments, WooCommerce, Payment Gateway, Buy Now Pay Later, BNPL, Conversion Rate, Basket Size, Anyday
 Requires at least: 4.3.1
-Tested up to: 5.9.3
-Stable tag: 1.7.6
+Tested up to: 6.0.3
+Stable tag: 1.7.8
 License: MIT
 License URI: https://opensource.org/licenses/MIT
 
@@ -148,3 +148,8 @@ Anyday assumes all credit risk as soon as a purchase is made. You will receive a
 
 #### 👾 Bug Fixes
 - Fixing error message displaying in Anyday column if meta values are null.
+
+= 1.7.8 =
+
+#### 👾 Bug Fixes
+- Fixing callback which updates order as cancelled after charge expired.
